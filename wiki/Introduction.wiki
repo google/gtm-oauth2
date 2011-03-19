@@ -1,0 +1,344 @@
+#summary OAuth 2 Controllers for iOS and Mac Apps
+#labels Featured
+
+= Using the OAuth 2 Controllers =
+
+<wiki:toc max_depth="3" />
+
+== Introduction ==
+
+[http://wiki.oauth.net/w/page/25236487/OAuth-2 OAuth 2] is a protocol allowing your application to obtain authorization to read or modify a user’s files or data on an external server.
+
+The server generates a web page for the user to sign in with her name and password, including a button explicitly granting access to some of her data. Upon successful authentication, the server gives tokens to your application representing the user's authorization.
+
+With the Objective-C OAuth 2 controllers, the web page can be presented as an iOS view or a Mac sheet within your application. The controllers also provide an authentication object that simplifies your application's future requests for the user's data.
+
+There is also a [http://code.google.com/p/gtm-oauth gtm-oauth] library for the older OAuth 1 protocol. Most applications should use the OAuth 2 library for services that support OAuth 2.
+
+== Using the iOS and Mac OS X OAuth 2 Controllers ==
+
+The OAuth controllers are useful for authenticating both to Google servers and to other services.
+
+There are example iOS and Mac applications using the OAuth controllers in the library's [http://code.google.com/p/gtm-oauth2/source/browse/#svn/trunk/Examples Examples directory].
+
+Controller methods with "Google" in the name are for use only with Google services.
+
+== Adding the Controllers to Your Project ==
+
+The project has targets for building a static library for iOS and a framework for Mac OS X. Alternatively, the source files and xibs may be dragged directly into your project file and compiled with your application.
+
+Check out the "top-of-trunk" OAuth 2 controller sources with a Mac terminal window and the command on the [http://code.google.com/p/gtm-oauth2/source/checkout source checkout page].
+The source files required are:
+
+||_iOS and Mac OS X_||_iOS_||_Mac OS X_||
+||GTMOAuth2Authentication.h/m<br>GTMOAuth2SignIn.h/m<br>GTMHTTPFetcher.h/m||GTMOAuth2ViewControllerTouch.h/m<br>GTMOAuth2ViewTouch.xib (optional)||GTMOAuth2WindowController.h/m<br>GTMOAuth2Window.xib||
+
+These source files can be browsed in the project's [http://code.google.com/p/gtm-oauth2/source/browse/#svn/trunk/Source/ source directory].
+
+=== System Requirements ===
+
+The Mac controller is compatible with Mac OS X 10.5 and later. The iOS controller is compatible with iPhone OS 3 and later.
+
+The OAuth controllers require linking to the system frameworks Security.framework and !SystemConfiguration.framework.
+
+The sample applications use Objective-C blocks, so are intended for iOS 4 and Mac OS X 10.6.
+
+== Signing In to Google Services ==
+
+*iOS:* To display a sign-in view, your iOS application makes these calls to push the view:
+{{{
+#import "GTMOAuthView2ControllerTouch.h"
+
+static NSString *const kKeychainItemName = @"OAuth2 Sample: Google Buzz";
+
+NSString *kMyClientID = @"abcd";     // pre-assigned by service
+NSString *kMyClientSecret = @"efgh"; // pre-assigned by service
+
+NSString *scope = @"https://www.googleapis.com/auth/buzz"; // scope for Google Buzz API
+
+GTMOAuth2ViewControllerTouch *viewController;
+viewController = [[[GTMOAuth2ViewControllerTouch alloc] initWithScope:scope
+                                                             clientID:kMyClientID
+                                                         clientSecret:kMyClientSecret
+                                                     keychainItemName:kKeychainItemName
+                                                             delegate:self
+                                                     finishedSelector:@selector(viewController:finishedWithAuth:error:)] autorelease];
+[[self navigationController] pushViewController:controller
+                                       animated:YES];
+}}}
+
+Each service will provide developers with *Client ID* and *Client Secret* strings intended to be hardcoded as constants into applications.  Google services issue the strings via the [https://code.google.com/apis/console Google API Console].
+
+*Mac:* A Mac application would display sign-in as a sheet on the current window, like this:
+
+{{{
+#import "GTMOAuthWindowController.h"
+
+GTMOAuth2WindowController *windowController;
+windowController = [[[GTMOAuth2WindowController alloc] initWithScope:scope
+                                                            clientID:kMyClientID
+                                                        clientSecret:kMylientSecret
+                                                    keychainItemName:kKeychainItemName
+                                                      resourceBundle:nil] autorelease];
+[controller signInSheetModalForWindow:currentWindow
+                             delegate:self
+                     finishedSelector:@selector(windowController:finishedWithAuth:error:)];
+}}}
+The *scope* is a string identifying what access is being requested. For access to more than one scope, separate the scopes with a space. 
+
+The *keychain item name* is used to save the token on the user’s keychain, and should identify both your application name and the service name(s). If keychainItemName is nil, the token will not be saved, and the user will have to sign in again the next time the application is run.
+
+When the user signs in successfully or cancels signing in, the view or window controller will invoke your finishedSelector’s method:
+{{{
+- (void)viewController:(GTMOAuth2ViewControllerTouch *)viewController
+      finishedWithAuth:(GTMOAuth2Authentication *)auth
+                 error:(NSError *)error {
+ if (error != nil) {
+   // Authentication failed
+ } else {
+   // Authentication succeeded
+ }
+}
+}}}
+
+If `[error code]` is kGTMOAuthErrorWindowClosed (-1000), then the user closed the sign-in view before completing authentication. Otherwise, any error reflects the server response in validating the user's access.
+
+The controllers also support Objective-C block completion handlers as alternatives to the delegate and finished selectors.
+
+=== Using the Authentication Tokens ===
+
+If authentication succeeds, your application should retain the authentication object. It can be used directly to authorize NSMutableURLRequest objects:
+
+{{{
+[auth authorizeRequest:myNSURLMutableRequest
+              delegate:self
+     didFinishSelector:@selector(authentication:finishedWithError:)];
+}}}
+
+The authentication object may need to fetch a refreshed access token, so the authorization call is asynchronous, though it will often authorize the request and call the callback immediately.
+
+If the error passed to the callback is nil, then the request was authorized:
+{{{
+- (void)authentication:(GTMOAuth2Authentication *)auth
+     finishedWithError:(NSError *)error {
+ if (error != nil) {
+   // Authorization failed
+ } else {
+   // Authorization succeeded
+ }
+}
+}}}
+
+Authorization may also be done with a block callback:
+{{{
+[auth authorizeRequest:myNSURLMutableRequest
+     completionHandler:^(NSError *error) {
+  if (error == nil) {
+    // the request has been authorized
+  }
+}];
+}}}
+
+=== Retrieving Authorization from the Keychain ===
+
+If your application saves the authorization to the keychain (by setting the controller's appServiceName), it can be retrieved the next time the application launches:
+
+{{{
+- (void)awakeFromNib {
+  // Get the saved authentication, if any, from the keychain.
+  GTMOAuth2Authentication *auth;
+  auth = [GTMOAuth2ViewControllerTouch authForGoogleFromKeychainForName:kKeychainItemName
+                                                               clientID:kMyClientID
+                                                           clientSecret:kMyClientSecret];
+
+  // Retain the authentication object, which holds the auth tokens
+  //
+  // We can determine later if the auth object contains an access token
+  // by calling its -canAuthorize method
+  [self setAuthentication:auth];
+}
+}}}
+
+If no authorization was saved, then “auth” will still be a valid authorization object but will be unable to authorize requests:
+
+{{{
+BOOL isSignedIn = [auth canAuthorize]; // returns NO if auth cannot authorize requests
+}}}
+
+=== Signing Out ===
+
+To completely discard the user’s authorization, use the view or window controller calls to remove the keychain entry and to ask the Google server to revoke the token:
+{{{
+ [GTMOAuth2ViewControllerTouch removeAuthFromKeychainForName:kKeychainItemName];
+
+ [GTMOAuth2ViewControllerTouch revokeTokenForGoogleAuthentication:auth];
+}}}
+
+Finally, release the authorization object.
+
+== Signing in to non-Google Services ==
+
+To sign in to a non-Google service (and some Google services), you should consult the service's API documentation to obtain client ID and client secret strings, to find the required scope string for API operations, and to determine the API endpoints (URLs) for authorization and for obtaining tokens.
+
+To use the OAuth controllers with services other than Google APIs, your application should create an authentication object with the appropriate keys, like this:
+{{{
+NSString *kMyClientID = @"abcd";     // pre-assigned by service
+NSString *kMyClientSecret = @"efgh"; // pre-assigned by service
+
+- (GTMOAuth2Authentication *)myCustomAuth {
+
+  NSURL *tokenURL = [NSURL URLWithString:@"https://api.example.com/oauth/token"];
+
+  // We'll make up an arbitrary redirectURI.  The controller will watch for
+  // the server to redirect the web view to this URI, but this URI will not be
+  // loaded, so it need not be for any actual web page.
+  NSString *redirectURI = @"http://www.google.com/OAuthCallback";
+
+  GTMOAuth2Authentication *auth;
+  auth = [GTMOAuth2Authentication authenticationWithServiceProvider:@"Custom Service"
+                                                           tokenURL:tokenURL
+                                                        redirectURI:redirectURI
+                                                           clientID:kClientID
+                                                       clientSecret:kClientSecret];
+  return auth;
+}
+}}}
+
+Displaying the sign-in view with a custom auth also requires providing the OAuth 2 endpoints (URLs) and scope string to the controller, as shown here:
+
+{{{
+- (void)signInToCustomService {
+  [self signOut];
+
+  GTMOAuth2Authentication *auth = [self authForCustomService];
+
+  // Specify the appropriate scope string, if any, according to the service's API documentation
+  auth.scope = @"read";
+
+  NSURL *authURL = [NSURL URLWithString:@"https://api.example.com/oauth/authorize"];
+
+  // Display the authentication view
+  GTMOAuth2ViewControllerTouch *viewController;
+  viewController = [[[GTMOAuth2ViewControllerTouch alloc] initWithAuthentication:auth
+                                                                authorizationURL:authURL
+                                                                keychainItemName:kKeychainItemName
+                                                                        delegate:self
+                                                                finishedSelector:@selector(viewController:finishedWithAuth:error:)] autorelease];
+  // Now push our sign-in view
+  [[self navigationController] pushViewController:viewController animated:YES];
+}
+}}}
+
+The keychain item name is used to save the token on the user’s keychain, and should identify both your application name and the service name(s). If keychainItemName is nil, the token will not be saved, and the user will have to sign in again the next time the application is run.
+
+When the user signs in successfully or cancels signing in, the view or window controller will invoke your finishedSelector’s method:
+{{{
+- (void)viewController:(GTMOAuthViewControllerTouch *)viewController
+      finishedWithAuth:(GTMOAuthAuthentication *)auth
+                 error:(NSError *)error {
+ if (error != nil) {
+   // Sign-in failed
+ } else {
+   // Sign-in succeeded
+ }
+}
+}}}
+
+If `[error code]` is kGTMOAuth2ErrorWindowClosed (-1000), then the user closed the sign-in view before completing authorization. Otherwise, any error reflects the server response in validating the user's access.
+
+The controllers also support Objective-C block completion handlers as alternatives to the delegate and finished selectors.
+
+=== Using the Authentication Tokens ===
+
+If authentication succeeds, your application should retain the authentication object. It can be used directly to authorize NSMutableURLRequest objects:
+
+{{{
+[auth authorizeRequest:myNSURLMutableRequest
+              delegate:self
+     didFinishSelector:@selector(authentication:finishedWithError:)];
+}}}
+
+The authentication object may need to fetch a refreshed access token, so the authorization call is asynchronous, though it will often authorize the request and call the callback immediately.
+
+If the error passed to the callback is nil, then the request was authorized:
+{{{
+- (void)authentication:(GTMOAuth2Authentication *)auth
+     finishedWithError:(NSError *)error {
+ if (error != nil) {
+   // Authorization failed
+ } else {
+   // Authorization succeeded
+ }
+}
+}}}
+
+Authorization may also be done with a block callback:
+{{{
+[auth authorizeRequest:myNSURLMutableRequest
+     completionHandler:^(NSError *error) {
+  if (error == nil) {
+    // the request has been authorized
+  }
+}];
+}}}
+
+=== Retrieving Authorization from the Keychain ===
+
+If your application saves the authorization to the keychain (by setting the controller's appServiceName), it can be retrieved the next time the application launches:
+
+{{{
+- (void)awakeFromNib {
+  // Get the saved authentication, if any, from the keychain.
+  GTMOAuth2Authentication *auth = [self myCustomAuth];
+  if (auth) {
+    BOOL didAuth = [GTMOAuth2ViewControllerTouch authorizeFromKeychainForName:@"My App: Custom Service"
+                                                               authentication:auth];
+  }
+
+  // Retain the authentication object, which holds the auth tokens
+  //
+  // We can determine later if the auth object contains an access token
+  // by calling its -canAuthorize method
+  [self setAuthentication:auth];
+}
+}}}
+
+If no authorization was saved, then “auth” will still be a valid authorization object but will be unable to authorize requests:
+
+{{{
+BOOL isSignedIn = [auth canAuthorize]; // returns NO if auth cannot authorize requests
+}}}
+
+=== Signing Out ===
+
+To completely discard the user’s authorization, use the view or window controller calls to remove the keychain entry:
+{{{
+[GTMOAuthViewControllerTouch removeAuthFromKeychainForName:kKeychainItemName];
+}}}
+
+Finally, release the authorization object.
+
+
+= Design Notes =
+
+The library's classes are designed in three layers.
+
+||Window/View Controller||user interface & application API||
+||Sign-In||OAuth sign-in sequence & !WebView handling||
+||Authentication||data handling, token fetches, and keychain||
+
+Classes are written to be independent of the layers above them.
+
+The window and view controllers are retained only during the user's sign-in interaction. 
+
+The sign-in object is typically not used directly by the client application.
+
+The authentication object must be retained by the client app to authorize NSMutableURLRequests. It is also used to save authentication to and read authentication from the keychain.
+
+= Questions and Comments =
+
+You can learn more about the OAuth 2 protocol for desktop and mobile applications at [http://code.google.com/apis/accounts/docs/OAuth2.html Google's documentation].
+
+Additional documentation for the controllers is available in the header files.
+
+If you have any questions or comments about the library or this documentation, please join the [http://groups.google.com/group/gtm-oauth2 discussion group].
