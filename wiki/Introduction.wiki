@@ -31,7 +31,7 @@ Check out the "top-of-trunk" OAuth 2 controller sources with a Mac terminal wind
 The source files required are:
 
 ||_iOS and Mac OS X_||_iOS_||_Mac OS X_||
-||GTMOAuth2Authentication.h/m<br>GTMOAuth2SignIn.h/m<br>GTMHTTPFetcher.h/m||GTMOAuth2ViewControllerTouch.h/m<br>GTMOAuth2ViewTouch.xib (optional)||GTMOAuth2WindowController.h/m<br>GTMOAuth2Window.xib||
+||GTMOAuth2Authentication.h/m<br>GTMOAuth2SignIn.h/m<br>GTMHTTPFetcher.h/m||GTMOAuth2ViewControllerTouch.h/m<br>GTMOAuth2ViewTouch.xib||GTMOAuth2WindowController.h/m<br>GTMOAuth2Window.xib||
 
 These source files can be browsed in the project's [http://code.google.com/p/gtm-oauth2/source/browse/#svn/trunk/Source/ source directory].
 
