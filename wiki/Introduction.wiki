@@ -17,9 +17,9 @@ There is also a [http://code.google.com/p/gtm-oauth gtm-oauth] library for the o
 
 == Using the iOS and Mac OS X OAuth 2 Controllers ==
 
-The OAuth controllers are useful for authenticating both to Google servers and to other services.
+The OAuth 2 controllers are useful for authenticating both to Google servers and to other services.
 
-There are example iOS and Mac applications using the OAuth controllers in the library's [http://code.google.com/p/gtm-oauth2/source/browse/#svn/trunk/Examples Examples directory].
+There are example iOS and Mac applications using the OAuth 2 controllers in the library's [http://code.google.com/p/gtm-oauth2/source/browse/#svn/trunk/Examples Examples directory].
 
 Controller methods with "Google" in the name are for use only with Google services.
 
@@ -39,7 +39,7 @@ These source files can be browsed in the project's [http://code.google.com/p/gtm
 
 The Mac controller is compatible with Mac OS X 10.5 and later. The iOS controller is compatible with iPhone OS 3 and later.
 
-The OAuth controllers require linking to the system frameworks Security.framework and !SystemConfiguration.framework.
+The OAuth 2 controllers require linking to the system frameworks Security.framework and !SystemConfiguration.framework.
 
 The sample applications use Objective-C blocks, so are intended for iOS 4 and Mac OS X 10.6.
 
@@ -180,7 +180,7 @@ Finally, release the authorization object.
 
 To sign in to a non-Google service (and some Google services), you should consult the service's API documentation to obtain client ID and client secret strings, to find the required scope string for API operations, and to determine the API endpoints (URLs) for authorization and for obtaining tokens.
 
-To use the OAuth controllers with services other than Google APIs, your application should create an authentication object with the appropriate keys, like this:
+To use the OAuth 2 controllers with services other than Google APIs, your application should create an authentication object with the appropriate keys, like this:
 {{{
 NSString *kMyClientID = @"abcd";     // pre-assigned by service
 NSString *kMyClientSecret = @"efgh"; // pre-assigned by service
