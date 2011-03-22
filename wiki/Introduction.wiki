@@ -114,7 +114,7 @@ If authentication succeeds, your application should retain the authentication ob
 {{{
 [auth authorizeRequest:myNSURLMutableRequest
               delegate:self
-     didFinishSelector:@selector(authentication:finishedWithError:)];
+     didFinishSelector:@selector(authentication:request:finishedWithError:)];
 }}}
 
 The authentication object may need to fetch a refreshed access token, so the authorization call is asynchronous, though it will often authorize the request and call the callback immediately.
@@ -122,6 +122,7 @@ The authentication object may need to fetch a refreshed access token, so the aut
 If the error passed to the callback is nil, then the request was authorized:
 {{{
 - (void)authentication:(GTMOAuth2Authentication *)auth
+               request:(NSMutableURLRequest *)request
      finishedWithError:(NSError *)error {
  if (error != nil) {
    // Authorization failed
@@ -182,7 +183,7 @@ Finally, release the authorization object.
 
 To sign in to a non-Google service, you should consult the service's API documentation to obtain client ID and client secret strings, to find the required scope string for API operations, and to determine the API endpoints (URLs) for authorization and for obtaining tokens.
 
-To use the OAuth 2 controllers with services other than Google APIs, your application should create an authentication object with the appropriate keys, like this:
+To use the OAuth 2 controllers with services other than Google APIs, your application should create an authentication object with the appropriate constants, like this:
 {{{
 NSString *kMyClientID = @"abcd";     // pre-assigned by service
 NSString *kMyClientSecret = @"efgh"; // pre-assigned by service
@@ -258,7 +259,7 @@ If authentication succeeds, your application should retain the authentication ob
 {{{
 [auth authorizeRequest:myNSURLMutableRequest
               delegate:self
-     didFinishSelector:@selector(authentication:finishedWithError:)];
+     didFinishSelector:@selector(authentication:request:finishedWithError:)];
 }}}
 
 The authentication object may need to fetch a refreshed access token, so the authorization call is asynchronous, though it will often authorize the request and call the callback immediately.
@@ -266,6 +267,7 @@ The authentication object may need to fetch a refreshed access token, so the aut
 If the error passed to the callback is nil, then the request was authorized:
 {{{
 - (void)authentication:(GTMOAuth2Authentication *)auth
+               request:(NSMutableURLRequest *)request
      finishedWithError:(NSError *)error {
  if (error != nil) {
    // Authorization failed
