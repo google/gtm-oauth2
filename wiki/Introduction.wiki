@@ -58,11 +58,12 @@ NSString *scope = @"https://www.googleapis.com/auth/buzz"; // scope for Google B
 
 GTMOAuth2ViewControllerTouch *viewController;
 viewController = [[[GTMOAuth2ViewControllerTouch alloc] initWithScope:scope
-                                                             clientID:kMyClientID
-                                                         clientSecret:kMyClientSecret
-                                                     keychainItemName:kKeychainItemName
-                                                             delegate:self
-                                                     finishedSelector:@selector(viewController:finishedWithAuth:error:)] autorelease];
+             clientID:kMyClientID
+         clientSecret:kMyClientSecret
+     keychainItemName:kKeychainItemName
+             delegate:self
+     finishedSelector:@selector(viewController:finishedWithAuth:error:)] autorelease];
+
 [[self navigationController] pushViewController:controller
                                        animated:YES];
 }}}
@@ -76,10 +77,11 @@ Each service will provide developers with *Client ID* and *Client Secret* string
 
 GTMOAuth2WindowController *windowController;
 windowController = [[[GTMOAuth2WindowController alloc] initWithScope:scope
-                                                            clientID:kMyClientID
-                                                        clientSecret:kMylientSecret
-                                                    keychainItemName:kKeychainItemName
-                                                      resourceBundle:nil] autorelease];
+              clientID:kMyClientID
+          clientSecret:kMylientSecret
+      keychainItemName:kKeychainItemName
+        resourceBundle:nil] autorelease];
+
 [controller signInSheetModalForWindow:currentWindow
                              delegate:self
                      finishedSelector:@selector(windowController:finishedWithAuth:error:)];
@@ -220,10 +222,11 @@ Displaying the sign-in view with a custom auth also requires providing the OAuth
   // Display the authentication view
   GTMOAuth2ViewControllerTouch *viewController;
   viewController = [[[GTMOAuth2ViewControllerTouch alloc] initWithAuthentication:auth
-                                                                authorizationURL:authURL
-                                                                keychainItemName:kKeychainItemName
-                                                                        delegate:self
-                                                                finishedSelector:@selector(viewController:finishedWithAuth:error:)] autorelease];
+        authorizationURL:authURL
+        keychainItemName:kKeychainItemName
+                delegate:self
+        finishedSelector:@selector(viewController:finishedWithAuth:error:)] autorelease];
+
   // Now push our sign-in view
   [[self navigationController] pushViewController:viewController animated:YES];
 }
