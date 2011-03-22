@@ -86,7 +86,7 @@ windowController = [[[GTMOAuth2WindowController alloc] initWithScope:scope
                              delegate:self
                      finishedSelector:@selector(windowController:finishedWithAuth:error:)];
 }}}
-The *scope* is a string identifying what access is being requested. For access to more than one scope, separate the scopes with a space. 
+The *scope* is a string identifying what access is being requested. For access to more than one scope, separate the scopes with a space, or use the convenience method `scopeWithStrings:` in the class  `GTMOAuth2Authentication`.
 
 The *keychain item name* is used to save the token on the user’s keychain, and should identify both your application name and the service name(s). If keychainItemName is nil, the token will not be saved, and the user will have to sign in again the next time the application is run.
 
@@ -180,7 +180,7 @@ Finally, release the authorization object.
 
 == Signing in to non-Google Services ==
 
-To sign in to a non-Google service (and some Google services), you should consult the service's API documentation to obtain client ID and client secret strings, to find the required scope string for API operations, and to determine the API endpoints (URLs) for authorization and for obtaining tokens.
+To sign in to a non-Google service, you should consult the service's API documentation to obtain client ID and client secret strings, to find the required scope string for API operations, and to determine the API endpoints (URLs) for authorization and for obtaining tokens.
 
 To use the OAuth 2 controllers with services other than Google APIs, your application should create an authentication object with the appropriate keys, like this:
 {{{
