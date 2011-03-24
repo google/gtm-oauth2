@@ -22,7 +22,6 @@
 		4F244813121F263E00FEE1DA /* OAuth2SampleMainTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F244810121F253B00FEE1DA /* OAuth2SampleMainTouch.xib */; };
 		4F64A4071305E3F90058B9BA /* GTMOAuth2Authentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F64A4041305E3F90058B9BA /* GTMOAuth2Authentication.m */; };
 		4F64A4081305E3F90058B9BA /* GTMOAuth2SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F64A4061305E3F90058B9BA /* GTMOAuth2SignIn.m */; };
-		4F6EFA52130A09BF006D4D12 /* GTMHTTPFetcherLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F6EFA51130A09BF006D4D12 /* GTMHTTPFetcherLogging.m */; };
 		4FEED6C512233486006FB4BC /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F2447D7121F211300FEE1DA /* GTMOAuth2ViewTouch.xib */; };
 /* End PBXBuildFile section */
 
@@ -52,8 +51,6 @@
 		4F64A4041305E3F90058B9BA /* GTMOAuth2Authentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2Authentication.m; path = ../../Source/GTMOAuth2Authentication.m; sourceTree = SOURCE_ROOT; };
 		4F64A4051305E3F90058B9BA /* GTMOAuth2SignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMOAuth2SignIn.h; path = ../../Source/GTMOAuth2SignIn.h; sourceTree = SOURCE_ROOT; };
 		4F64A4061305E3F90058B9BA /* GTMOAuth2SignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2SignIn.m; path = ../../Source/GTMOAuth2SignIn.m; sourceTree = SOURCE_ROOT; };
-		4F6EFA50130A09BF006D4D12 /* GTMHTTPFetcherLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMHTTPFetcherLogging.h; path = "../../../gtm-http-fetcher/Source/GTMHTTPFetcherLogging.h"; sourceTree = SOURCE_ROOT; };
-		4F6EFA51130A09BF006D4D12 /* GTMHTTPFetcherLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMHTTPFetcherLogging.m; path = "../../../gtm-http-fetcher/Source/GTMHTTPFetcherLogging.m"; sourceTree = SOURCE_ROOT; };
 		4FF23DC011754C0300E96C5A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F49B45D213315AA200EAA732 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -147,8 +144,6 @@
 				4F64A4041305E3F90058B9BA /* GTMOAuth2Authentication.m */,
 				4F64A4051305E3F90058B9BA /* GTMOAuth2SignIn.h */,
 				4F64A4061305E3F90058B9BA /* GTMOAuth2SignIn.m */,
-				4F6EFA50130A09BF006D4D12 /* GTMHTTPFetcherLogging.h */,
-				4F6EFA51130A09BF006D4D12 /* GTMHTTPFetcherLogging.m */,
 				4F2447EC121F220A00FEE1DA /* GTMHTTPFetcher.h */,
 				4F2447ED121F220A00FEE1DA /* GTMHTTPFetcher.m */,
 				4F2447D7121F211300FEE1DA /* GTMOAuth2ViewTouch.xib */,
@@ -228,7 +223,6 @@
 				4F2447EF121F220A00FEE1DA /* GTMHTTPFetcher.m in Sources */,
 				4F64A4071305E3F90058B9BA /* GTMOAuth2Authentication.m in Sources */,
 				4F64A4081305E3F90058B9BA /* GTMOAuth2SignIn.m in Sources */,
-				4F6EFA52130A09BF006D4D12 /* GTMHTTPFetcherLogging.m in Sources */,
 				4F20383A133A9B5500FE2666 /* SBJSON.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
