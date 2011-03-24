@@ -1,10 +1,4 @@
-This sample calls the GTM Cocoa Touch support for OAuth. (iPhone, iPod Touch, iPad.)
-
-Use the OAuth2SampleTouch target if you have the iPhone SDK 3.2 or higher
-(requires a Mac with Snow Leopard (OS X 10.6.YY).)
-
-Use the OAuth2SampleiPhone target if you have an earlier SDK, or are on a Mac
-with Leopard (OS X 10.5.YY)
+This sample demonstrates the OAuth 2 view controllers for iOS 3.2 and higher.
 
 This sample uses a UINavigationController in its main view.
 
