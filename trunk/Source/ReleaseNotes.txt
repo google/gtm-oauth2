@@ -1,0 +1,19 @@
+GTM OAuth 2 Release Notes
+
+Project site:     http://code.google.com/p/gtm-oauth2/
+Discussion group: http://groups.google.com/group/gtm-oauth2
+
+Release 1.0.0
+6-April-2011
+
+Initial public release.
+
+
+JSON notes:
+
+This library currently relies on version 2.1.1 of SBJSON:
+
+http://json-framework.googlecode.com/svn/tags/2.1.1/Source/
+
+The latest version of SBJSON is avaiilable at http://stig.github.com/json-framework/
+
