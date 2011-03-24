@@ -14,9 +14,8 @@
 		4F24471C121F205800FEE1DA /* GTMOAuth2WindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F24471A121F205800FEE1DA /* GTMOAuth2WindowController.m */; };
 		4F244A4D121F5CA400FEE1DA /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F244A4C121F5CA400FEE1DA /* MainMenu.xib */; };
 		4F5617B212FB232D00C7F0F2 /* GTMHTTPFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F5617B112FB232D00C7F0F2 /* GTMHTTPFetcher.m */; };
-		4F5617B512FB233700C7F0F2 /* GTMHTTPFetchHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F5617B412FB233700C7F0F2 /* GTMHTTPFetchHistory.m */; };
 		4F78829712F795CC001EE2A6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F78829612F795CC001EE2A6 /* main.m */; };
-		4F7884BE12F8A385001EE2A6 /* GTMHTTPFetcherLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F7884BD12F8A385001EE2A6 /* GTMHTTPFetcherLogging.m */; };
+		4FD316D7133BDC35007A58B5 /* GTMHTTPFetchHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD316D6133BDC35007A58B5 /* GTMHTTPFetchHistory.m */; };
 		4FDE34C71132165E00700DC8 /* OAuth2SampleAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDE34C61132165E00700DC8 /* OAuth2SampleAppController.m */; };
 		4FDE353C1132197800700DC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDE353B1132197800700DC8 /* Security.framework */; };
 		4FDE359D11321EAA00700DC8 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDE359C11321EAA00700DC8 /* WebKit.framework */; };
@@ -41,18 +40,16 @@
 		4F244A4C121F5CA400FEE1DA /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		4F5617B012FB232D00C7F0F2 /* GTMHTTPFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMHTTPFetcher.h; path = ../../HTTPFetcher/GTMHTTPFetcher.h; sourceTree = SOURCE_ROOT; };
 		4F5617B112FB232D00C7F0F2 /* GTMHTTPFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMHTTPFetcher.m; path = ../../HTTPFetcher/GTMHTTPFetcher.m; sourceTree = SOURCE_ROOT; };
-		4F5617B312FB233700C7F0F2 /* GTMHTTPFetchHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMHTTPFetchHistory.h; path = "../../../gtm-http-fetcher/Source/GTMHTTPFetchHistory.h"; sourceTree = SOURCE_ROOT; };
-		4F5617B412FB233700C7F0F2 /* GTMHTTPFetchHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMHTTPFetchHistory.m; path = "../../../gtm-http-fetcher/Source/GTMHTTPFetchHistory.m"; sourceTree = SOURCE_ROOT; };
 		4F78829612F795CC001EE2A6 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		4F7884BC12F8A385001EE2A6 /* GTMHTTPFetcherLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMHTTPFetcherLogging.h; path = "../../../gtm-http-fetcher/Source/GTMHTTPFetcherLogging.h"; sourceTree = SOURCE_ROOT; };
-		4F7884BD12F8A385001EE2A6 /* GTMHTTPFetcherLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMHTTPFetcherLogging.m; path = "../../../gtm-http-fetcher/Source/GTMHTTPFetcherLogging.m"; sourceTree = SOURCE_ROOT; };
+		4FD316D5133BDC35007A58B5 /* GTMHTTPFetchHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMHTTPFetchHistory.h; path = ../../HTTPFetcher/GTMHTTPFetchHistory.h; sourceTree = SOURCE_ROOT; };
+		4FD316D6133BDC35007A58B5 /* GTMHTTPFetchHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMHTTPFetchHistory.m; path = ../../HTTPFetcher/GTMHTTPFetchHistory.m; sourceTree = SOURCE_ROOT; };
 		4FDE34C51132165E00700DC8 /* OAuth2SampleAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuth2SampleAppController.h; sourceTree = "<group>"; };
 		4FDE34C61132165E00700DC8 /* OAuth2SampleAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAuth2SampleAppController.m; sourceTree = "<group>"; };
 		4FDE353B1132197800700DC8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		4FDE359C11321EAA00700DC8 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		4FF23D5811753FA800E96C5A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* OAuth2Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OAuth2Sample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* OAuthSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OAuthSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,7 +103,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* OAuth2Sample.app */,
+				8D1107320486CEB800E47090 /* OAuthSample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -142,10 +139,8 @@
 				4F2446C1121F1F5B00FEE1DA /* GTMOAuth2SignIn.m */,
 				4F5617B012FB232D00C7F0F2 /* GTMHTTPFetcher.h */,
 				4F5617B112FB232D00C7F0F2 /* GTMHTTPFetcher.m */,
-				4F5617B312FB233700C7F0F2 /* GTMHTTPFetchHistory.h */,
-				4F5617B412FB233700C7F0F2 /* GTMHTTPFetchHistory.m */,
-				4F7884BC12F8A385001EE2A6 /* GTMHTTPFetcherLogging.h */,
-				4F7884BD12F8A385001EE2A6 /* GTMHTTPFetcherLogging.m */,
+				4FD316D5133BDC35007A58B5 /* GTMHTTPFetchHistory.h */,
+				4FD316D6133BDC35007A58B5 /* GTMHTTPFetchHistory.m */,
 				4F244718121F205800FEE1DA /* GTMOAuth2Window.xib */,
 				4F203825133A9B1E00FE2666 /* SBJSON.h */,
 				4F203826133A9B1E00FE2666 /* SBJSON.m */,
@@ -171,7 +166,7 @@
 			name = OAuth2Sample;
 			productInstallPath = "$(HOME)/Applications";
 			productName = OAuthSample;
-			productReference = 8D1107320486CEB800E47090 /* OAuth2Sample.app */;
+			productReference = 8D1107320486CEB800E47090 /* OAuthSample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -220,10 +215,9 @@
 				4F2446C6121F1F5B00FEE1DA /* GTMOAuth2SignIn.m in Sources */,
 				4F24471C121F205800FEE1DA /* GTMOAuth2WindowController.m in Sources */,
 				4F78829712F795CC001EE2A6 /* main.m in Sources */,
-				4F7884BE12F8A385001EE2A6 /* GTMHTTPFetcherLogging.m in Sources */,
 				4F5617B212FB232D00C7F0F2 /* GTMHTTPFetcher.m in Sources */,
-				4F5617B512FB233700C7F0F2 /* GTMHTTPFetchHistory.m in Sources */,
 				4F203827133A9B1E00FE2666 /* SBJSON.m in Sources */,
+				4FD316D7133BDC35007A58B5 /* GTMHTTPFetchHistory.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,7 +265,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG=1";
 				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx10.6;
 			};
 			name = Debug;
