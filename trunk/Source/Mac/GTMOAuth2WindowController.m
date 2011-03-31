@@ -137,13 +137,34 @@ const char *kKeychainAccountName = "OAuth";
     [[self.webView mainFrame] loadHTMLString:html baseURL:nil];
   }
 
-  // start the asynchronous load of the sign-in web page
-  [[self.webView mainFrame] performSelector:@selector(loadRequest:)
-                             withObject:self.initialRequest
-                             afterDelay:0.01];
-
   // hide the keychain checkbox if we're not supporting keychain
   BOOL hideKeychainCheckbox = ![self shouldUseKeychain];
+
+  const NSTimeInterval kJanuary2011 = 1293840000;
+  BOOL isDateValid = ([[NSDate date] timeIntervalSince1970] > kJanuary2011);
+  if (isDateValid) {
+    // start the asynchronous load of the sign-in web page
+    [[self.webView mainFrame] performSelector:@selector(loadRequest:)
+                                   withObject:self.initialRequest
+                                   afterDelay:0.01];
+  } else {
+    // clock date is invalid, so signing in would fail with an unhelpful error
+    // from the server. Warn the user in an html string showing a watch icon,
+    // question mark, and the system date and time. Hopefully this will clue
+    // in brighter users, or at least let them make a useful screenshot to show
+    // to developers.
+    //
+    // Even better is for apps to check the system clock and show some more
+    // helpful, localized instructions for users; this is really a fallback.
+    NSString *htmlTemplate = @"<html><body><div align=center><font size='7'>"
+      @"&#x231A; ?<br><i>System Clock Incorrect</i><br>%@"
+      @"</font></div></body></html>";
+    NSString *errHTML = [NSString stringWithFormat:htmlTemplate, [NSDate date]];
+
+    [[webView_ mainFrame] loadHTMLString:errHTML baseURL:nil];
+    hideKeychainCheckbox = YES;
+  }
+
   [keychainCheckbox_ setHidden:hideKeychainCheckbox];
 }
 

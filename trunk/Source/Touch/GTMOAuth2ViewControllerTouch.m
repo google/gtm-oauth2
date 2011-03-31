@@ -371,9 +371,28 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 #endif
 
   if (request != nil) {
-    // Display the request.
-    self.request = request;
-    [self.webView loadRequest:[self request]];
+    const NSTimeInterval kJanuary2011 = 1293840000;
+    BOOL isDateValid = ([[NSDate date] timeIntervalSince1970] > kJanuary2011);
+    if (isDateValid) {
+      // Display the request.
+      self.request = request;
+      [self.webView loadRequest:[self request]];
+    } else {
+      // clock date is invalid, so signing in would fail with an unhelpful error
+      // from the server. Warn the user in an html string showing a watch icon,
+      // question mark, and the system date and time. Hopefully this will clue
+      // in brighter users, or at least give them a clue when they report the
+      // problem to developers.
+      //
+      // Even better is for apps to check the system clock and show some more
+      // helpful, localized instructions for users; this is really a fallback.
+      NSString *html = @"<html><body><div align=center><font size='7'>"
+        @"&#x231A; ?<br><i>System Clock Incorrect</i><br>%@"
+        @"</font></div></body></html>";
+      NSString *errHTML = [NSString stringWithFormat:html, [NSDate date]];
+
+      [[self webView] loadHTMLString:errHTML baseURL:nil];
+    }
   } else {
     // request was nil.
     [self popView];
