@@ -29,6 +29,7 @@ static const NSTimeInterval kDefaultNetworkLossTimeoutInterval = 30.0;
 NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 
 @interface GTMOAuth2SignIn ()
+@property (assign) BOOL hasHandledCallback;
 @property (retain) GTMHTTPFetcher *pendingFetcher;
 
 - (void)invokeFinalCallbackWithError:(NSError *)error;
@@ -66,6 +67,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 @synthesize delegate = delegate_;
 @synthesize webRequestSelector = webRequestSelector_;
 @synthesize finishedSelector = finishedSelector_;
+@synthesize hasHandledCallback = hasHandledCallback_;
 @synthesize pendingFetcher = pendingFetcher_;
 @synthesize userData = userData_;
 
@@ -314,27 +316,26 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     isCallback = NO;
   }
 
-
-
   if (!isCallback) {
     // tell the caller that this request is nothing interesting
     return NO;
   }
 
   // we've reached the callback URL
-  //
+
   // try to get the access code
-  NSString *responseStr = [[redirectedRequest URL] query];
-  [self.authentication setKeysForResponseString:responseStr];
+  if (!self.hasHandledCallback) {
+    NSString *responseStr = [[redirectedRequest URL] query];
+    [self.authentication setKeysForResponseString:responseStr];
 
 #if DEBUG
-  NSAssert([self.authentication.code length] > 0
-           || [self.authentication.errorString length] > 0,
-           @"response lacks auth code or error");
+    NSAssert([self.authentication.code length] > 0
+             || [self.authentication.errorString length] > 0,
+             @"response lacks auth code or error");
 #endif
 
-  [self handleCallbackReached];
-
+    [self handleCallbackReached];
+  }
   // tell the delegate that we did handle this request
   return YES;
 }
@@ -346,7 +347,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 // handleCallbackReached and returns YES
 - (BOOL)titleChanged:(NSString *)title {
   // return YES if the OAuth flow ending title was detected
-  //
+
   // right now we're just looking for a parameter list following the last space
   // in the title string, but hopefully we'll eventually get something better
   // from the server to search for
@@ -362,9 +363,11 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     NSString *error = [dict objectForKey:@"error"];
     if ([code length] > 0 || [error length] > 0) {
 
-      [self.authentication setKeysForResponseDictionary:dict];
+      if (!self.hasHandledCallback) {
+        [self.authentication setKeysForResponseDictionary:dict];
 
-      [self handleCallbackReached];
+        [self handleCallbackReached];
+      }
       return YES;
     }
   }
@@ -375,6 +378,10 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   // the callback page was requested, or the authenticate code was loaded
   // into a page's title, so exchange the auth code for access & refresh tokens
   // and tell the window to close
+
+  // avoid duplicate signals that the callback point has been reached
+  self.hasHandledCallback = YES;
+
   [self closeTheWindow];
 
   NSError *error = nil;
