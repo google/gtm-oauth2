@@ -66,6 +66,8 @@
   SEL webRequestSelector_;
   SEL finishedSelector_;
 
+  BOOL hasHandledCallback_;
+
   GTMHTTPFetcher *pendingFetcher_;
 
   BOOL shouldFetchGoogleUserInfo_;
