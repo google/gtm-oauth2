@@ -47,7 +47,7 @@ The sample applications use Objective-C blocks, so are intended for iOS 4 and Ma
 
 *iOS:* To display a sign-in view, your iOS application makes these calls to push the view:
 {{{
-#import "GTMOAuthView2ControllerTouch.h"
+#import "GTMOAuth2ViewControllerTouch.h"
 
 static NSString *const kKeychainItemName = @"OAuth2 Sample: Google Buzz";
 
