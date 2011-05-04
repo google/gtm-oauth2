@@ -504,6 +504,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 
 - (BOOL)canAuthorize {
   NSString *token = self.refreshToken;
+  if (token == nil) {
+    // For services which do not support refresh tokens, we'll just check
+    // the access token
+    token = self.accessToken;
+  }
   BOOL canAuth = [token length] > 0;
   return canAuth;
 }
@@ -711,8 +716,18 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 - (NSString *)persistenceResponseString {
   NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:4];
 
+  NSString *refreshToken = self.refreshToken;
+  NSString *accessToken = nil;
+  if (refreshToken == nil) {
+    // We store the access token only for services that do not support refresh
+    // tokens; otherwise, we assume the access token is too perishable to
+    // be worth storing
+    accessToken = self.accessToken;
+  }
+
   // Any nil values will not set a dictionary entry
-  [dict setValue:self.refreshToken forKey:kOAuth2RefreshTokenKey];
+  [dict setValue:refreshToken forKey:kOAuth2RefreshTokenKey];
+  [dict setValue:accessToken forKey:kOAuth2AccessTokenKey];
   [dict setValue:self.serviceProvider forKey:kServiceProviderKey];
   [dict setValue:self.userEmail forKey:kUserEmailKey];
   [dict setValue:self.userEmailIsVerified forKey:kUserEmailIsVerifiedKey];
@@ -795,13 +810,13 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 - (void)updateExpirationDate {
   // Update our absolute expiration time to something close to when
   // the server expects the expiration
-  NSDate *date;
+  NSDate *date = nil;
   NSNumber *expiresIn = self.expiresIn;
-  unsigned long deltaSeconds = [expiresIn unsignedLongValue];
-  if (deltaSeconds > 0) {
-    date = [NSDate dateWithTimeIntervalSinceNow:deltaSeconds];
-  } else {
-    date = nil;
+  if (expiresIn) {
+    unsigned long deltaSeconds = [expiresIn unsignedLongValue];
+    if (deltaSeconds > 0) {
+      date = [NSDate dateWithTimeIntervalSinceNow:deltaSeconds];
+    }
   }
   self.expirationDate = date;
 }
