@@ -52,6 +52,7 @@ _EXTERN NSString* const kGTMOAuth2ErrorDomain  _INITIALIZE_AS(@"com.google.GTMOA
 // Error userInfo keys
 _EXTERN NSString* const kGTMOAuth2ErrorMessageKey _INITIALIZE_AS(@"error");
 _EXTERN NSString* const kGTMOAuth2ErrorRequestKey _INITIALIZE_AS(@"request");
+_EXTERN NSString* const kGTMOAuth2ErrorJSONKey    _INITIALIZE_AS(@"json");
 
 enum {
   // Error code indicating that the window was prematurely closed
