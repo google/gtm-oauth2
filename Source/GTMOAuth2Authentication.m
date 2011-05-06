@@ -122,6 +122,8 @@ static NSString *const kRefreshFetchArgsKey = @"requestArgs";
 
 - (void)updateExpirationDate;
 
+- (NSDictionary *)dictionaryWithJSONData:(NSData *)data;
+
 - (void)tokenFetcher:(GTMHTTPFetcher *)fetcher
     finishedWithData:(NSData *)data
                error:(NSError *)error;
@@ -235,6 +237,8 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 #pragma mark -
 
 - (void)setKeysForResponseDictionary:(NSDictionary *)dict {
+  if (dict == nil) return;
+
   // If a new code or access token is being set, remove the old expiration
   NSString *newCode = [dict objectForKey:kOAuth2CodeKey];
   NSString *newAccessToken = [dict objectForKey:kOAuth2AccessTokenKey];
@@ -277,28 +281,34 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 }
 
 - (void)setKeysForResponseJSONData:(NSData *)data {
-  NSError *error = nil;
-  NSDictionary *dict;
+  NSDictionary *dict = [self dictionaryWithJSONData:data];
+  [self setKeysForResponseDictionary:dict];
+}
+
+- (NSDictionary *)dictionaryWithJSONData:(NSData *)data {
+  NSDictionary *dict = nil;
 
   NSString *str = [[[NSString alloc] initWithData:data
                                          encoding:NSUTF8StringEncoding] autorelease];
-  // Hope that the parsing class has been loaded into the runtime
-  Class parserClass = self.parserClass;
-  if (!parserClass) {
-    parserClass = NSClassFromString(@"SBJSON");
-  }
-  GTMOAuth2ParserClass *parser = [[[parserClass alloc] init] autorelease];
-  NSAssert(parser != nil, @"Parser allocation failed; SBJSON needed");
+  if (str) {
+    // Hope that the parsing class has been loaded into the runtime
+    Class parserClass = self.parserClass;
+    if (!parserClass) {
+      parserClass = NSClassFromString(@"SBJSON");
+    }
+    GTMOAuth2ParserClass *parser = [[[parserClass alloc] init] autorelease];
+    NSAssert(parser != nil, @"Parser allocation failed; SBJSON needed");
 
-  dict = [parser objectWithString:str error:&error];
-#if DEBUG
-  if (error) {
-    NSLog(@"%@ error %@ parsing %@", NSStringFromClass(parserClass),
-          error, str);
+    NSError *error = nil;
+    dict = [parser objectWithString:str error:&error];
+  #if DEBUG
+    if (error) {
+      NSLog(@"%@ error %@ parsing %@", NSStringFromClass(parserClass),
+            error, str);
+    }
+  #endif
   }
-#endif
-
-  [self setKeysForResponseDictionary:dict];
+  return dict;
 }
 
 #pragma mark Authorizing Requests
@@ -660,13 +670,23 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 
   if (error) {
     // Failed
+    NSDictionary *errorJson = [self dictionaryWithJSONData:data];
+    if ([errorJson count] > 0) {
 #if DEBUG
-    if (data) {
-      NSString *dataStr = [[[NSString alloc] initWithData:data
-                                                 encoding:NSUTF8StringEncoding] autorelease];
-      NSLog(@"Error %@\nError data:\n%@", error, dataStr);
-    }
+      NSLog(@"Error %@\nError data:\n%@", error, errorJson);
 #endif
+      // Add the JSON error body to the userInfo of the error
+      NSMutableDictionary *userInfo;
+      userInfo = [NSMutableDictionary dictionaryWithObject:errorJson
+                                                    forKey:kGTMOAuth2ErrorJSONKey];
+      NSDictionary *prevUserInfo = [error userInfo];
+      if (prevUserInfo) {
+        [userInfo addEntriesFromDictionary:prevUserInfo];
+      }
+      error = [NSError errorWithDomain:[error domain]
+                                  code:[error code]
+                              userInfo:userInfo];
+    }
   } else {
     // Succeeded; we have an access token
     [self setKeysForResponseJSONData:data];
