@@ -49,7 +49,7 @@ The sample applications use Objective-C blocks, so are intended for iOS 4 and Ma
 
 To sign in to Google Services with the Objective-C OAuth 2 controllers, first obtain a client ID and secret from the [https://code.google.com/apis/console API Console]
 
-In the console, create a project, then click "API Access" in the left column.  Create a new Client ID for an *Installed Application*.  This will provide Client ID and Secret strings to be used with the controller.
+In the console, create a project, then click "API Access" in the left column.  Create a new Client ID for an *Installed Application* (not a web application.)  This will provide Client ID and Secret strings to be used with the controller.
 
 Click "Project Home" in the left column, and check the list of APIs to verify that the needed APIs are turned on for the project.  Any Google APIs not listed in the console do not need to be turned on individually.
 
