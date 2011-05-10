@@ -294,6 +294,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
     // Hope that the parsing class has been loaded into the runtime
     Class parserClass = self.parserClass;
     if (!parserClass) {
+      // Newer SBJsonParser class
+      parserClass = NSClassFromString(@"SBJsonParser");
+    }
+    if (!parserClass) {
+      // Older SBJSON parsing
       parserClass = NSClassFromString(@"SBJSON");
     }
     GTMOAuth2ParserClass *parser = [[[parserClass alloc] init] autorelease];
