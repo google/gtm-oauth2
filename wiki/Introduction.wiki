@@ -152,8 +152,13 @@ Authorization may also be done with a block callback:
 }];
 }}}
 
-In the [http://code.google.com/p/gdata-objectivec-client/ Google Data APIs library] the auth can be
-stored in a library service object to authorize future API requests:
+With the [http://code.google.com/p/gtm-http-fetcher/ GTM HTTP Fetcher], the authentication object can be attached to the fetcher, making the authorization step transparent:
+
+{{{
+[fetcher setAuthorizer:auth];
+}}} 
+
+Similarly, in the [http://code.google.com/p/gdata-objectivec-client/ Google Data APIs library] the authentication object can be stored in a library service object to authorize future API requests:
 
 {{{
 [[self contactService] setAuthorizer:auth];
@@ -314,6 +319,12 @@ Authorization may also be done with a block callback:
   }
 }];
 }}}
+
+With the [http://code.google.com/p/gtm-http-fetcher/ GTM HTTP Fetcher], the authentication object can be attached to the fetcher, making the authorization step transparent:
+
+{{{
+[fetcher setAuthorizer:auth];
+}}} 
 
 === Retrieving Authorization from the Keychain ===
 
