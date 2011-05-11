@@ -127,7 +127,7 @@ If authentication succeeds, your application should retain the authentication ob
      didFinishSelector:@selector(authentication:request:finishedWithError:)];
 }}}
 
-The authentication object may need to fetch a refreshed access token, so the authorization call is asynchronous, though it will often authorize the request and call the callback immediately.
+The authentication object may need to fetch a refreshed access token before authorizing the request, so the authorization call is asynchronous, though it will often authorize the request and call the callback immediately.
 
 If the error passed to the callback is nil, then the request was authorized:
 {{{
