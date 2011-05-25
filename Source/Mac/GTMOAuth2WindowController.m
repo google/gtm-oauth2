@@ -19,12 +19,7 @@
 
 #if !TARGET_OS_IPHONE
 
-#ifdef GTL_TARGET_NAMESPACE
-  #import "GTLDefines.h"
-#endif
-
 #import "GTMOAuth2WindowController.h"
-#import "GTMOAuth2SignIn.h"
 
 @interface GTMOAuth2WindowController ()
 @property (nonatomic, retain) GTMOAuth2SignIn *signIn;
@@ -49,20 +44,21 @@ const char *kKeychainAccountName = "OAuth";
 @implementation GTMOAuth2WindowController
 
 // IBOutlets
-@synthesize keychainCheckbox = keychainCheckbox_;
-@synthesize webView = webView_;
-@synthesize webCloseButton = webCloseButton_;
-@synthesize webBackButton = webBackButton_;
+@synthesize keychainCheckbox = keychainCheckbox_,
+            webView = webView_,
+            webCloseButton = webCloseButton_,
+            webBackButton = webBackButton_;
 
 // regular ivars
-@synthesize signIn = signIn_;
-@synthesize initialRequest = initialRequest_;
-@synthesize cookieStorage = cookieStorage_;
-@synthesize sheetModalForWindow = sheetModalForWindow_;
-@synthesize keychainItemName = keychainItemName_;
-@synthesize initialHTMLString = initialHTMLString_;
-@synthesize shouldPersistUser = shouldPersistUser_;
-@synthesize userData = userData_;
+@synthesize signIn = signIn_,
+            initialRequest = initialRequest_,
+            cookieStorage = cookieStorage_,
+            sheetModalForWindow = sheetModalForWindow_,
+            keychainItemName = keychainItemName_,
+            initialHTMLString = initialHTMLString_,
+            externalRequestSelector = externalRequestSelector_,
+            shouldPersistUser = shouldPersistUser_,
+            userData = userData_;
 
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
@@ -129,6 +125,7 @@ const char *kKeychainAccountName = "OAuth";
 - (void)awakeFromNib {
   // load the requested initial sign-in page
   [self.webView setResourceLoadDelegate:self];
+  [self.webView setPolicyDelegate:self];
 
   // the app may prefer some html other than blank white to be displayed
   // before the sign-in web page loads
@@ -387,6 +384,24 @@ const char *kKeychainAccountName = "OAuth";
 
 - (void)windowWillClose:(NSNotification *)note {
   [self handlePrematureWindowClose];
+}
+
+- (void)webView:(WebView *)webView
+decidePolicyForNewWindowAction:(NSDictionary *)actionInformation
+        request:(NSURLRequest *)request
+   newFrameName:(NSString *)frameName
+decisionListener:(id<WebPolicyDecisionListener>)listener {
+  SEL sel = self.externalRequestSelector;
+  if (sel) {
+    [delegate_ performSelector:sel
+                    withObject:self
+                    withObject:request];
+  } else {
+    // default behavior is to open the URL in NSWorkspace's default browser
+    NSURL *url = [request URL];
+    [[NSWorkspace sharedWorkspace] openURL:url];
+  }
+  [listener ignore];
 }
 
 #pragma mark Cookie management

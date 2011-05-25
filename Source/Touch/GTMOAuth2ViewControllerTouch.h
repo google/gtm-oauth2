@@ -158,6 +158,14 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 //
 // If you don't like the default nibName and bundle, you can change them
 // using the UIViewController properties once you've made one of these.
+//
+// finishedSelector is called after authentication completes. It should follow
+// this signature.
+//
+// - (void)viewController:(GTMOAuth2ViewControllerTouch *)viewController
+//       finishedWithAuth:(GTMOAuth2Authentication *)auth
+//                  error:(NSError *)error;
+//
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret

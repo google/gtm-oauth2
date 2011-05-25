@@ -20,10 +20,7 @@
 
 #import <Foundation/Foundation.h>
 
-#ifdef GTL_TARGET_NAMESPACE
-  #import "GTLDefines.h"
-#endif
-
+// GTMHTTPFetcher.h brings in GTLDefines/GDataDefines
 #import "GTMHTTPFetcher.h"
 
 #undef _EXTERN

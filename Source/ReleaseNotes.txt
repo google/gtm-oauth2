@@ -3,6 +3,13 @@ GTM OAuth 2 Release Notes
 Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
+24-May-2011
+
+Mac window controller now opens pop-up window links in an external browser
+by default, and provides an externalRequestSelector property to let
+the client provide custom handling.
+
+
 4-May-2011
 
 Addded support for services which provide access tokens, but no

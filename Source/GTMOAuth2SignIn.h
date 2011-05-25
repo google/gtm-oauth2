@@ -48,12 +48,10 @@
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
-#ifdef GTL_TARGET_NAMESPACE
-  #import "GTLDefines.h"
-#endif
+// GTMHTTPFetcher brings in GTLDefines/GDataDefines
+#import "GTMHTTPFetcher.h"
 
 #import "GTMOAuth2Authentication.h"
-#import "GTMHTTPFetcher.h"
 
 @interface GTMOAuth2SignIn : NSObject {
  @private
