@@ -74,9 +74,8 @@
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
 
-#ifdef GTL_TARGET_NAMESPACE
-  #import "GTLDefines.h"
-#endif
+// GTMHTTPFetcher.h brings in GTLDefines/GDataDefines
+#import "GTMHTTPFetcher.h"
 
 #import "GTMOAuth2SignIn.h"
 #import "GTMOAuth2Authentication.h"
@@ -116,6 +115,9 @@
   // the same with and without blocks
   id completionPlaceholder_;
 #endif
+
+  // delegate method for handling URLs to be opened in external windows
+  SEL externalRequestSelector_;
 
   BOOL isWindowShown_;
 
@@ -172,6 +174,16 @@
 // sign-in page is 30 seconds, after which the notification
 // kGTLOAuthNetworkLost is sent; set this to 0 to have no timeout
 @property (nonatomic, assign) NSTimeInterval networkLossTimeoutInterval;
+
+// Selector for a delegate method to handle requests sent to an external
+// browser.
+//
+// Selector should have a signature matching
+// - (void)windowController:(GTMOAuth2WindowController *)controller
+//             opensRequest:(NSURLRequest *)request;
+//
+// The controller's default behavior is to use NSWorkspace's openURL:
+@property (nonatomic, assign) SEL externalRequestSelector;
 
 // The underlying object to hold authentication tokens and authorize http
 // requests
