@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10F569</string>
-		<string key="IBDocument.InterfaceBuilderVersion">804</string>
-		<string key="IBDocument.AppKitVersion">1038.29</string>
+		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.InterfaceBuilderVersion">851</string>
+		<string key="IBDocument.AppKitVersion">1038.35</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -15,8 +15,8 @@
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>804</string>
-				<string>804</string>
+				<string>851</string>
+				<string>851</string>
 			</object>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
@@ -40,7 +40,7 @@
 		<object class="NSMutableArray" key="IBDocument.RootObjects" id="1000">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSCustomObject" id="1001">
-				<string key="NSClassName">GTMOAuthWindowController</string>
+				<string key="NSClassName">GTMOAuth2WindowController</string>
 			</object>
 			<object class="NSCustomObject" id="1003">
 				<string key="NSClassName">FirstResponder</string>
@@ -51,7 +51,7 @@
 			<object class="NSWindowTemplate" id="996099970">
 				<int key="NSWindowStyleMask">11</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{74, 736}, {475, 390}}</string>
+				<string key="NSWindowRect">{{74, 707}, {515, 419}}</string>
 				<int key="NSWTFlags">536870912</int>
 				<string key="NSWindowTitle">Sign In</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -87,7 +87,7 @@
 									<string>public.url-name</string>
 								</object>
 							</object>
-							<string key="NSFrame">{{0, 20}, {475, 370}}</string>
+							<string key="NSFrame">{{0, 20}, {515, 399}}</string>
 							<reference key="NSSuperview" ref="563959409"/>
 							<reference key="NSNextKeyView"/>
 							<string key="FrameName"/>
@@ -116,7 +116,7 @@
 						<object class="NSButton" id="736908656">
 							<reference key="NSNextResponder" ref="563959409"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{439, 0}, {16, 19}}</string>
+							<string key="NSFrame">{{479, 0}, {16, 19}}</string>
 							<reference key="NSSuperview" ref="563959409"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="215388286">
@@ -144,7 +144,7 @@
 						<object class="NSButton" id="771759786">
 							<reference key="NSNextResponder" ref="563959409"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{397, 0}, {16, 19}}</string>
+							<string key="NSFrame">{{437, 0}, {16, 19}}</string>
 							<reference key="NSSuperview" ref="563959409"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="656055052">
@@ -168,7 +168,7 @@
 						<object class="NSButton" id="36322049">
 							<reference key="NSNextResponder" ref="563959409"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{416, 0}, {16, 19}}</string>
+							<string key="NSFrame">{{456, 0}, {16, 19}}</string>
 							<reference key="NSSuperview" ref="563959409"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="282674264">
@@ -192,7 +192,7 @@
 						<object class="NSButton" id="823054555">
 							<reference key="NSNextResponder" ref="563959409"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{2, 1}, {389, 18}}</string>
+							<string key="NSFrame">{{2, 1}, {429, 18}}</string>
 							<reference key="NSSuperview" ref="563959409"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="817997953">
@@ -221,7 +221,7 @@
 							</object>
 						</object>
 					</object>
-					<string key="NSFrameSize">{475, 390}</string>
+					<string key="NSFrameSize">{515, 419}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
@@ -495,10 +495,10 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{329, 753}, {475, 390}}</string>
+					<string>{{112, 709}, {515, 419}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="0"/>
-					<string>{{329, 753}, {475, 390}}</string>
+					<string>{{112, 709}, {515, 419}}</string>
 					<boolean value="NO"/>
 					<string>{196, 240}</string>
 					<string>{{357, 418}, {480, 270}}</string>
@@ -532,7 +532,7 @@
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBPartialClassDescription">
-					<string key="className">GTMOAuthWindowController</string>
+					<string key="className">GTMOAuth2WindowController</string>
 					<string key="superclassName">NSWindowController</string>
 					<object class="NSMutableDictionary" key="actions">
 						<string key="NS.key.0">closeWindow:</string>
@@ -614,7 +614,7 @@
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Mac/GTMOAuthWindowController.h</string>
+						<string key="minorKey">Mac/GTMOAuth2WindowController.h</string>
 					</object>
 				</object>
 			</object>
