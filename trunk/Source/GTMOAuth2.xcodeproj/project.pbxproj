@@ -185,9 +185,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		4F724A7012248B19001A4AD0 /* GTMOAuth.framework */ = {
+		4F724A7012248B19001A4AD0 /* GTMOAuth2.framework */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4F724A7412248B19001A4AD0 /* Build configuration list for PBXNativeTarget "GTMOAuth.framework" */;
+			buildConfigurationList = 4F724A7412248B19001A4AD0 /* Build configuration list for PBXNativeTarget "GTMOAuth2.framework" */;
 			buildPhases = (
 				4F724A6C12248B19001A4AD0 /* Headers */,
 				4F724A6D12248B19001A4AD0 /* Resources */,
@@ -198,7 +198,7 @@
 			);
 			dependencies = (
 			);
-			name = GTMOAuth.framework;
+			name = GTMOAuth2.framework;
 			productName = OAuth.framework;
 			productType = "com.apple.product-type.framework";
 		};
@@ -239,7 +239,7 @@
 			projectRoot = "";
 			targets = (
 				D2AAC07D0554694100DB518D /* OAuthTouchStaticLib */,
-				4F724A7012248B19001A4AD0 /* GTMOAuth.framework */,
+				4F724A7012248B19001A4AD0 /* GTMOAuth2.framework */,
 			);
 		};
 /* End PBXProject section */
@@ -291,13 +291,13 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
-				DSTROOT = /tmp/OAuthTouchStaticLibrary.dst;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = OAuthTouch2;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -306,11 +306,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				DSTROOT = /tmp/OAuthTouchStaticLibrary.dst;
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = OAuthTouch2;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};
@@ -341,12 +340,7 @@
 				OTHER_CFLAGS = "-DDEBUG=1";
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos;
-				WARNING_CFLAGS = (
-					"-Werror",
-					"-Wendif-labels",
-					"-Wnewline-eof",
-				);
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -375,12 +369,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos;
-				WARNING_CFLAGS = (
-					"-Werror",
-					"-Wendif-labels",
-					"-Wnewline-eof",
-				);
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -443,7 +432,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = GTMOAuth2;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -469,7 +458,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4F724A7412248B19001A4AD0 /* Build configuration list for PBXNativeTarget "GTMOAuth.framework" */ = {
+		4F724A7412248B19001A4AD0 /* Build configuration list for PBXNativeTarget "GTMOAuth2.framework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4F724A7212248B19001A4AD0 /* Debug */,
