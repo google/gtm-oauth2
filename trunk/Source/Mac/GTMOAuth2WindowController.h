@@ -116,6 +116,10 @@
   id completionPlaceholder_;
 #endif
 
+  // flag allowing application to quit during display of sign-in sheet on 10.6
+  // and later
+  BOOL shouldAllowApplicationTermination_;
+
   // delegate method for handling URLs to be opened in external windows
   SEL externalRequestSelector_;
 
@@ -144,6 +148,7 @@
 
   // user-defined data
   id userData_;
+  NSMutableDictionary *properties_;
 }
 
 // User interface elements
@@ -175,6 +180,10 @@
 // kGTLOAuthNetworkLost is sent; set this to 0 to have no timeout
 @property (nonatomic, assign) NSTimeInterval networkLossTimeoutInterval;
 
+// On 10.6 and later, the sheet can allow application termination by calling
+// NSWindow's setPreventsApplicationTerminationWhenModal:
+@property (nonatomic, assign) BOOL shouldAllowApplicationTermination;
+
 // Selector for a delegate method to handle requests sent to an external
 // browser.
 //
@@ -194,6 +203,12 @@
 
 // Any arbitrary data object the user would like the controller to retain
 @property (nonatomic, retain) id userData;
+
+// Stored property values are retained for the convenience of the caller
+- (void)setProperty:(id)obj forKey:(NSString *)key;
+- (id)propertyForKey:(NSString *)key;
+
+@property (nonatomic, retain) NSDictionary *properties;
 
 - (IBAction)closeWindow:(id)sender;
 

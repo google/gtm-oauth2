@@ -374,6 +374,28 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   return NO;
 }
 
+// entry point for the window controller to tell us when a load has failed
+// in the webview
+//
+// if the initial authorization URL fails, bail out so the user doesn't
+// see an empty webview
+- (BOOL)loadFailedWithError:(NSError *)error {
+  NSURL *authorizationURL = self.authorizationURL;
+  NSURL *failedURL = [[error userInfo] valueForKey:@"NSErrorFailingURLKey"]; // NSURLErrorFailingURLErrorKey defined in 10.6
+
+  BOOL isAuthURL = [[failedURL host] isEqual:[authorizationURL host]]
+    && [[failedURL path] isEqual:[authorizationURL path]];
+
+  if (isAuthURL) {
+    // We can assume that we have no pending fetchers, since we only
+    // handle failure to load the initial authorization URL
+    [self closeTheWindow];
+    [self invokeFinalCallbackWithError:error];
+    return YES;
+  }
+  return NO;
+}
+
 - (void)handleCallbackReached {
   // the callback page was requested, or the authenticate code was loaded
   // into a page's title, so exchange the auth code for access & refresh tokens
@@ -450,7 +472,13 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   // only immediately after a fresh access token has been obtained
   [auth authorizeRequest:request];
 
-  GTMHTTPFetcher *fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+  GTMHTTPFetcher *fetcher;
+  id <GTMHTTPFetcherServiceProtocol> fetcherService = auth.fetcherService;
+  if (fetcherService) {
+    fetcher = [fetcherService fetcherWithRequest:request];
+  } else {
+    fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+  }
   fetcher.retryEnabled = YES;
   fetcher.maxRetryInterval = 15.0;
   fetcher.comment = @"user info";
@@ -650,7 +678,13 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
     [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
 
     // there's nothing to be done if revocation succeeds or fails
-    GTMHTTPFetcher *fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+    GTMHTTPFetcher *fetcher;
+    id <GTMHTTPFetcherServiceProtocol> fetcherService = auth.fetcherService;
+    if (fetcherService) {
+      fetcher = [fetcherService fetcherWithRequest:request];
+    } else {
+      fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+    }
 
 #if NS_BLOCKS_AVAILABLE
     [fetcher beginFetchWithCompletionHandler:^(NSData *data, NSError *error) {

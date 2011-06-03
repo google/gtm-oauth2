@@ -102,6 +102,8 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
   GTMHTTPFetcher *refreshFetcher_;
   NSMutableArray *authorizationQueue_;
 
+  id <GTMHTTPFetcherServiceProtocol> fetcherService_;
+
   Class parserClass_;
 
   // arbitrary data retained for the user
@@ -157,6 +159,10 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 
 // Stored property values are retained for the convenience of the caller
 @property (retain) NSDictionary *properties;
+
+// Property for the optional fetcher service instance to be used to create
+// fetchers
+@property (retain) id <GTMHTTPFetcherServiceProtocol> fetcherService;
 
 // Alternative JSON parsing class; this should implement the
 // GTMOAuth2ParserClass informal protocol. If this property is
@@ -226,6 +232,8 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 //
 // We'll use the format "refresh_token=foo&serviceProvider=bar" so we can
 // easily alter what portions of the auth data are stored
+//
+// Use these methods for serialization
 - (NSString *)persistenceResponseString;
 - (void)setKeysForPersistenceResponseString:(NSString *)str;
 

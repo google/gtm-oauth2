@@ -74,12 +74,12 @@ static NSString *const kRefreshFetchArgsKey = @"requestArgs";
 
 @implementation GTMOAuth2AuthorizationArgs
 
-@synthesize request = request_;
-@synthesize delegate = delegate_;
-@synthesize selector = sel_;
-@synthesize completionHandler = completionHandler_;
-@synthesize thread = thread_;
-@synthesize error = error_;
+@synthesize request = request_,
+            delegate = delegate_,
+            selector = sel_,
+            completionHandler = completionHandler_,
+            thread = thread_,
+            error = error_;
 
 + (GTMOAuth2AuthorizationArgs *)argsWithRequest:(NSMutableURLRequest *)req
                                        delegate:(id)delegate
@@ -157,6 +157,7 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
             tokenURL = tokenURL_,
             expirationDate = expirationDate_,
             refreshFetcher = refreshFetcher_,
+            fetcherService = fetcherService_,
             parserClass = parserClass_,
             userData = userData_,
             properties = properties_,
@@ -229,7 +230,10 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   self.refreshFetcher = nil;
   self.authorizationQueue = nil;
 
+  self.fetcherService = nil;
+
   self.userData = nil;
+  self.properties = nil;
 
   [super dealloc];
 }
@@ -636,9 +640,16 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   NSString *userAgent = [self userAgent];
   [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
 
-  GTMHTTPFetcher *fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-  [fetcher setPostData:paramData];
+  GTMHTTPFetcher *fetcher;
+  id <GTMHTTPFetcherServiceProtocol> fetcherService = self.fetcherService;
+  if (fetcherService) {
+    fetcher = [fetcherService fetcherWithRequest:request];
+  } else {
+    fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+  }
+
   [fetcher setCommentWithFormat:commentTemplate, [tokenURL host]];
+  fetcher.postData = paramData;
   fetcher.retryEnabled = YES;
   fetcher.maxRetryInterval = 15.0;
 

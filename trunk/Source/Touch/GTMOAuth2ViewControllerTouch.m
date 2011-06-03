@@ -49,17 +49,20 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 
 @implementation GTMOAuth2ViewControllerTouch
 
-@synthesize request = request_;
-@synthesize backButton = backButton_;
-@synthesize forwardButton = forwardButton_;
-@synthesize navButtonsView = navButtonsView_;
-@synthesize rightBarButtonItem = rightBarButtonItem_;
-@synthesize keychainItemName = keychainItemName_;
-@synthesize initialHTMLString = initialHTMLString_;
-@synthesize browserCookiesURL = browserCookiesURL_;
-@synthesize signIn = signIn_;
-@synthesize userData = userData_;
-@synthesize webView = webView_;
+// IBOutlets
+@synthesize request = request_,
+            backButton = backButton_,
+            forwardButton = forwardButton_,
+            navButtonsView = navButtonsView_,
+            rightBarButtonItem = rightBarButtonItem_,
+            webView = webView_;
+
+@synthesize keychainItemName = keychainItemName_,
+            initialHTMLString = initialHTMLString_,
+            browserCookiesURL = browserCookiesURL_,
+            signIn = signIn_,
+            userData = userData_,
+            properties = properties_;
 
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
@@ -127,7 +130,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
                                                      delegate:self
                                            webRequestSelector:@selector(signIn:displayRequest:)
                                              finishedSelector:@selector(signIn:finishedWithAuth:error:)];
-
+    
     // if the user is signing in to a Google service, we'll delete the
     // Google authentication browser cookies upon completion
     //
@@ -172,6 +175,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   self.webView = nil;
   self.browserCookiesURL = nil;
   self.userData = nil;
+  self.properties = nil;
 
   [signIn_ release];
   [request_ release];
@@ -352,6 +356,29 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   return ([name length] > 0);
 }
 
+#pragma mark User Properties
+
+- (void)setProperty:(id)obj forKey:(NSString *)key {
+  if (obj == nil) {
+    // User passed in nil, so delete the property
+    [properties_ removeObjectForKey:key];
+  } else {
+    // Be sure the property dictionary exists
+    if (properties_ == nil) {
+      [self setProperties:[NSMutableDictionary dictionary]];
+    }
+    [properties_ setObject:obj forKey:key];
+  }
+}
+
+- (id)propertyForKey:(NSString *)key {
+  id obj = [properties_ objectForKey:key];
+
+  // Be sure the returned pointer has the life of the autorelease pool,
+  // in case self is released immediately
+  return [[obj retain] autorelease];
+}
+
 #pragma mark SignIn callbacks
 
 - (void)signIn:(GTMOAuth2SignIn *)signIn displayRequest:(NSURLRequest *)request {
@@ -467,7 +494,6 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 #pragma mark Protocol implementations
 
 - (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
   if (!isViewShown_) {
     isViewShown_ = YES;
     if ([self isNavigationBarTranslucent]) {
@@ -484,6 +510,11 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
     }
   }
   [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+  didViewAppear_ = YES;
+  [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -533,6 +564,20 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   }
 
   [self updateUI];
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+  // Tell the sign-in object that a load failed; if it was the authorization
+  // URL, it will pop the view and return an error to the delegate.
+  if (didViewAppear_) {
+    [signIn_ loadFailedWithError:error];
+  } else {
+    // UIWebview needs time to stabilize. Animations need time to complete.
+    [signIn_ performSelector:@selector(loadFailedWithError:)
+                  withObject:error
+                  afterDelay:0.5
+                     inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+  }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

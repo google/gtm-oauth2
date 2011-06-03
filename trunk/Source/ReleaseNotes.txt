@@ -3,6 +3,16 @@ GTM OAuth 2 Release Notes
 Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
+
+1-June-2011
+
+Added Mac window controller property shouldAllowApplicationTermination
+
+Added user properties to window & view controllers.
+
+Fetchers may now optionally be created by a GTMHTTPFetcherService instance.
+
+
 24-May-2011
 
 Mac window controller now opens pop-up window links in an external browser

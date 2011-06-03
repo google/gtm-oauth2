@@ -276,6 +276,13 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
 
   // You can set the title of the navigationItem of the controller here, if you want.
 
+  // During display of the sign-in window, loss and regain of network
+  // connectivity will be reported with the notifications
+  // kGTMOAuth2NetworkLost/kGTMOAuth2NetworkFound
+  //
+  // See the method signInNetworkLostOrFound: for an example of handling
+  // the notification.
+
   // Optional: display some html briefly before the sign-in page loads
   NSString *html = @"<html><body bgcolor=silver><div align=center>Loading sign-in page...</div></body></html>";
   [viewController setInitialHTMLString:html];
