@@ -121,11 +121,13 @@
 // Window controllers must tell the sign-in object about any redirect
 // requested by the web view, and any changes in the webview window title
 //
-// If this returns YES then the redirect was handled by the sign-in object
-// (typically by closing the window) and the request should be ignored by
+// If these return YES then the event was handled by the
+// sign-in object (typically by closing the window) and should be ignored by
 // the window controller's web view
+
 - (BOOL)requestRedirectedToRequest:(NSURLRequest *)redirectedRequest;
 - (BOOL)titleChanged:(NSString *)title;
+- (BOOL)loadFailedWithError:(NSError *)error;
 
 // Window controllers must tell the sign-in object if the window was closed
 // prematurely by the user (but not by the sign-in object); this calls the

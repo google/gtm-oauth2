@@ -28,6 +28,7 @@
 @property (nonatomic, retain) NSWindow *sheetModalForWindow;
 
 - (void)signInCommonForWindow:(NSWindow *)parentWindowOrNil;
+- (void)setupSheetTerminationHandling;
 - (void)destroyWindow;
 - (void)handlePrematureWindowClose;
 - (BOOL)shouldUseKeychain;
@@ -56,9 +57,11 @@ const char *kKeychainAccountName = "OAuth";
             sheetModalForWindow = sheetModalForWindow_,
             keychainItemName = keychainItemName_,
             initialHTMLString = initialHTMLString_,
+            shouldAllowApplicationTermination = shouldAllowApplicationTermination_,
             externalRequestSelector = externalRequestSelector_,
             shouldPersistUser = shouldPersistUser_,
-            userData = userData_;
+            userData = userData_,
+            properties = properties_;
 
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
@@ -111,6 +114,7 @@ const char *kKeychainAccountName = "OAuth";
   self.keychainItemName = nil;
   self.initialHTMLString = nil;
   self.userData = nil;
+  self.properties = nil;
   self.signIn = nil;
   self.cookieStorage = nil;
   self.initialRequest = nil;
@@ -200,7 +204,7 @@ const char *kKeychainAccountName = "OAuth";
   self.sheetModalForWindow = parentWindowOrNil;
   hasDoneFinalRedirect_ = NO;
   hasCalledFinished_ = NO;
-
+  
   [self.signIn startSigningIn];
 }
 
@@ -250,8 +254,9 @@ const char *kKeychainAccountName = "OAuth";
 
     NSWindow *parentWindow = self.sheetModalForWindow;
     if (parentWindow) {
-      NSWindow *sheet = [self window];
+      [self setupSheetTerminationHandling];
 
+      NSWindow *sheet = [self window];
       [NSApp beginSheet:sheet
          modalForWindow:parentWindow
           modalDelegate:self
@@ -265,6 +270,23 @@ const char *kKeychainAccountName = "OAuth";
   } else {
     // request was nil
     [self destroyWindow];
+  }
+}
+
+- (void)setupSheetTerminationHandling {
+  NSWindow *sheet = [self window];
+
+  SEL sel = @selector(setPreventsApplicationTerminationWhenModal:);
+  if ([sheet respondsToSelector:sel]) {
+    // setPreventsApplicationTerminationWhenModal is available in NSWindow
+    // on 10.6 and later
+    BOOL boolVal = !self.shouldAllowApplicationTermination;
+    NSMethodSignature *sig = [sheet methodSignatureForSelector:sel];
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
+    [invocation setSelector:sel];
+    [invocation setTarget:sheet];
+    [invocation setArgument:&boolVal atIndex:2];
+    [invocation invoke];
   }
 }
 
@@ -382,6 +404,10 @@ const char *kKeychainAccountName = "OAuth";
   if ([title length] > 0) {
     [self.signIn titleChanged:title];
   }
+}
+
+- (void)webView:(WebView *)sender resource:(id)identifier didFailLoadingWithError:(NSError *)error fromDataSource:(WebDataSource *)dataSource {
+  [self.signIn loadFailedWithError:error];
 }
 
 - (void)windowWillClose:(NSNotification *)note {
@@ -589,6 +615,29 @@ decisionListener:(id<WebPolicyDecisionListener>)listener {
     }
   }
   return didGetTokens;
+}
+
+#pragma mark User Properties
+
+- (void)setProperty:(id)obj forKey:(NSString *)key {
+  if (obj == nil) {
+    // User passed in nil, so delete the property
+    [properties_ removeObjectForKey:key];
+  } else {
+    // Be sure the property dictionary exists
+    if (properties_ == nil) {
+      [self setProperties:[NSMutableDictionary dictionary]];
+    }
+    [properties_ setObject:obj forKey:key];
+  }
+}
+
+- (id)propertyForKey:(NSString *)key {
+  id obj = [properties_ objectForKey:key];
+
+  // Be sure the returned pointer has the life of the autorelease pool,
+  // in case self is released immediately
+  return [[obj retain] autorelease];
 }
 
 #pragma mark Accessors

@@ -86,6 +86,7 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
   NSURL *browserCookiesURL_;
 
   id userData_;
+  NSMutableDictionary *properties_;
 
   // We delegate the decision to our owning NavigationController (if any).
   // But, the NavigationController will call us back, and ask us.
@@ -94,6 +95,9 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 
   // YES, when view first shown in this signIn session.
   BOOL isViewShown_;
+
+  // YES, after the view has fully transitioned in.
+  BOOL didViewAppear_;
 
   // To prevent us from calling our delegate's selector more than once.
   BOOL hasCalledFinished_;
@@ -140,7 +144,14 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // but it may be explicitly set to nil to disable clearing of browser cookies
 @property (nonatomic, retain) NSURL *browserCookiesURL;
 
+// userData is retained for the convenience of the caller
 @property (nonatomic, retain) id userData;
+
+// Stored property values are retained for the convenience of the caller
+- (void)setProperty:(id)obj forKey:(NSString *)key;
+- (id)propertyForKey:(NSString *)key;
+
+@property (nonatomic, retain) NSDictionary *properties;
 
 // init method for authenticating to Google services
 //
@@ -190,6 +201,13 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
             keychainItemName:(NSString *)keychainItemName
                     delegate:(id)delegate
             finishedSelector:(SEL)finishedSelector;
+
+#if NS_BLOCKS_AVAILABLE
+- (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
+            authorizationURL:(NSURL *)authorizationURL
+            keychainItemName:(NSString *)keychainItemName
+           completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler;
+#endif
 
 // Override default in UIViewController. If we have a navigationController, ask
 // it. else default result (i.e., Portrait mode only).
