@@ -42,6 +42,11 @@ static NSString *const kTokenFetchSelectorKey = @"sel";
 
 static NSString *const kRefreshFetchArgsKey = @"requestArgs";
 
+// If GTMNSJSONSerialization is available, it is used for formatting JSON
+@interface GTMNSJSONSerialization : NSObject
++ (id)JSONObjectWithData:(NSData *)data options:(NSUInteger)opt error:(NSError **)error;
+@end
+
 @interface GTMOAuth2ParserClass : NSObject
 // just enough of SBJSON to be able to parse
 - (id)objectWithString:(NSString*)repr error:(NSError**)error;
@@ -290,34 +295,47 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 }
 
 - (NSDictionary *)dictionaryWithJSONData:(NSData *)data {
-  NSDictionary *dict = nil;
+  NSMutableDictionary *obj = nil;
+  NSError *error = nil;
 
-  NSString *str = [[[NSString alloc] initWithData:data
-                                         encoding:NSUTF8StringEncoding] autorelease];
-  if (str) {
-    // Hope that the parsing class has been loaded into the runtime
-    Class parserClass = self.parserClass;
-    if (!parserClass) {
-      // Newer SBJsonParser class
-      parserClass = NSClassFromString(@"SBJsonParser");
-    }
-    if (!parserClass) {
-      // Older SBJSON parsing
-      parserClass = NSClassFromString(@"SBJSON");
-    }
-    GTMOAuth2ParserClass *parser = [[[parserClass alloc] init] autorelease];
-    NSAssert(parser != nil, @"Parser allocation failed; SBJSON needed");
-
-    NSError *error = nil;
-    dict = [parser objectWithString:str error:&error];
-  #if DEBUG
+  Class serializer = NSClassFromString(@"NSJSONSerialization");
+  if (serializer) {
+    const NSUInteger kOpts = (1UL << 0); // NSJSONReadingMutableContainers
+    obj = [serializer JSONObjectWithData:data
+                                 options:kOpts
+                                   error:&error];
+#if DEBUG
     if (error) {
-      NSLog(@"%@ error %@ parsing %@", NSStringFromClass(parserClass),
+      NSString *str = [[[NSString alloc] initWithData:data
+                                             encoding:NSUTF8StringEncoding] autorelease];
+      NSLog(@"NSJSONSerialization error %@ parsing %@",
             error, str);
     }
-  #endif
+#endif
+    return obj;
+  } else {
+    // try SBJsonParser or SBJSON
+    Class jsonParseClass = NSClassFromString(@"SBJsonParser");
+    if (!jsonParseClass) {
+      jsonParseClass = NSClassFromString(@"SBJSON");
+    }
+    if (jsonParseClass) {
+      GTMOAuth2ParserClass *parser = [[[jsonParseClass alloc] init] autorelease];
+      NSString *jsonStr = [[[NSString alloc] initWithData:data
+                                                 encoding:NSUTF8StringEncoding] autorelease];
+      if (jsonStr) {
+        obj = [parser objectWithString:jsonStr error:&error];
+#if DEBUG
+        if (error) {
+          NSLog(@"%@ error %@ parsing %@", NSStringFromClass(jsonParseClass),
+                error, jsonStr);
+        }
+#endif
+        return obj;
+      }
+    }
   }
-  return dict;
+  return nil;
 }
 
 #pragma mark Authorizing Requests
