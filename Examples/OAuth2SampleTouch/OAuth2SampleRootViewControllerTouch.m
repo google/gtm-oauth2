@@ -18,10 +18,6 @@
 #import "OAuth2SampleRootViewControllerTouch.h"
 #import "GTMOAuth2ViewControllerTouch.h"
 
-#ifndef UI_USER_INTERFACE_IDIOM()
-#define UI_USER_INTERFACE_IDIOM() 0
-#endif
-
 static NSString *const kKeychainItemName = @"OAuth Sample: Google Contacts";
 static NSString *const kShouldSaveInKeychainKey = @"shouldSaveInKeychain";
 
@@ -270,7 +266,7 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   viewController = [[[GTMOAuth2ViewControllerTouch alloc] initWithScope:scope
                                                                clientID:clientID
                                                            clientSecret:clientSecret
-                                                       keychainItemName:kKeychainItemName
+                                                       keychainItemName:keychainItemName
                                                                delegate:self
                                                        finishedSelector:finishedSel] autorelease];
 
