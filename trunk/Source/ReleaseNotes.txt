@@ -4,6 +4,15 @@ Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
 
+20-June-2011
+
+To avoid accidental leakage of tokens, the authentication object now
+returns kGTMOAuth2ErrorUnauthorizableRequest when attempting to authorize
+requests with schemes other than https. The property
+shouldAuthorizeAllRequests can be set to override this and allow any
+request to be authorized.
+
+
 1-June-2011
 
 Added Mac window controller property shouldAllowApplicationTermination
