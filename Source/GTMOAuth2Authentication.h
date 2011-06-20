@@ -53,10 +53,11 @@ _EXTERN NSString* const kGTMOAuth2ErrorJSONKey    _INITIALIZE_AS(@"json");
 
 enum {
   // Error code indicating that the window was prematurely closed
-  kGTMOAuth2ErrorWindowClosed        = -1000,
-  kGTMOAuth2ErrorAuthorizationFailed = -1001,
-  kGTMOAuth2ErrorTokenExpired        = -1002,
-  kGTMOAuth2ErrorTokenUnavailable    = -1003
+  kGTMOAuth2ErrorWindowClosed          = -1000,
+  kGTMOAuth2ErrorAuthorizationFailed   = -1001,
+  kGTMOAuth2ErrorTokenExpired          = -1002,
+  kGTMOAuth2ErrorTokenUnavailable      = -1003,
+  kGTMOAuth2ErrorUnauthorizableRequest = -1004
 };
 
 
@@ -106,6 +107,8 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 
   Class parserClass_;
 
+  BOOL shouldAuthorizeAllRequests_;
+
   // arbitrary data retained for the user
   id userData_;
   NSMutableDictionary *properties_;
@@ -153,6 +156,12 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 // Property indicating if this auth has a refresh token so is suitable for
 // authorizing a request. This does not guarantee that the token is valid.
 @property (readonly) BOOL canAuthorize;
+
+// Property indicating if this object will authorize plain http request
+// (as well as any non-https requests.) Default is NO, only requests with the
+// scheme https are authorized, since security may be compromised if tokens
+// are sent over the wire using an unencrypted protocol like http.
+@property (assign) BOOL shouldAuthorizeAllRequests;
 
 // userData is retained for the convenience of the caller
 @property (retain) id userData;

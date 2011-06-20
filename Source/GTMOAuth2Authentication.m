@@ -164,6 +164,7 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
             refreshFetcher = refreshFetcher_,
             fetcherService = fetcherService_,
             parserClass = parserClass_,
+            shouldAuthorizeAllRequests = shouldAuthorizeAllRequests_,
             userData = userData_,
             properties = properties_,
             authorizationQueue = authorizationQueue_;
@@ -463,8 +464,20 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 
   NSMutableURLRequest *request = args.request;
 
+  NSString *scheme = [[request URL] scheme];
+  BOOL isAuthorizableRequest = self.shouldAuthorizeAllRequests
+    || [scheme caseInsensitiveCompare:@"https"] == NSOrderedSame;
+  if (!isAuthorizableRequest) {
+    // Request is not https, so may be insecure
+    //
+    // The NSError will be created below
+#if DEBUG
+    NSLog(@"Cannot authorize request with scheme %@ (%@)", scheme, request);
+#endif
+  }
+
   NSString *accessToken = self.accessToken;
-  if ([accessToken length] > 0) {
+  if (isAuthorizableRequest && [accessToken length] > 0) {
     if (request) {
       // we have a likely valid access token
       NSString *value = [@"OAuth " stringByAppendingString:accessToken];
@@ -480,8 +493,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
       userInfo = [NSDictionary dictionaryWithObject:request
                                              forKey:kGTMOAuth2ErrorRequestKey];
     }
+    NSInteger code = (isAuthorizableRequest ?
+                      kGTMOAuth2ErrorAuthorizationFailed :
+                      kGTMOAuth2ErrorUnauthorizableRequest);
     args.error = [NSError errorWithDomain:kGTMOAuth2ErrorDomain
-                                     code:kGTMOAuth2ErrorAuthorizationFailed
+                                     code:code
                                  userInfo:userInfo];
   }
 
