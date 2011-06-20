@@ -164,6 +164,8 @@ Similarly, in the [http://code.google.com/p/gdata-objectivec-client/ Google Data
 [[self contactService] setAuthorizer:auth];
 }}}
 
+*Note:* To avoid sending authorization tokens insecurely, authorization should be added only to requests with the https scheme. To authorize a request that has any other URL scheme, the authentication object property `shouldAuthorizeAllRequests` must first be set to YES to override the https requirement and avoid the error `kGTMOAuth2ErrorUnauthorizableRequest`.
+
 === Retrieving Authorization from the Keychain ===
 
 If your application saves the authorization to the keychain (by setting the controller's keychainItemName), it can be retrieved the next time the application launches:
@@ -325,6 +327,8 @@ With the [http://code.google.com/p/gtm-http-fetcher/ GTM HTTP Fetcher], the auth
 {{{
 [fetcher setAuthorizer:auth];
 }}} 
+
+*Note:* To avoid sending authorization tokens insecurely, authorization should be added only to requests with the https scheme. To authorize a request that has any other URL scheme, the authentication object property `shouldAuthorizeAllRequests` must first be set to YES to override the https requirement and avoid the error `kGTMOAuth2ErrorUnauthorizableRequest`.
 
 === Retrieving Authorization from the Keychain ===
 
