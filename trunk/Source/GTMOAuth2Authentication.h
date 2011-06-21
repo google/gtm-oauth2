@@ -214,6 +214,12 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 // access token
 - (BOOL)authorizeRequest:(NSMutableURLRequest *)request;
 
+// If the authentication is waiting for a refreh to complete, spin the run loop,
+// discarding events, until the fetch has completed
+//
+// This is only for use in testing or in tools without a user interface.
+- (void)waitForCompletionWithTimeout:(NSTimeInterval)timeoutInSeconds;
+
 
 //////////////////////////////////////////////////////////////////////////////
 //

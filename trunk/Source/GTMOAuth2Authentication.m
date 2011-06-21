@@ -594,6 +594,14 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   return shouldRefresh;
 }
 
+- (void)waitForCompletionWithTimeout:(NSTimeInterval)timeoutInSeconds {
+  // If there is a refresh fetcher pending, wait for it.
+  //
+  // This is only intended for unit test or for use in command-line tools.
+  GTMHTTPFetcher *fetcher = self.refreshFetcher;
+  [fetcher waitForCompletionWithTimeout:timeoutInSeconds];
+}
+
 #pragma mark Token Fetch
 
 - (NSString *)userAgent {
