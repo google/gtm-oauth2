@@ -35,6 +35,9 @@ The source files required are:
 
 These source files can be browsed in the project's [http://code.google.com/p/gtm-oauth2/source/browse/#svn/trunk/Source/ source directory].
 
+When linking against a static library build of the controller, specify the [http://developer.apple.com/mac/library/qa/qa2006/qa1490.html -ObjC build option] for the application target's "Other Linker Flags".
+
+
 === System Requirements ===
 
 The Mac controller is compatible with Mac OS X 10.5 and later. The iOS controller is compatible with iPhone OS 3 and later.
