@@ -102,12 +102,12 @@ static NSString *const kRefreshFetchArgsKey = @"requestArgs";
 }
 
 - (void)dealloc {
-  self.request = nil;
-  self.delegate = nil;
-  self.selector = NULL;
-  self.completionHandler = nil;
-  self.thread = nil;
-  self.error = nil;
+  [request_ release];
+  [delegate_ release];
+  [completionHandler_ release];
+  [thread_ release];
+  [error_ release];
+
   [super dealloc];
 }
 @end
@@ -200,8 +200,8 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 - (id)init {
   self = [super init];
   if (self) {
-    self.authorizationQueue = [NSMutableArray array];
-    self.parameters = [NSMutableDictionary dictionary];
+    authorizationQueue_ = [[NSMutableArray alloc] init];
+    parameters_ = [[NSMutableDictionary alloc] init];
   }
   return self;
 }
@@ -224,22 +224,17 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 }
 
 - (void)dealloc {
-  self.clientID = nil;
-  self.clientSecret = nil;
-  self.redirectURI = nil;
-
-  self.parameters = nil;
-
-  self.tokenURL = nil;
-  self.expirationDate = nil;
-
-  self.refreshFetcher = nil;
-  self.authorizationQueue = nil;
-
-  self.fetcherService = nil;
-
-  self.userData = nil;
-  self.properties = nil;
+  [clientID_ release];
+  [clientSecret_ release];
+  [redirectURI_ release];
+  [parameters_ release];
+  [tokenURL_ release];
+  [expirationDate_ release];
+  [refreshFetcher_ release];
+  [authorizationQueue_ release];
+  [fetcherService_ release];
+  [userData_ release];
+  [properties_ release];
 
   [super dealloc];
 }

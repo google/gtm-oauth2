@@ -136,19 +136,19 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-  self.clientIDField = nil;
-  self.clientSecretField = nil;
-  self.emailField = nil;
-  self.accessTokenField = nil;
-  self.expirationField = nil;
-  self.refreshTokenField = nil;
-  self.fetchButton = nil;
-  self.expireNowButton = nil;
-  self.serviceSegments = nil;
-  self.shouldSaveInKeychainSwitch = nil;
-  self.signInOutButton = nil;
-
-  self.auth = nil;
+  [mServiceSegments release];
+  [mClientIDField release];
+  [mClientSecretField release];
+  [mServiceNameField release];
+  [mEmailField release];
+  [mAccessTokenField release];
+  [mExpirationField release];
+  [mRefreshTokenField release];
+  [mFetchButton release];
+  [mExpireNowButton release];
+  [mShouldSaveInKeychainSwitch release];
+  [mSignInOutButton release];
+  [mAuth release];
 
   [super dealloc];
 }

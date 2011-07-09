@@ -255,8 +255,8 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // it too, to store passwords.
 
 enum {
-  kGTMOAuth2KeychainErrorBadArguments = -1001,
-  kGTMOAuth2KeychainErrorNoPassword = -1002
+  kGTMOAuth2KeychainErrorBadArguments = -1301,
+  kGTMOAuth2KeychainErrorNoPassword = -1302
 };
 
 
