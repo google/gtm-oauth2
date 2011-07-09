@@ -24,8 +24,8 @@
 @synthesize navigationController = mNavigationController;
 
 - (void)dealloc {
-  self.navigationController = nil;
-  self.window = nil;
+  [mNavigationController release];
+  [mWindow release];
   [super dealloc];
 }
 

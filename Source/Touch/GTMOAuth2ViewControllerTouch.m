@@ -166,23 +166,22 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 #endif
 
 - (void)dealloc {
-  self.keychainItemName = nil;
-  self.initialHTMLString = nil;
-  self.backButton = nil;
-  self.forwardButton = nil;
-  self.navButtonsView = nil;
-  self.rightBarButtonItem = nil;
-  self.webView = nil;
-  self.browserCookiesURL = nil;
-  self.userData = nil;
-  self.properties = nil;
-
+  [backButton_ release];
+  [forwardButton_ release];
+  [navButtonsView_ release];
+  [rightBarButtonItem_ release];
+  [webView_ release];
   [signIn_ release];
   [request_ release];
   [delegate_ release];
 #if NS_BLOCKS_AVAILABLE
   [completionBlock_ release];
 #endif
+  [keychainItemName_ release];
+  [initialHTMLString_ release];
+  [browserCookiesURL_ release];
+  [userData_ release];
+  [properties_ release];
 
   [super dealloc];
 }

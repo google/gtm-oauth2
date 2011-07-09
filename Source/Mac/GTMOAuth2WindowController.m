@@ -96,33 +96,33 @@ const char *kKeychainAccountName = "OAuth";
                                 owner:self];
   if (self != nil) {
     // use the supplied auth and OAuth endpoint URLs
-    self.signIn =  [[[GTMOAuth2SignIn alloc] initWithAuthentication:auth
-                                                   authorizationURL:authorizationURL
-                                                           delegate:self
-                                                 webRequestSelector:@selector(signIn:displayRequest:)
-                                                   finishedSelector:@selector(signIn:finishedWithAuth:error:)] autorelease];
-    
-    self.keychainItemName = keychainItemName;
+    signIn_ = [[GTMOAuth2SignIn alloc] initWithAuthentication:auth
+                                             authorizationURL:authorizationURL
+                                                     delegate:self
+                                           webRequestSelector:@selector(signIn:displayRequest:)
+                                             finishedSelector:@selector(signIn:finishedWithAuth:error:)];
+    keychainItemName_ = [keychainItemName copy];
 
     // create local, temporary storage for WebKit cookies
-    self.cookieStorage = [[[GTMCookieStorage alloc] init] autorelease];
+    cookieStorage_ = [[GTMCookieStorage alloc] init];
   }
   return self;
 }
 
 - (void)dealloc {
-  self.keychainItemName = nil;
-  self.initialHTMLString = nil;
-  self.userData = nil;
-  self.properties = nil;
-  self.signIn = nil;
-  self.cookieStorage = nil;
-  self.initialRequest = nil;
-
+  [signIn_ release];
+  [initialRequest_ release];
+  [cookieStorage_ release];
   [delegate_ release];
 #if NS_BLOCKS_AVAILABLE
   [completionBlock_ release];
 #endif
+  [sheetModalForWindow_ release];
+  [keychainItemName_ release];
+  [initialHTMLString_ release];
+  [userData_ release];
+  [properties_ release];
+
   [super dealloc];
 }
 

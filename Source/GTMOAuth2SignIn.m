@@ -120,21 +120,21 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   // designated initializer
   self = [super init];
   if (self) {
-    self.authentication = auth;
-    self.authorizationURL = authorizationURL;
-    self.delegate = delegate;
-    self.webRequestSelector = webRequestSelector;
-    self.finishedSelector = finishedSelector;
+    auth_ = [auth retain];
+    authorizationURL_ = [authorizationURL retain];
+    delegate_ = [delegate retain];
+    webRequestSelector_ = webRequestSelector;
+    finishedSelector_ = finishedSelector;
 
     // for Google authentication, we want to automatically fetch user info
     NSString *host = [authorizationURL host];
     if ([host isEqual:@"accounts.google.com"]) {
-      self.shouldFetchGoogleUserInfo = YES;
+      shouldFetchGoogleUserInfo_ = YES;
     }
 
     // default timeout for a lost internet connection while the server
     // UI is displayed is 30 seconds
-    self.networkLossTimeoutInterval = kDefaultNetworkLossTimeoutInterval;
+    networkLossTimeoutInterval_ = kDefaultNetworkLossTimeoutInterval;
   }
   return self;
 }
@@ -142,11 +142,11 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 - (void)dealloc {
   [self stopReachabilityCheck];
 
-  self.authentication = nil;
-  self.authorizationURL = nil;
-  self.delegate = nil;
-  self.pendingFetcher = nil;
-  self.userData = nil;
+  [auth_ release];
+  [authorizationURL_ release];
+  [delegate_ release];
+  [pendingFetcher_ release];
+  [userData_ release];
 
   [super dealloc];
 }
