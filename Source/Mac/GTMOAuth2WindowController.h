@@ -217,8 +217,6 @@
 // scope is the requested scope of authorization
 //   (like "http://www.google.com/m8/feeds")
 //
-// language is nil or the desired display language code (like "es")
-//
 // keychainItemName is used for storing the token on the keychain,
 //   and is required for the "remember for later" checkbox to be shown;
 //   keychainItemName should be like "My Application: Google Contacts"

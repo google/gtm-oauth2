@@ -17,6 +17,7 @@
 
 #import "OAuth2SampleRootViewControllerTouch.h"
 #import "GTMOAuth2ViewControllerTouch.h"
+#import "GTMOAuth2SignIn.h"
 
 static NSString *const kKeychainItemName = @"OAuth Sample: Google Contacts";
 static NSString *const kShouldSaveInKeychainKey = @"shouldSaveInKeychain";
@@ -270,7 +271,8 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
                                                                delegate:self
                                                        finishedSelector:finishedSel] autorelease];
 
-  // You can set the title of the navigationItem of the controller here, if you want.
+  // You can set the title of the navigationItem of the controller here, if you
+  // want.
 
   // During display of the sign-in window, loss and regain of network
   // connectivity will be reported with the notifications
@@ -279,9 +281,18 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   // See the method signInNetworkLostOrFound: for an example of handling
   // the notification.
 
+  // Optional: Google servers allow specification of the sign-in display
+  // language as an additional "hl" parameter to the authorization URL,
+  // using BCP 47 language codes.
+  //
+  // For this sample, we'll force English as the display language.
+  NSDictionary *params = [NSDictionary dictionaryWithObject:@"en"
+                                                     forKey:@"hl"];
+  viewController.signIn.additionalAuthorizationParameters = params;
+
   // Optional: display some html briefly before the sign-in page loads
   NSString *html = @"<html><body bgcolor=silver><div align=center>Loading sign-in page...</div></body></html>";
-  [viewController setInitialHTMLString:html];
+  viewController.initialHTMLString = html;
 
   [[self navigationController] pushViewController:viewController animated:YES];
 }

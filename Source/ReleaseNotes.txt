@@ -4,6 +4,12 @@ Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
 
+12-July-2011
+
+Added an additionalAuthorizationParameters property to the SignIn class, used
+by the sample apps to specify a display language for the sign-in pages.
+
+
 20-June-2011
 
 To avoid accidental leakage of tokens, the authentication object now

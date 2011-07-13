@@ -59,6 +59,7 @@
 
   // the endpoint for displaying the sign-in page
   NSURL *authorizationURL_;
+  NSDictionary *additionalAuthorizationParameters_;
 
   id delegate_;
   SEL webRequestSelector_;
@@ -81,6 +82,7 @@
 @property (nonatomic, retain) GTMOAuth2Authentication *authentication;
 
 @property (nonatomic, retain) NSURL *authorizationURL;
+@property (nonatomic, retain) NSDictionary *additionalAuthorizationParameters;
 
 // The delegate is released when signing in finishes or is cancelled
 @property (nonatomic, retain) id delegate;

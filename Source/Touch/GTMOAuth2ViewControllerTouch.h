@@ -158,8 +158,6 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // scope is the requested scope of authorization
 //   (like "http://www.google.com/m8/feeds")
 //
-// language is nil or the desired display language code (like "es")
-//
 // keychain item name is used for storing the token on the keychain,
 //   keychainItemName should be like "My Application: Google Latitude"
 //   (or set to nil if no persistent keychain storage is desired)
