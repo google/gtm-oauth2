@@ -232,7 +232,7 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   windowController = [[[GTMOAuth2WindowController alloc] initWithScope:scope
                                                               clientID:clientID
                                                           clientSecret:clientSecret
-                                                         keychainItemName:kKeychainItemName
+                                                      keychainItemName:kKeychainItemName
                                                          resourceBundle:nil] autorelease];
 
   // During display of the sign-in window, loss and regain of network
@@ -242,10 +242,21 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   // See the method signInNetworkLost: for an example of handling
   // the notification.
 
+  // Optional: Google servers allow specification of the sign-in display
+  // language as an additional "hl" parameter to the authorization URL,
+  // using BCP 47 language codes.
+  //
+  // For this sample, we'll force English as the display language.
+  NSDictionary *params = [NSDictionary dictionaryWithObject:@"en"
+                                                     forKey:@"hl"];
+  windowController.signIn.additionalAuthorizationParameters = params;
+
   // Optional: display some html briefly before the sign-in page loads
   NSString *html = @"<html><body><div align=center>Loading sign-in page...</div></body></html>";
-  [windowController setInitialHTMLString:html];
+  windowController.initialHTMLString = html;
 
+  // Most applications will not want the dialog to remember the signed-in user
+  // across multiple sign-ins, but the sample app allows it.
   windowController.shouldPersistUser = [mPersistUserCheckbox state];
 
   [windowController signInSheetModalForWindow:mMainWindow

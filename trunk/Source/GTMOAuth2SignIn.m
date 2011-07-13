@@ -63,6 +63,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 @synthesize authentication = auth_;
 
 @synthesize authorizationURL = authorizationURL_;
+@synthesize additionalAuthorizationParameters = additionalAuthorizationParameters_;
 
 @synthesize delegate = delegate_;
 @synthesize webRequestSelector = webRequestSelector_;
@@ -144,6 +145,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 
   [auth_ release];
   [authorizationURL_ release];
+  [additionalAuthorizationParameters_ release];
   [delegate_ release];
   [pendingFetcher_ release];
   [userData_ release];
@@ -212,12 +214,17 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   NSString *scope = auth.scope;
   if ([scope length] == 0) scope = nil;
 
-  NSDictionary *paramsDict = [NSDictionary dictionaryWithObjectsAndKeys:
+  NSMutableDictionary *paramsDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                      @"code", @"response_type",
                                      clientID, @"client_id",
                                      redirectURI, @"redirect_uri",
                                      scope, @"scope", // scope may be nil
                                      nil];
+  NSDictionary *additionalParams = self.additionalAuthorizationParameters;
+  if (additionalParams) {
+    [paramsDict addEntriesFromDictionary:additionalParams];
+  }
+
   NSString *paramStr = [GTMOAuth2Authentication encodedQueryParametersForDictionary:paramsDict];
 
   NSURL *authorizationURL = self.authorizationURL;
