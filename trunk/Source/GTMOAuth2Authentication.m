@@ -475,7 +475,8 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   if (isAuthorizableRequest && [accessToken length] > 0) {
     if (request) {
       // we have a likely valid access token
-      NSString *value = [@"OAuth " stringByAppendingString:accessToken];
+      NSString *value = [NSString stringWithFormat:@"%s %@",
+                         GTM_OAUTH2_BEARER, accessToken];
       [request setValue:value forHTTPHeaderField:@"Authorization"];
     }
 
@@ -743,6 +744,15 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   } else {
     // Succeeded; we have an access token
     [self setKeysForResponseJSONData:data];
+
+#if DEBUG
+    // Watch for token exchanges that return a non-bearer or unlabeled token
+    NSString *tokenType = [self tokenType];
+    if (tokenType == nil
+        || [tokenType caseInsensitiveCompare:@"bearer"] != NSOrderedSame) {
+      NSLog(@"GTMOAuth2: Unexpected token type: %@", tokenType);
+    }
+#endif
   }
 
   id delegate = [fetcher propertyForKey:kTokenFetchDelegateKey];
