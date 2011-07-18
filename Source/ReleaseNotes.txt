@@ -4,6 +4,11 @@ Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
 
+18-July-2011
+
+The authorization header now uses the "Bearer" prefix.
+
+
 12-July-2011
 
 Added an additionalAuthorizationParameters property to the SignIn class, used

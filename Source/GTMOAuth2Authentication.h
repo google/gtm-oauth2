@@ -37,6 +37,12 @@
   #define _INITIALIZE_AS(x)
 #endif
 
+// Until all OAuth 2 providers are up to the same spec, we'll provide a crude
+// way here to override the "Bearer" string in the Authorization header
+#ifndef GTM_OAUTH2_BEARER
+#define GTM_OAUTH2_BEARER "Bearer"
+#endif
+
 // Service provider name allows stored authorization to be associated with
 // the authorizing service
 _EXTERN NSString* const kGTMOAuth2ServiceProviderGoogle _INITIALIZE_AS(@"Google");

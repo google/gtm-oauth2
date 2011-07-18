@@ -182,7 +182,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   if (shouldFetchGoogleUserInfo_) {
     GTMOAuth2Authentication *auth = self.authentication;
 
-    NSString *const uiScope = @"https://www.googleapis.com/auth/userinfo#email";
+    NSString *const uiScope = @"https://www.googleapis.com/auth/userinfo.email";
     NSString *scope = auth.scope;
     if ([scope rangeOfString:uiScope].location == NSNotFound) {
       scope = [GTMOAuth2Authentication scopeWithStrings:scope, uiScope, nil];
