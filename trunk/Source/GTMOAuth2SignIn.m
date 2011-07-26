@@ -28,9 +28,16 @@ static const NSTimeInterval kDefaultNetworkLossTimeoutInterval = 30.0;
 //
 NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 
+
+@interface GTMOAuth2Authentication (InternalMethods)
+- (NSDictionary *)dictionaryWithJSONData:(NSData *)data;
+@end
+
 @interface GTMOAuth2SignIn ()
 @property (assign) BOOL hasHandledCallback;
 @property (retain) GTMHTTPFetcher *pendingFetcher;
+@property (nonatomic, retain, readwrite) NSDictionary *userProfile;
+
 
 - (void)invokeFinalCallbackWithError:(NSError *)error;
 
@@ -72,7 +79,10 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 @synthesize pendingFetcher = pendingFetcher_;
 @synthesize userData = userData_;
 
-@synthesize shouldFetchGoogleUserInfo = shouldFetchGoogleUserInfo_;
+@synthesize shouldFetchGoogleUserEmail = shouldFetchGoogleUserEmail_;
+@synthesize shouldFetchGoogleUserProfile = shouldFetchGoogleUserProfile_;
+@synthesize userProfile = userProfile_;
+
 @synthesize networkLossTimeoutInterval = networkLossTimeoutInterval_;
 
 + (NSURL *)googleAuthorizationURL {
@@ -130,7 +140,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     // for Google authentication, we want to automatically fetch user info
     NSString *host = [authorizationURL host];
     if ([host isEqual:@"accounts.google.com"]) {
-      shouldFetchGoogleUserInfo_ = YES;
+      shouldFetchGoogleUserEmail_ = YES;
     }
 
     // default timeout for a lost internet connection while the server
@@ -148,6 +158,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   [additionalAuthorizationParameters_ release];
   [delegate_ release];
   [pendingFetcher_ release];
+  [userProfile_ release];
   [userData_ release];
 
   [super dealloc];
@@ -177,19 +188,27 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 //  - tell the delegate we're finished
 //
 - (BOOL)startSigningIn {
-  // for signing in to Google, append the scope for obtaining the authenticated
-  // user info
-  if (shouldFetchGoogleUserInfo_) {
-    GTMOAuth2Authentication *auth = self.authentication;
-
-    NSString *const uiScope = @"https://www.googleapis.com/auth/userinfo.email";
+  // For signing in to Google, append the scope for obtaining the authenticated
+  // user email and profile, as appropriate
+  GTMOAuth2Authentication *auth = self.authentication;
+  if (self.shouldFetchGoogleUserEmail) {
+    NSString *const emailScope = @"https://www.googleapis.com/auth/userinfo.email";
     NSString *scope = auth.scope;
-    if ([scope rangeOfString:uiScope].location == NSNotFound) {
-      scope = [GTMOAuth2Authentication scopeWithStrings:scope, uiScope, nil];
+    if ([scope rangeOfString:emailScope].location == NSNotFound) {
+      scope = [GTMOAuth2Authentication scopeWithStrings:scope, emailScope, nil];
       auth.scope = scope;
     }
   }
 
+  if (self.shouldFetchGoogleUserProfile) {
+    NSString *const profileScope = @"https://www.googleapis.com/auth/userinfo.profile";
+    NSString *scope = auth.scope;
+    if ([scope rangeOfString:profileScope].location == NSNotFound) {
+      scope = [GTMOAuth2Authentication scopeWithStrings:scope, profileScope, nil];
+      auth.scope = scope;
+    }
+  }
+  
   // start the authorization
   return [self startWebRequest];
 }
@@ -454,7 +473,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   self.pendingFetcher = nil;
 
   if (error == nil
-      && self.shouldFetchGoogleUserInfo
+      && (self.shouldFetchGoogleUserEmail || self.shouldFetchGoogleUserProfile)
       && [self.authentication.serviceProvider isEqual:kGTMOAuth2ServiceProviderGoogle]) {
     // fetch the user's information from the Google server
     [self fetchGoogleUserInfo];
@@ -466,7 +485,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 
 - (void)fetchGoogleUserInfo {
   // fetch the user's email address
-  NSString *infoURLStr = @"https://www.googleapis.com/userinfo/email";
+  NSString *infoURLStr = @"https://www.googleapis.com/oauth2/v1/userinfo";
   NSURL *infoURL = [NSURL URLWithString:infoURLStr];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:infoURL];
 
@@ -519,9 +538,19 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     }
 #endif
   } else {
-    // we have the authenticated user's info
+    // We have the authenticated user's info
     if (data) {
-      [auth setKeysForResponseData:data];
+      NSDictionary *profileDict = [auth dictionaryWithJSONData:data];
+      if (profileDict) {
+        self.userProfile = profileDict;
+
+        // Save the email into the auth object
+        NSString *email = [profileDict objectForKey:@"email"];
+        [auth setUserEmail:email];
+
+        NSNumber *verified = [profileDict objectForKey:@"verified_email"];
+        [auth setUserEmailIsVerified:[verified stringValue]];
+      }
     }
   }
   [self invokeFinalCallbackWithError:error];

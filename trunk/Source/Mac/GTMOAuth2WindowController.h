@@ -113,7 +113,9 @@
 #elif !__LP64__
   // placeholders: for 32-bit builds, keep the size of the object's ivar section
   // the same with and without blocks
+#ifndef __clang_analyzer__
   id completionPlaceholder_;
+#endif
 #endif
 
   // flag allowing application to quit during display of sign-in sheet on 10.6

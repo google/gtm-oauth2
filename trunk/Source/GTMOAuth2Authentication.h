@@ -109,7 +109,7 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
   GTMHTTPFetcher *refreshFetcher_;
   NSMutableArray *authorizationQueue_;
 
-  id <GTMHTTPFetcherServiceProtocol> fetcherService_;
+  __weak id <GTMHTTPFetcherServiceProtocol> fetcherService_;
 
   Class parserClass_;
 
@@ -177,7 +177,10 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 
 // Property for the optional fetcher service instance to be used to create
 // fetchers
-@property (retain) id <GTMHTTPFetcherServiceProtocol> fetcherService;
+//
+// Fetcher service objects retain authorizations, so this is weak to avoid
+// circular retains.
+@property (assign) __weak id <GTMHTTPFetcherServiceProtocol> fetcherService;
 
 // Alternative JSON parsing class; this should implement the
 // GTMOAuth2ParserClass informal protocol. If this property is
@@ -245,7 +248,6 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 - (NSString *)userAgent;
 
 // Parse and set token and token secret from response data
-- (void)setKeysForResponseData:(NSData *)data;
 - (void)setKeysForResponseString:(NSString *)str;
 - (void)setKeysForResponseDictionary:(NSDictionary *)dict;
 

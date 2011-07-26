@@ -259,6 +259,16 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   // across multiple sign-ins, but the sample app allows it.
   windowController.shouldPersistUser = [mPersistUserCheckbox state];
 
+  // By default, the controller will fetch the user's email, but not the rest of
+  // the user's profile.  The full profile can be requested from Google's server
+  // by setting this property before sign-in:
+  //
+  // windowController.signIn.shouldFetchGoogleUserProfile = YES;
+  //
+  // The profile will be available after sign-in as
+  //
+  //   NSDictionary *profile = windowController.signIn.userProfile;
+
   [windowController signInSheetModalForWindow:mMainWindow
                                      delegate:self
                              finishedSelector:@selector(windowController:finishedWithAuth:error:)];
