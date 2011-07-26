@@ -232,7 +232,6 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   [expirationDate_ release];
   [refreshFetcher_ release];
   [authorizationQueue_ release];
-  [fetcherService_ release];
   [userData_ release];
   [properties_ release];
 
@@ -273,11 +272,6 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
                     userInfo:nil];
   }
   // NSLog(@"keys set ----------------------------\n%@", dict);
-}
-
-- (void)setKeysForResponseData:(NSData *)data {
-  NSDictionary *dict = [[self class] dictionaryWithResponseData:data];
-  [self setKeysForResponseDictionary:dict];
 }
 
 - (void)setKeysForResponseString:(NSString *)str {
@@ -682,6 +676,9 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   id <GTMHTTPFetcherServiceProtocol> fetcherService = self.fetcherService;
   if (fetcherService) {
     fetcher = [fetcherService fetcherWithRequest:request];
+
+    // Don't use an authorizer for an auth token fetch
+    fetcher.authorizer = nil;
   } else {
     fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
   }

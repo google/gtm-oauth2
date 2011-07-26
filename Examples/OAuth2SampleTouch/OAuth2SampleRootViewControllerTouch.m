@@ -290,6 +290,16 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
                                                      forKey:@"hl"];
   viewController.signIn.additionalAuthorizationParameters = params;
 
+  // By default, the controller will fetch the user's email, but not the rest of
+  // the user's profile.  The full profile can be requested from Google's server
+  // by setting this property before sign-in:
+  //
+  //   viewController.signIn.shouldFetchGoogleUserProfile = YES;
+  //
+  // The profile will be available after sign-in as
+  //
+  //   NSDictionary *profile = viewController.signIn.userProfile;
+
   // Optional: display some html briefly before the sign-in page loads
   NSString *html = @"<html><body bgcolor=silver><div align=center>Loading sign-in page...</div></body></html>";
   viewController.initialHTMLString = html;

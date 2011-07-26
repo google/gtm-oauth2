@@ -69,7 +69,9 @@
 
   GTMHTTPFetcher *pendingFetcher_;
 
-  BOOL shouldFetchGoogleUserInfo_;
+  BOOL shouldFetchGoogleUserEmail_;
+  BOOL shouldFetchGoogleUserProfile_;
+  NSDictionary *userProfile_;
 
   SCNetworkReachabilityRef reachabilityRef_;
   NSTimer *networkLossTimer_;
@@ -91,7 +93,14 @@
 
 @property (nonatomic, retain) id userData;
 
-@property (nonatomic, assign) BOOL shouldFetchGoogleUserInfo;
+// By default, signing in to Google will fetch the user's email, but will not
+// fetch the user's profile.
+//
+// The email is saved in the auth object.
+// The profile is available immediately after sign-in.
+@property (nonatomic, assign) BOOL shouldFetchGoogleUserEmail;
+@property (nonatomic, assign) BOOL shouldFetchGoogleUserProfile;
+@property (nonatomic, retain, readonly) NSDictionary *userProfile;
 
 // The default timeout for an unreachable network during display of the
 // sign-in page is 30 seconds; set this to 0 to have no timeout
