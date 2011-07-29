@@ -43,7 +43,7 @@
 // when explicitly canceled by calling cancelSigningIn
 //
 
-#if GTM_INCLUDE_OAUTH2 || (!GTL_REQUIRE_SERVICE_INCLUDES && !GDATA_REQUIRE_SERVICE_INCLUDES)
+#if GTM_INCLUDE_OAUTH2 || !GDATA_REQUIRE_SERVICE_INCLUDES
 
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
@@ -159,4 +159,4 @@
 
 @end
 
-#endif // #if GTM_INCLUDE_OAUTH2 || (!GTL_REQUIRE_SERVICE_INCLUDES && !GDATA_REQUIRE_SERVICE_INCLUDES)
+#endif // #if GTM_INCLUDE_OAUTH2 || !GDATA_REQUIRE_SERVICE_INCLUDES
