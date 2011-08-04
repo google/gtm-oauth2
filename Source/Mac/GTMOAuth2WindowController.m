@@ -63,6 +63,7 @@ const char *kKeychainAccountName = "OAuth";
             userData = userData_,
             properties = properties_;
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret
@@ -80,6 +81,7 @@ const char *kKeychainAccountName = "OAuth";
                      keychainItemName:keychainItemName
                        resourceBundle:bundle];
 }
+#endif
 
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL
@@ -372,9 +374,11 @@ const char *kKeychainAccountName = "OAuth";
 
 #pragma mark Token Revocation
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (void)revokeTokenForGoogleAuthentication:(GTMOAuth2Authentication *)auth {
   [GTMOAuth2SignIn revokeTokenForGoogleAuthentication:auth];
 }
+#endif
 
 #pragma mark WebView methods
 
@@ -554,11 +558,12 @@ decisionListener:(id<WebPolicyDecisionListener>)listener {
   }
 }
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (GTMOAuth2Authentication *)authForGoogleFromKeychainForName:(NSString *)keychainItemName
                                                      clientID:(NSString *)clientID
                                                  clientSecret:(NSString *)clientSecret {
   NSURL *tokenURL = [GTMOAuth2SignIn googleTokenURL];
-  NSString *redirectURI = [GTMOAuth2SignIn googleRedirectURI];
+  NSString *redirectURI = [GTMOAuth2SignIn nativeClientRedirectURI];
 
   GTMOAuth2Authentication *auth;
   auth = [GTMOAuth2Authentication authenticationWithServiceProvider:kGTMOAuth2ServiceProviderGoogle
@@ -571,6 +576,7 @@ decisionListener:(id<WebPolicyDecisionListener>)listener {
                                            authentication:auth];
   return auth;
 }
+#endif
 
 + (BOOL)authorizeFromKeychainForName:(NSString *)keychainItemName
                       authentication:(GTMOAuth2Authentication *)newAuth {

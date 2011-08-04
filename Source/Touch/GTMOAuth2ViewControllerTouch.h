@@ -175,6 +175,7 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 //       finishedWithAuth:(GTMOAuth2Authentication *)auth
 //                  error:(NSError *)error;
 //
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret
@@ -188,6 +189,7 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
        clientSecret:(NSString *)clientSecret
    keychainItemName:(NSString *)keychainItemName
   completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler;
+#endif
 #endif
 
 // init method for authenticating to non-Google services, taking
@@ -217,7 +219,9 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 - (void)cancelSigningIn;
 
 // revocation of an authorized token from Google
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (void)revokeTokenForGoogleAuthentication:(GTMOAuth2Authentication *)auth;
+#endif
 
 //
 // Keychain
@@ -226,9 +230,11 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // create an authentication object for Google services from the access
 // token and secret stored in the keychain; if no token is available, return
 // an unauthorized auth object
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (GTMOAuth2Authentication *)authForGoogleFromKeychainForName:(NSString *)keychainItemName
                                                      clientID:(NSString *)clientID
                                                  clientSecret:(NSString *)clientSecret;
+#endif
 
 // add tokens from the keychain, if available, to the authentication object
 //
