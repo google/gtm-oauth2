@@ -608,7 +608,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "Mac/GTMOAuth2Framework-Info copy 3.plist";
+				INFOPLIST_FILE = "Mac/GTMOAuth2Framework-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				OTHER_CFLAGS = (
 					"-DGTM_OAUTH2_SKIP_GOOGLE_SUPPORT=1",
@@ -643,7 +643,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "Mac/GTMOAuth2Framework-Info copy 3.plist";
+				INFOPLIST_FILE = "Mac/GTMOAuth2Framework-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				OTHER_CFLAGS = "-DGTM_OAUTH2_SKIP_GOOGLE_SUPPORT=1";
 				OTHER_LDFLAGS = (

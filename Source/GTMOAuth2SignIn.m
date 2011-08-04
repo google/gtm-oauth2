@@ -36,8 +36,9 @@ NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 @interface GTMOAuth2SignIn ()
 @property (assign) BOOL hasHandledCallback;
 @property (retain) GTMHTTPFetcher *pendingFetcher;
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 @property (nonatomic, retain, readwrite) NSDictionary *userProfile;
-
+#endif
 
 - (void)invokeFinalCallbackWithError:(NSError *)error;
 
@@ -86,8 +87,8 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 @synthesize shouldFetchGoogleUserEmail = shouldFetchGoogleUserEmail_;
 @synthesize shouldFetchGoogleUserProfile = shouldFetchGoogleUserProfile_;
-#endif
 @synthesize userProfile = userProfile_;
+#endif
 
 @synthesize networkLossTimeoutInterval = networkLossTimeoutInterval_;
 
@@ -170,7 +171,9 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   [additionalAuthorizationParameters_ release];
   [delegate_ release];
   [pendingFetcher_ release];
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
   [userProfile_ release];
+#endif
   [userData_ release];
 
   [super dealloc];
