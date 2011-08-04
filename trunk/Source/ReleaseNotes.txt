@@ -4,6 +4,13 @@ Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
 
+2-August-2011
+
+Projects may now define GTM_OAUTH2_SKIP_GOOGLE_SUPPORT to exclude
+Google-specific code. The GTMOAuth2 project file also now includes
+"non-Google" targets for building without Google-specific code.
+
+
 18-July-2011
 
 The authorization header now uses the "Bearer" prefix.

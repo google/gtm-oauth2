@@ -69,9 +69,11 @@
 
   GTMHTTPFetcher *pendingFetcher_;
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
   BOOL shouldFetchGoogleUserEmail_;
   BOOL shouldFetchGoogleUserProfile_;
   NSDictionary *userProfile_;
+#endif
 
   SCNetworkReachabilityRef reachabilityRef_;
   NSTimer *networkLossTimer_;
@@ -98,9 +100,11 @@
 //
 // The email is saved in the auth object.
 // The profile is available immediately after sign-in.
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 @property (nonatomic, assign) BOOL shouldFetchGoogleUserEmail;
 @property (nonatomic, assign) BOOL shouldFetchGoogleUserProfile;
 @property (nonatomic, retain, readonly) NSDictionary *userProfile;
+#endif
 
 // The default timeout for an unreachable network during display of the
 // sign-in page is 30 seconds; set this to 0 to have no timeout
@@ -116,9 +120,11 @@
             finishedSelector:(SEL)finishedSelector;
 
 // A default authentication object for signing in to Google services
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (GTMOAuth2Authentication *)standardGoogleAuthenticationForScope:(NSString *)scope
                                                          clientID:(NSString *)clientID
                                                      clientSecret:(NSString *)clientSecret;
+#endif
 
 #pragma mark Methods used by the Window Controller
 
@@ -148,14 +154,18 @@
 #pragma mark -
 
 // Revocation of an authorized token from Google
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (void)revokeTokenForGoogleAuthentication:(GTMOAuth2Authentication *)auth;
+#endif
 
 #pragma mark -
 
-// Standard values for authenticating to Google
+// Standard authentication values
++ (NSString *)nativeClientRedirectURI;
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (NSURL *)googleAuthorizationURL;
 + (NSURL *)googleTokenURL;
-+ (NSString *)googleRedirectURI;
+#endif
 
 @end
 

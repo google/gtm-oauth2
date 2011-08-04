@@ -44,7 +44,9 @@ NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 - (BOOL)startWebRequest;
 + (NSMutableURLRequest *)mutableURLRequestWithURL:(NSURL *)oldURL
                                       paramString:(NSString *)paramStr;
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 - (void)fetchGoogleUserInfo;
+#endif
 
 - (void)handleCallbackReached;
 
@@ -52,9 +54,11 @@ NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 finishedWithFetcher:(GTMHTTPFetcher *)fetcher
        error:(NSError *)error;
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 - (void)infoFetcher:(GTMHTTPFetcher *)fetcher
    finishedWithData:(NSData *)data
               error:(NSError *)error;
+#endif
 
 - (void)closeTheWindow;
 
@@ -79,12 +83,15 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 @synthesize pendingFetcher = pendingFetcher_;
 @synthesize userData = userData_;
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 @synthesize shouldFetchGoogleUserEmail = shouldFetchGoogleUserEmail_;
 @synthesize shouldFetchGoogleUserProfile = shouldFetchGoogleUserProfile_;
+#endif
 @synthesize userProfile = userProfile_;
 
 @synthesize networkLossTimeoutInterval = networkLossTimeoutInterval_;
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (NSURL *)googleAuthorizationURL {
   NSString *str = @"https://accounts.google.com/o/oauth2/auth";
   return [NSURL URLWithString:str];
@@ -94,15 +101,17 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   NSString *str = @"https://accounts.google.com/o/oauth2/token";
   return [NSURL URLWithString:str];
 }
+#endif
 
-+ (NSString *)googleRedirectURI {
++ (NSString *)nativeClientRedirectURI {
   return kOOBString;
 }
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (GTMOAuth2Authentication *)standardGoogleAuthenticationForScope:(NSString *)scope
                                                          clientID:(NSString *)clientID
                                                      clientSecret:(NSString *)clientSecret {
-  NSString *redirectURI = [self googleRedirectURI];
+  NSString *redirectURI = [self nativeClientRedirectURI];
   NSURL *tokenURL = [self googleTokenURL];
 
   GTMOAuth2Authentication *auth;
@@ -115,6 +124,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 
   return auth;
 }
+#endif
 
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL
@@ -138,10 +148,12 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     finishedSelector_ = finishedSelector;
 
     // for Google authentication, we want to automatically fetch user info
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
     NSString *host = [authorizationURL host];
     if ([host isEqual:@"accounts.google.com"]) {
       shouldFetchGoogleUserEmail_ = YES;
     }
+#endif
 
     // default timeout for a lost internet connection while the server
     // UI is displayed is 30 seconds
@@ -190,6 +202,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 - (BOOL)startSigningIn {
   // For signing in to Google, append the scope for obtaining the authenticated
   // user email and profile, as appropriate
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
   GTMOAuth2Authentication *auth = self.authentication;
   if (self.shouldFetchGoogleUserEmail) {
     NSString *const emailScope = @"https://www.googleapis.com/auth/userinfo.email";
@@ -208,7 +221,8 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
       auth.scope = scope;
     }
   }
-  
+#endif
+
   // start the authorization
   return [self startWebRequest];
 }
@@ -319,7 +333,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 
   // when we're searching for the window title string, then we can ignore
   // redirects
-  NSString *standardURI = [[self class] googleRedirectURI];
+  NSString *standardURI = [[self class] nativeClientRedirectURI];
   if ([redirectURI isEqual:standardURI]) return NO;
 
   // compare the redirectURI, which tells us when the web sign-in is done,
@@ -472,6 +486,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
        error:(NSError *)error {
   self.pendingFetcher = nil;
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
   if (error == nil
       && (self.shouldFetchGoogleUserEmail || self.shouldFetchGoogleUserProfile)
       && [self.authentication.serviceProvider isEqual:kGTMOAuth2ServiceProviderGoogle]) {
@@ -481,8 +496,12 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     // we're not authorizing with Google, so we're done
     [self invokeFinalCallbackWithError:error];
   }
+#else
+  [self invokeFinalCallbackWithError:error];
+#endif
 }
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 - (void)fetchGoogleUserInfo {
   // fetch the user's email address
   NSString *infoURLStr = @"https://www.googleapis.com/oauth2/v1/userinfo";
@@ -555,6 +574,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   }
   [self invokeFinalCallbackWithError:error];
 }
+#endif // !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 
 // convenience method for making the final call to our delegate
 - (void)invokeFinalCallbackWithError:(NSError *)error {
@@ -692,6 +712,7 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
 
 #pragma mark Token Revocation
 
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (void)revokeTokenForGoogleAuthentication:(GTMOAuth2Authentication *)auth {
   if (auth.canAuthorize
       && [auth.serviceProvider isEqual:kGTMOAuth2ServiceProviderGoogle]) {
@@ -739,6 +760,7 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
 
   [auth reset];
 }
+#endif // !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 
 @end
 
