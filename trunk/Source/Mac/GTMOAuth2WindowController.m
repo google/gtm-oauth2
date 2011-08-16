@@ -169,6 +169,12 @@ const char *kKeychainAccountName = "OAuth";
     hideKeychainCheckbox = YES;
   }
 
+#if DEBUG
+  // Verify that Javascript is enabled
+  BOOL hasJS = [[webView_ preferences] isJavaScriptEnabled];
+  NSAssert(hasJS, @"GTMOAuth2: Javascript is required");
+#endif
+
   [keychainCheckbox_ setHidden:hideKeychainCheckbox];
 }
 
