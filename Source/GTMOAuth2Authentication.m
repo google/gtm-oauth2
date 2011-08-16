@@ -721,22 +721,24 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 
   if (error) {
     // Failed
-    NSDictionary *errorJson = [self dictionaryWithJSONData:data];
-    if ([errorJson count] > 0) {
+    if (data) {
+      NSDictionary *errorJson = [self dictionaryWithJSONData:data];
+      if ([errorJson count] > 0) {
 #if DEBUG
-      NSLog(@"Error %@\nError data:\n%@", error, errorJson);
+        NSLog(@"Error %@\nError data:\n%@", error, errorJson);
 #endif
-      // Add the JSON error body to the userInfo of the error
-      NSMutableDictionary *userInfo;
-      userInfo = [NSMutableDictionary dictionaryWithObject:errorJson
-                                                    forKey:kGTMOAuth2ErrorJSONKey];
-      NSDictionary *prevUserInfo = [error userInfo];
-      if (prevUserInfo) {
-        [userInfo addEntriesFromDictionary:prevUserInfo];
+        // Add the JSON error body to the userInfo of the error
+        NSMutableDictionary *userInfo;
+        userInfo = [NSMutableDictionary dictionaryWithObject:errorJson
+                                                      forKey:kGTMOAuth2ErrorJSONKey];
+        NSDictionary *prevUserInfo = [error userInfo];
+        if (prevUserInfo) {
+          [userInfo addEntriesFromDictionary:prevUserInfo];
+        }
+        error = [NSError errorWithDomain:[error domain]
+                                    code:[error code]
+                                userInfo:userInfo];
       }
-      error = [NSError errorWithDomain:[error domain]
-                                  code:[error code]
-                              userInfo:userInfo];
     }
   } else {
     // Succeeded; we have an access token
