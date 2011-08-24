@@ -421,7 +421,10 @@ const char *kKeychainAccountName = "OAuth";
 }
 
 - (void)windowWillClose:(NSNotification *)note {
-  [self handlePrematureWindowClose];
+  if (isWindowShown_) {
+    [self handlePrematureWindowClose];
+  }
+  isWindowShown_ = NO;
 }
 
 - (void)webView:(WebView *)webView
