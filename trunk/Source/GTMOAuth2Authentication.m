@@ -571,11 +571,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
     if (!hasAccessToken) {
       shouldRefresh = YES;
     } else {
-      // We'll consider the token expired if it expires 5 seconds from now
+      // We'll consider the token expired if it expires 60 seconds from now
       // or earlier
       NSDate *expirationDate = self.expirationDate;
       NSTimeInterval timeToExpire = [expirationDate timeIntervalSinceNow];
-      if (expirationDate == nil || timeToExpire < 5.0) {
+      if (expirationDate == nil || timeToExpire < 60.0) {
         // access token has expired, or will in a few seconds
         shouldRefresh = YES;
       }
@@ -720,24 +720,29 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   [self notifyFetchIsRunning:NO fetcher:fetcher type:nil];
 
   if (error) {
-    // Failed
-    if (data) {
-      NSDictionary *errorJson = [self dictionaryWithJSONData:data];
-      if ([errorJson count] > 0) {
+    // Failed; if the error body is JSON, parse it and add it to the error's
+    // userInfo dictionary
+    if ([data length] > 0) {
+      NSDictionary *responseHeaders = [fetcher responseHeaders];
+      NSString *responseType = [responseHeaders valueForKey:@"Content-Type"];
+      if ([responseType hasPrefix:@"application/json"]) {
+        NSDictionary *errorJson = [self dictionaryWithJSONData:data];
+        if ([errorJson count] > 0) {
 #if DEBUG
-        NSLog(@"Error %@\nError data:\n%@", error, errorJson);
+          NSLog(@"Error %@\nError data:\n%@", error, errorJson);
 #endif
-        // Add the JSON error body to the userInfo of the error
-        NSMutableDictionary *userInfo;
-        userInfo = [NSMutableDictionary dictionaryWithObject:errorJson
-                                                      forKey:kGTMOAuth2ErrorJSONKey];
-        NSDictionary *prevUserInfo = [error userInfo];
-        if (prevUserInfo) {
-          [userInfo addEntriesFromDictionary:prevUserInfo];
+          // Add the JSON error body to the userInfo of the error
+          NSMutableDictionary *userInfo;
+          userInfo = [NSMutableDictionary dictionaryWithObject:errorJson
+                                                        forKey:kGTMOAuth2ErrorJSONKey];
+          NSDictionary *prevUserInfo = [error userInfo];
+          if (prevUserInfo) {
+            [userInfo addEntriesFromDictionary:prevUserInfo];
+          }
+          error = [NSError errorWithDomain:[error domain]
+                                      code:[error code]
+                                  userInfo:userInfo];
         }
-        error = [NSError errorWithDomain:[error domain]
-                                    code:[error code]
-                                userInfo:userInfo];
       }
     }
   } else {
