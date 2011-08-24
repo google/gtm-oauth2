@@ -2,17 +2,16 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1056</int>
-		<string key="IBDocument.SystemVersion">10F569</string>
-		<string key="IBDocument.InterfaceBuilderVersion">823</string>
-		<string key="IBDocument.AppKitVersion">1038.29</string>
+		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.InterfaceBuilderVersion">851</string>
+		<string key="IBDocument.AppKitVersion">1038.35</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">132</string>
+			<string key="NS.object.0">141</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="9"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -81,7 +80,7 @@
 						<bool key="IBUIAutoresizesArchivedViewToFullSize">NO</bool>
 						<string key="IBUITitle">OAuthTouchSample</string>
 						<object class="IBUIView" key="IBUIView" id="601655732">
-							<reference key="NSNextResponder"/>
+							<nil key="NSNextResponder"/>
 							<int key="NSvFlags">274</int>
 							<object class="NSMutableArray" key="NSSubviews">
 								<bool key="EncodedWithXMLCoder">YES</bool>
@@ -401,7 +400,6 @@
 								</object>
 							</object>
 							<string key="NSFrame">{{-9, -1}, {786, 962}}</string>
-							<reference key="NSSuperview"/>
 							<object class="NSColor" key="IBUIBackgroundColor">
 								<int key="NSColorSpace">3</int>
 								<bytes key="NSWhite">MC43NQA</bytes>
@@ -411,8 +409,7 @@
 							<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						</object>
 						<object class="IBUINavigationItem" key="IBUINavigationItem" id="293262906">
-							<reference key="IBUINavigationBar"/>
-							<string key="IBUITitle">OAuthSampleTouch</string>
+							<string key="IBUITitle">OAuth2SampleTouch</string>
 							<object class="IBUIBarButtonItem" key="IBUIBackBarButtonItem" id="484572740">
 								<string key="IBUITitle">Cancel</string>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -908,7 +905,7 @@
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABCXAAAw3IAAA</bytes>
 					</object>
-					<string>{{9, 104}, {768, 1024}}</string>
+					<string>{{425, 71}, {768, 1024}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>OAuth2SampleRootViewControllerTouch</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -1431,6 +1428,6 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">OAuth2SampleTouch.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<string key="IBCocoaTouchPluginVersion">132</string>
+		<string key="IBCocoaTouchPluginVersion">141</string>
 	</data>
 </archive>
