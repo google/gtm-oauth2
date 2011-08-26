@@ -264,13 +264,13 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   SEL finishedSel = @selector(viewController:finishedWithAuth:error:);
 
   GTMOAuth2ViewControllerTouch *viewController;
-  viewController = [[[GTMOAuth2ViewControllerTouch alloc] initWithScope:scope
-                                                               clientID:clientID
-                                                           clientSecret:clientSecret
-                                                       keychainItemName:keychainItemName
-                                                               delegate:self
-                                                       finishedSelector:finishedSel] autorelease];
-
+  viewController = [GTMOAuth2ViewControllerTouch controllerWithScope:scope
+                                                            clientID:clientID
+                                                        clientSecret:clientSecret
+                                                    keychainItemName:keychainItemName
+                                                            delegate:self
+                                                    finishedSelector:finishedSel];
+  
   // You can set the title of the navigationItem of the controller here, if you
   // want.
 
@@ -348,13 +348,15 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   NSURL *authURL = [NSURL URLWithString:@"https://api.dailymotion.com/oauth/authorize?display=mobile"];
 
   // Display the authentication view
-  GTMOAuth2ViewControllerTouch *viewController;
-  viewController = [[[GTMOAuth2ViewControllerTouch alloc] initWithAuthentication:auth
-                                                                authorizationURL:authURL
-                                                                keychainItemName:keychainItemName
-                                                                        delegate:self
-                                                                finishedSelector:@selector(viewController:finishedWithAuth:error:)] autorelease];
+  SEL sel = @selector(viewController:finishedWithAuth:error:);
 
+  GTMOAuth2ViewControllerTouch *viewController;
+  viewController = [GTMOAuth2ViewControllerTouch controllerWithAuthentication:auth
+                                                             authorizationURL:authURL
+                                                             keychainItemName:keychainItemName
+                                                                     delegate:self
+                                                             finishedSelector:sel];
+  
   // We can set a URL for deleting the cookies after sign-in so the next time
   // the user signs in, the browser does not assume the user is already signed
   // in

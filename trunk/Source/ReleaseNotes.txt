@@ -4,6 +4,11 @@ Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
 
+25-August-2011
+
+Added convenience methods for creating autoreleased controllers.
+
+
 24-August-2011
 
 Fixed sign-in when Mac window controller displays as a standalone

@@ -65,6 +65,20 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
             properties = properties_;
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
++ (id)controllerWithScope:(NSString *)scope
+                 clientID:(NSString *)clientID
+             clientSecret:(NSString *)clientSecret
+         keychainItemName:(NSString *)keychainItemName
+                 delegate:(id)delegate
+         finishedSelector:(SEL)finishedSelector {
+  return [[[self alloc] initWithScope:scope
+                             clientID:clientID
+                         clientSecret:clientSecret
+                     keychainItemName:keychainItemName
+                             delegate:delegate
+                     finishedSelector:finishedSelector] autorelease];
+}
+
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret
@@ -86,6 +100,18 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 }
 
 #if NS_BLOCKS_AVAILABLE
+
++ (id)controllerWithScope:(NSString *)scope
+                 clientID:(NSString *)clientID
+             clientSecret:(NSString *)clientSecret
+         keychainItemName:(NSString *)keychainItemName
+        completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler {
+  return [[[self alloc] initWithScope:scope
+                             clientID:clientID
+                         clientSecret:clientSecret
+                     keychainItemName:keychainItemName
+                    completionHandler:handler] autorelease];
+}
 
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
@@ -112,6 +138,18 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 
 #endif // NS_BLOCKS_AVAILABLE
 #endif // !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
+
++ (id)controllerWithAuthentication:(GTMOAuth2Authentication *)auth
+                  authorizationURL:(NSURL *)authorizationURL
+                  keychainItemName:(NSString *)keychainItemName
+                          delegate:(id)delegate
+                  finishedSelector:(SEL)finishedSelector {
+  return [[[self alloc] initWithAuthentication:auth
+                              authorizationURL:authorizationURL
+                              keychainItemName:keychainItemName
+                                      delegate:delegate
+                              finishedSelector:finishedSelector] autorelease];  
+}
 
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL
@@ -150,6 +188,16 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 }
 
 #if NS_BLOCKS_AVAILABLE
++ (id)controllerWithAuthentication:(GTMOAuth2Authentication *)auth
+                  authorizationURL:(NSURL *)authorizationURL
+                  keychainItemName:(NSString *)keychainItemName
+                 completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler {
+  return [[[self alloc] initWithAuthentication:auth
+                              authorizationURL:authorizationURL
+                              keychainItemName:keychainItemName
+                             completionHandler:handler] autorelease];
+}
+
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL
             keychainItemName:(NSString *)keychainItemName

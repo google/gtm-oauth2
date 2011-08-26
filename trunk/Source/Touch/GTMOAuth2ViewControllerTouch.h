@@ -153,7 +153,7 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 
 @property (nonatomic, retain) NSDictionary *properties;
 
-// init method for authenticating to Google services
+// Method for creating a controller to authenticate to Google services
 //
 // scope is the requested scope of authorization
 //   (like "http://www.google.com/m8/feeds")
@@ -176,6 +176,13 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 //                  error:(NSError *)error;
 //
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
++ (id)controllerWithScope:(NSString *)scope
+                 clientID:(NSString *)clientID
+             clientSecret:(NSString *)clientSecret
+         keychainItemName:(NSString *)keychainItemName
+                 delegate:(id)delegate
+         finishedSelector:(SEL)finishedSelector;
+
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret
@@ -184,6 +191,12 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
    finishedSelector:(SEL)finishedSelector;
 
 #if NS_BLOCKS_AVAILABLE
++ (id)controllerWithScope:(NSString *)scope
+                 clientID:(NSString *)clientID
+             clientSecret:(NSString *)clientSecret
+         keychainItemName:(NSString *)keychainItemName
+        completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler;
+
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret
@@ -192,10 +205,15 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 #endif
 #endif
 
-// init method for authenticating to non-Google services, taking
+// Create a controller for authenticating to non-Google services, taking
 //   explicit endpoint URLs and an authentication object
-//
-// this is the designated initializer
++ (id)controllerWithAuthentication:(GTMOAuth2Authentication *)auth
+                  authorizationURL:(NSURL *)authorizationURL
+                  keychainItemName:(NSString *)keychainItemName  // may be nil
+                          delegate:(id)delegate
+                  finishedSelector:(SEL)finishedSelector;
+
+// This is the designated initializer
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL
             keychainItemName:(NSString *)keychainItemName
@@ -203,6 +221,11 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
             finishedSelector:(SEL)finishedSelector;
 
 #if NS_BLOCKS_AVAILABLE
++ (id)controllerWithAuthentication:(GTMOAuth2Authentication *)auth
+                  authorizationURL:(NSURL *)authorizationURL
+                  keychainItemName:(NSString *)keychainItemName  // may be nil
+                 completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler;
+
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL
             keychainItemName:(NSString *)keychainItemName
