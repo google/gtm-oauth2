@@ -64,13 +64,24 @@ const char *kKeychainAccountName = "OAuth";
             properties = properties_;
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
+// Create a controller for authenticating to Google services
++ (id)controllerWithScope:(NSString *)scope
+                 clientID:(NSString *)clientID
+             clientSecret:(NSString *)clientSecret
+         keychainItemName:(NSString *)keychainItemName
+           resourceBundle:(NSBundle *)bundle {
+  return [[[self alloc] initWithScope:scope
+                             clientID:clientID
+                         clientSecret:clientSecret
+                     keychainItemName:keychainItemName
+                       resourceBundle:bundle] autorelease];
+}
+
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret
    keychainItemName:(NSString *)keychainItemName
      resourceBundle:(NSBundle *)bundle {
-  // convenient entry point for Google authentication
-
   GTMOAuth2Authentication *auth;
   auth = [GTMOAuth2SignIn standardGoogleAuthenticationForScope:scope
                                                       clientID:clientID
@@ -82,6 +93,17 @@ const char *kKeychainAccountName = "OAuth";
                        resourceBundle:bundle];
 }
 #endif
+
+// Create a controller for authenticating to any service
++ (id)controllerWithAuthentication:(GTMOAuth2Authentication *)auth
+                  authorizationURL:(NSURL *)authorizationURL
+                  keychainItemName:(NSString *)keychainItemName
+                    resourceBundle:(NSBundle *)bundle {
+ return [[[self alloc] initWithAuthentication:auth
+                             authorizationURL:authorizationURL
+                             keychainItemName:keychainItemName
+                               resourceBundle:bundle] autorelease];
+}
 
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL

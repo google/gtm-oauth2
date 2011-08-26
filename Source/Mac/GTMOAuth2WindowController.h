@@ -214,7 +214,7 @@
 
 - (IBAction)closeWindow:(id)sender;
 
-// Init method for authenticating to Google services
+// Create a controller for authenticating to Google services
 //
 // scope is the requested scope of authorization
 //   (like "http://www.google.com/m8/feeds")
@@ -226,17 +226,27 @@
 //
 // resourceBundle may be nil if the window is in the main bundle's nib
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
++ (id)controllerWithScope:(NSString *)scope
+                 clientID:(NSString *)clientID
+             clientSecret:(NSString *)clientSecret
+         keychainItemName:(NSString *)keychainItemName  // may be nil
+           resourceBundle:(NSBundle *)bundle;           // may be nil
+
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret
-   keychainItemName:(NSString *)keychainItemName  // may be nil
-     resourceBundle:(NSBundle *)bundle;           // may be nil
+   keychainItemName:(NSString *)keychainItemName
+     resourceBundle:(NSBundle *)bundle;
 #endif
 
-// Init method for authenticating to non-Google services, taking
+// Create a controller for authenticating to non-Google services, taking
 //   explicit endpoint URLs and an authentication object
-//
-// this is the designated initializer
++ (id)controllerWithAuthentication:(GTMOAuth2Authentication *)auth
+                  authorizationURL:(NSURL *)authorizationURL
+                  keychainItemName:(NSString *)keychainItemName  // may be nil
+                    resourceBundle:(NSBundle *)bundle;           // may be nil
+
+// This is the designated initializer
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL
             keychainItemName:(NSString *)keychainItemName

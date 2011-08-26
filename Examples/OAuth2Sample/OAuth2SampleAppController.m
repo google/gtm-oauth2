@@ -229,12 +229,12 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
 
   // Display the autentication sheet
   GTMOAuth2WindowController *windowController;
-  windowController = [[[GTMOAuth2WindowController alloc] initWithScope:scope
-                                                              clientID:clientID
-                                                          clientSecret:clientSecret
-                                                      keychainItemName:kKeychainItemName
-                                                         resourceBundle:nil] autorelease];
-
+  windowController = [GTMOAuth2WindowController controllerWithScope:scope
+                                                           clientID:clientID
+                                                       clientSecret:clientSecret
+                                                   keychainItemName:kKeychainItemName
+                                                     resourceBundle:nil];
+  
   // During display of the sign-in window, loss and regain of network
   // connectivity will be reported with the notifications
   // kGTMOAuth2NetworkLost/kGTMOAuth2NetworkFound
@@ -311,13 +311,13 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
 
   // display the autentication sheet
   NSURL *authURL = [NSURL URLWithString:@"https://api.dailymotion.com/oauth/authorize?display=popup"];
-
+  
   GTMOAuth2WindowController *windowController;
-  windowController = [[[GTMOAuth2WindowController alloc] initWithAuthentication:auth
-                                                               authorizationURL:authURL
-                                                               keychainItemName:kDailyMotionKeychainItemName
-                                                                 resourceBundle:nil] autorelease];
-
+  windowController = [GTMOAuth2WindowController controllerWithAuthentication:auth
+                                                            authorizationURL:authURL
+                                                            keychainItemName:kDailyMotionKeychainItemName
+                                                              resourceBundle:nil];
+  
   // optional: display some html briefly before the sign-in page loads
   NSString *html = @"<html><body><div align=center>Loading sign-in page...</div></body></html>";
   [windowController setInitialHTMLString:html];
