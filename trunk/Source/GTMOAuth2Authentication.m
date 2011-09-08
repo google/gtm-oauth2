@@ -719,13 +719,16 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
                error:(NSError *)error {
   [self notifyFetchIsRunning:NO fetcher:fetcher type:nil];
 
+  NSDictionary *responseHeaders = [fetcher responseHeaders];
+  NSString *responseType = [responseHeaders valueForKey:@"Content-Type"];
+  BOOL isResponseJSON = [responseType hasPrefix:@"application/json"];
+  BOOL hasData = ([data length] > 0);
+
   if (error) {
     // Failed; if the error body is JSON, parse it and add it to the error's
     // userInfo dictionary
-    if ([data length] > 0) {
-      NSDictionary *responseHeaders = [fetcher responseHeaders];
-      NSString *responseType = [responseHeaders valueForKey:@"Content-Type"];
-      if ([responseType hasPrefix:@"application/json"]) {
+    if (hasData) {
+      if (isResponseJSON) {
         NSDictionary *errorJson = [self dictionaryWithJSONData:data];
         if ([errorJson count] > 0) {
 #if DEBUG
@@ -747,16 +750,29 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
     }
   } else {
     // Succeeded; we have an access token
-    [self setKeysForResponseJSONData:data];
+#if DEBUG
+    NSAssert(hasData, @"data missing in token response");
+#endif
+
+    if (hasData) {
+      if (isResponseJSON) {
+        [self setKeysForResponseJSONData:data];
+      } else {
+        // Support for legacy token servers that return form-urlencoded data
+        NSString *dataStr = [[[NSString alloc] initWithData:data
+                                                   encoding:NSUTF8StringEncoding] autorelease];
+        [self setKeysForResponseString:dataStr];
+      }
 
 #if DEBUG
-    // Watch for token exchanges that return a non-bearer or unlabeled token
-    NSString *tokenType = [self tokenType];
-    if (tokenType == nil
-        || [tokenType caseInsensitiveCompare:@"bearer"] != NSOrderedSame) {
-      NSLog(@"GTMOAuth2: Unexpected token type: %@", tokenType);
-    }
+      // Watch for token exchanges that return a non-bearer or unlabeled token
+      NSString *tokenType = [self tokenType];
+      if (tokenType == nil
+          || [tokenType caseInsensitiveCompare:@"bearer"] != NSOrderedSame) {
+        NSLog(@"GTMOAuth2: Unexpected token type: %@", tokenType);
+      }
 #endif
+    }
   }
 
   id delegate = [fetcher propertyForKey:kTokenFetchDelegateKey];

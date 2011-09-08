@@ -4,6 +4,11 @@ Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
 
+7-September-2011
+
+Add support for token servers providing url-encoded responses (thanks ivo)
+
+
 25-August-2011
 
 Added convenience methods for creating autoreleased controllers.
