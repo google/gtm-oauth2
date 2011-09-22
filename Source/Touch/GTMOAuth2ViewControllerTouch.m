@@ -178,7 +178,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
     // set the browserCookiesURL property explicitly
     NSString *authorizationHost = [signIn_.authorizationURL host];
     if ([authorizationHost isEqual:@"accounts.google.com"]) {
-      NSURL *cookiesURL = [NSURL URLWithString:@"https://www.google.com/accounts"];
+      NSURL *cookiesURL = [NSURL URLWithString:@"https://accounts.google.com/"];
       [self setBrowserCookiesURL:cookiesURL];
     }
 
