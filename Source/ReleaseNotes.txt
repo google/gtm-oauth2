@@ -4,6 +4,13 @@ Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
 
+21-September-2011
+
+Added additionalTokenRequestParameters property to the authorization object.
+
+Updated the domain for clearing cookies when signing into Google services.
+
+
 7-September-2011
 
 Add support for token servers providing url-encoded responses (thanks ivo)
