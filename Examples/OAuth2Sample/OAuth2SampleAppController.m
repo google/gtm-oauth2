@@ -201,7 +201,7 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   // Remove the stored DailyMotion authentication from the keychain, if any
   [GTMOAuth2WindowController removeAuthFromKeychainForName:kDailyMotionKeychainItemName];
 
-  // Discard our retains authentication object
+  // Discard our retained authentication object
   [self setAuthentication:nil];
 
   [self updateUI];

@@ -161,6 +161,7 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
             parameters = parameters_,
             tokenURL = tokenURL_,
             expirationDate = expirationDate_,
+            additionalTokenRequestParameters = additionalTokenRequestParameters_,
             refreshFetcher = refreshFetcher_,
             fetcherService = fetcherService_,
             parserClass = parserClass_,
@@ -230,6 +231,7 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   [parameters_ release];
   [tokenURL_ release];
   [expirationDate_ release];
+  [additionalTokenRequestParameters_ release];
   [refreshFetcher_ release];
   [authorizationQueue_ release];
   [userData_ release];
@@ -658,6 +660,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   NSString *clientSecret = self.clientSecret;
   if ([clientSecret length] > 0) {
     [paramsDict setObject:clientSecret forKey:@"client_secret"];
+  }
+
+  NSDictionary *additionalParams = self.additionalTokenRequestParameters;
+  if (additionalParams) {
+    [paramsDict addEntriesFromDictionary:additionalParams];
   }
 
   NSString *paramStr = [[self class] encodedQueryParametersForDictionary:paramsDict];
