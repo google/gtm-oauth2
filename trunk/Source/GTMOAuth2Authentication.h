@@ -105,6 +105,8 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
   NSURL *tokenURL_;
   NSDate *expirationDate_;
 
+  NSDictionary *additionalTokenRequestParameters_;
+
   // queue of requests for authorization waiting for a valid access token
   GTMHTTPFetcher *refreshFetcher_;
   NSMutableArray *authorizationQueue_;
@@ -121,6 +123,9 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 }
 
 // OAuth2 standard protocol parameters
+//
+// These should be the plain strings; any needed escaping will be provided by
+// the library.
 
 // Request properties
 @property (copy) NSString *clientID;
@@ -128,6 +133,10 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 @property (copy) NSString *redirectURI;
 @property (copy) NSString *scope;
 @property (copy) NSString *tokenType;
+
+// Apps may optionally add parameters here to be provided to the token
+// endpoint on token requests and refreshes
+@property (retain) NSDictionary *additionalTokenRequestParameters;
 
 // Response properties
 @property (retain) NSMutableDictionary *parameters;
