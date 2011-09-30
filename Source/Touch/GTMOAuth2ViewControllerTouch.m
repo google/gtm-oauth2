@@ -456,7 +456,14 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
     if (isDateValid) {
       // Display the request.
       self.request = request;
-      [self.webView loadRequest:[self request]];
+      BOOL shouldWaitForHTML = ([self.initialHTMLString length] > 0);
+      if (shouldWaitForHTML) {
+        [self.webView performSelector:@selector(loadRequest:)
+                           withObject:request
+                           afterDelay:0.05];
+      } else {
+        [self.webView loadRequest:request];
+      }
     } else {
       // clock date is invalid, so signing in would fail with an unhelpful error
       // from the server. Warn the user in an html string showing a watch icon,
