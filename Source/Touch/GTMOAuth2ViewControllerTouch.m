@@ -87,11 +87,13 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
    finishedSelector:(SEL)finishedSelector {
   // convenient entry point for Google authentication
 
+  Class signInClass = [[self class] signInClass];
+
   GTMOAuth2Authentication *auth;
-  auth = [GTMOAuth2SignIn standardGoogleAuthenticationForScope:scope
-                                                      clientID:clientID
-                                                  clientSecret:clientSecret];
-  NSURL *authorizationURL = [GTMOAuth2SignIn googleAuthorizationURL];
+  auth = [signInClass standardGoogleAuthenticationForScope:scope
+                                                  clientID:clientID
+                                              clientSecret:clientSecret];
+  NSURL *authorizationURL = [signInClass googleAuthorizationURL];
   return [self initWithAuthentication:auth
                      authorizationURL:authorizationURL
                      keychainItemName:keychainItemName
@@ -120,11 +122,13 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler {
   // convenient entry point for Google authentication
 
+  Class signInClass = [[self class] signInClass];
+
   GTMOAuth2Authentication *auth;
-  auth = [GTMOAuth2SignIn standardGoogleAuthenticationForScope:scope
-                                                      clientID:clientID
-                                                  clientSecret:clientSecret];
-  NSURL *authorizationURL = [GTMOAuth2SignIn googleAuthorizationURL];
+  auth = [signInClass standardGoogleAuthenticationForScope:scope
+                                                  clientID:clientID
+                                              clientSecret:clientSecret];
+  NSURL *authorizationURL = [signInClass googleAuthorizationURL];
   self = [self initWithAuthentication:auth
                      authorizationURL:authorizationURL
                      keychainItemName:keychainItemName
@@ -164,12 +168,14 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
     delegate_ = [delegate retain];
     finishedSelector_ = finishedSelector;
 
+    Class signInClass = [[self class] signInClass];
+
     // use the supplied auth and OAuth endpoint URLs
-    signIn_ = [[GTMOAuth2SignIn alloc] initWithAuthentication:auth
-                                             authorizationURL:authorizationURL
-                                                     delegate:self
-                                           webRequestSelector:@selector(signIn:displayRequest:)
-                                             finishedSelector:@selector(signIn:finishedWithAuth:error:)];
+    signIn_ = [[signInClass alloc] initWithAuthentication:auth
+                                         authorizationURL:authorizationURL
+                                                 delegate:self
+                                       webRequestSelector:@selector(signIn:displayRequest:)
+                                         finishedSelector:@selector(signIn:finishedWithAuth:error:)];
     
     // if the user is signing in to a Google service, we'll delete the
     // Google authentication browser cookies upon completion
@@ -216,6 +222,8 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 #endif
 
 - (void)dealloc {
+  [webView_ setDelegate:nil];
+
   [backButton_ release];
   [forwardButton_ release];
   [navButtonsView_ release];
@@ -245,8 +253,9 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 + (GTMOAuth2Authentication *)authForGoogleFromKeychainForName:(NSString *)keychainItemName
                                                      clientID:(NSString *)clientID
                                                  clientSecret:(NSString *)clientSecret {
-  NSURL *tokenURL = [GTMOAuth2SignIn googleTokenURL];
-  NSString *redirectURI = [GTMOAuth2SignIn nativeClientRedirectURI];
+  Class signInClass = [self signInClass];
+  NSURL *tokenURL = [signInClass googleTokenURL];
+  NSString *redirectURI = [signInClass nativeClientRedirectURI];
   
   GTMOAuth2Authentication *auth;
   auth = [GTMOAuth2Authentication authenticationWithServiceProvider:kGTMOAuth2ServiceProviderGoogle
@@ -376,6 +385,19 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   // The sign-in object's cancel method will close the window
   [signIn_ cancelSigningIn];
   hasDoneFinalRedirect_ = YES;
+}
+
+static Class gSignInClass = Nil;
+
++ (Class)signInClass {
+  if (gSignInClass == Nil) {
+    gSignInClass = [GTMOAuth2SignIn class];
+  }
+  return gSignInClass;
+}
+
++ (void)setSignInClass:(Class)theClass {
+  gSignInClass = theClass;
 }
 
 #pragma mark Token Revocation
@@ -650,6 +672,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 #endif
   }
 
+  [signIn_ cookiesChanged:[NSHTTPCookieStorage sharedHTTPCookieStorage]];
 
   [self updateUI];
 }
