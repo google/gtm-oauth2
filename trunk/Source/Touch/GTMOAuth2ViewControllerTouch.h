@@ -239,6 +239,10 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // subclasses may override authNibName to specify a custom name
 + (NSString *)authNibName;
 
+// apps may replace the sign-in class with their own subclass of it
++ (Class)signInClass;
++ (void)setSignInClass:(Class)theClass;
+
 - (void)cancelSigningIn;
 
 // revocation of an authorized token from Google

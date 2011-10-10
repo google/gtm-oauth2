@@ -48,6 +48,7 @@ NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 - (void)fetchGoogleUserInfo;
 #endif
+- (void)finishSignInWithError:(NSError *)error;
 
 - (void)handleCallbackReached;
 
@@ -230,15 +231,18 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   return [self startWebRequest];
 }
 
-- (BOOL)startWebRequest {
+- (NSMutableDictionary *)parametersForWebRequest {
   GTMOAuth2Authentication *auth = self.authentication;
   NSString *clientID = auth.clientID;
   NSString *redirectURI = auth.redirectURI;
 
-  if ([clientID length] == 0 || [redirectURI length] == 0) {
+  BOOL hasClientID = ([clientID length] > 0);
+  BOOL hasRedirect = ([redirectURI length] > 0
+                      || redirectURI == [[self class] nativeClientRedirectURI]);
+  if (!hasClientID || !hasRedirect) {
 #if DEBUG
-    NSAssert([clientID length] > 0, @"GTMOAuth2SignIn: clientID needed");
-    NSAssert([redirectURI length] > 0, @"GTMOAuth2SignIn: redirectURI needed");
+    NSAssert(hasClientID, @"GTMOAuth2SignIn: clientID needed");
+    NSAssert(hasRedirect, @"GTMOAuth2SignIn: redirectURI needed");
 #endif
     return NO;
   }
@@ -253,9 +257,17 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   NSMutableDictionary *paramsDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                      @"code", @"response_type",
                                      clientID, @"client_id",
-                                     redirectURI, @"redirect_uri",
                                      scope, @"scope", // scope may be nil
                                      nil];
+  if (redirectURI) {
+    [paramsDict setObject:redirectURI forKey:@"redirect_uri"];
+  }
+  return paramsDict;
+}
+
+- (BOOL)startWebRequest {
+  NSMutableDictionary *paramsDict = [self parametersForWebRequest];
+
   NSDictionary *additionalParams = self.additionalAuthorizationParameters;
   if (additionalParams) {
     [paramsDict addEntriesFromDictionary:additionalParams];
@@ -333,11 +345,12 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   // for Google's installed app sign-in protocol, we'll look for the
   // end-of-sign-in indicator in the titleChanged: method below
   NSString *redirectURI = self.authentication.redirectURI;
+  if (redirectURI == nil) return NO;
 
   // when we're searching for the window title string, then we can ignore
   // redirects
   NSString *standardURI = [[self class] nativeClientRedirectURI];
-  if ([redirectURI isEqual:standardURI]) return NO;
+  if (standardURI != nil && [redirectURI isEqual:standardURI]) return NO;
 
   // compare the redirectURI, which tells us when the web sign-in is done,
   // to the actual redirection
@@ -417,6 +430,11 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   return NO;
 }
 
+- (BOOL)cookiesChanged:(NSHTTPCookieStorage *)cookieStorage {
+  // We're ignoring these.
+  return NO;
+};
+
 // entry point for the window controller to tell us when a load has failed
 // in the webview
 //
@@ -480,7 +498,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   }
 
   if (error) {
-    [self invokeFinalCallbackWithError:error];
+    [self finishSignInWithError:error];
   }
 }
 
@@ -497,10 +515,10 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     [self fetchGoogleUserInfo];
   } else {
     // we're not authorizing with Google, so we're done
-    [self invokeFinalCallbackWithError:error];
+    [self finishSignInWithError:error];
   }
 #else
-  [self invokeFinalCallbackWithError:error];
+  [self finishSignInWithError:error];
 #endif
 }
 
@@ -575,8 +593,13 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
       }
     }
   }
+  [self finishSignInWithError:error];
+}
+
+- (void)finishSignInWithError:(NSError *)error {
   [self invokeFinalCallbackWithError:error];
 }
+
 #endif // !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 
 // convenience method for making the final call to our delegate
@@ -721,16 +744,16 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
       && [auth.serviceProvider isEqual:kGTMOAuth2ServiceProviderGoogle]) {
 
     NSString *urlStr = @"https://accounts.google.com/o/oauth2/revoke";
-    
+
     // create a signed revocation request for this authentication object
     NSURL *url = [NSURL URLWithString:urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    
+
     NSString *token = auth.refreshToken;
     NSString *encoded = [GTMOAuth2Authentication encodedOAuthValueForString:token];
     NSString *body = [@"token=" stringByAppendingString:encoded];
-    
+
     [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
     [request setHTTPMethod:@"POST"];
 
@@ -768,4 +791,3 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
 @end
 
 #endif // #if GTM_INCLUDE_OAUTH2 || !GDATA_REQUIRE_SERVICE_INCLUDES
-

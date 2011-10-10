@@ -287,6 +287,10 @@
 // Subclasses may override authNibName to specify a custom name
 + (NSString *)authNibName;
 
+// apps may replace the sign-in class with their own subclass of it
++ (Class)signInClass;
++ (void)setSignInClass:(Class)theClass;
+
 // Revocation of an authorized token from Google
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (void)revokeTokenForGoogleAuthentication:(GTMOAuth2Authentication *)auth;

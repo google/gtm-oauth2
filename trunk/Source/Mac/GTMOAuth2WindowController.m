@@ -82,11 +82,12 @@ const char *kKeychainAccountName = "OAuth";
        clientSecret:(NSString *)clientSecret
    keychainItemName:(NSString *)keychainItemName
      resourceBundle:(NSBundle *)bundle {
+  Class signInClass = [[self class] signInClass];
   GTMOAuth2Authentication *auth;
-  auth = [GTMOAuth2SignIn standardGoogleAuthenticationForScope:scope
-                                                      clientID:clientID
-                                                  clientSecret:clientSecret];
-  NSURL *authorizationURL = [GTMOAuth2SignIn googleAuthorizationURL];
+  auth = [signInClass standardGoogleAuthenticationForScope:scope
+                                                  clientID:clientID
+                                              clientSecret:clientSecret];
+  NSURL *authorizationURL = [signInClass googleAuthorizationURL];
   return [self initWithAuthentication:auth
                      authorizationURL:authorizationURL
                      keychainItemName:keychainItemName
@@ -120,11 +121,12 @@ const char *kKeychainAccountName = "OAuth";
                                 owner:self];
   if (self != nil) {
     // use the supplied auth and OAuth endpoint URLs
-    signIn_ = [[GTMOAuth2SignIn alloc] initWithAuthentication:auth
-                                             authorizationURL:authorizationURL
-                                                     delegate:self
-                                           webRequestSelector:@selector(signIn:displayRequest:)
-                                             finishedSelector:@selector(signIn:finishedWithAuth:error:)];
+    Class signInClass = [[self class] signInClass];
+    signIn_ = [[signInClass alloc] initWithAuthentication:auth
+                                         authorizationURL:authorizationURL
+                                                 delegate:self
+                                       webRequestSelector:@selector(signIn:displayRequest:)
+                                         finishedSelector:@selector(signIn:finishedWithAuth:error:)];
     keychainItemName_ = [keychainItemName copy];
 
     // create local, temporary storage for WebKit cookies
@@ -400,11 +402,24 @@ const char *kKeychainAccountName = "OAuth";
   }
 }
 
+static Class gSignInClass = Nil;
+
++ (Class)signInClass {
+  if (gSignInClass == Nil) {
+    gSignInClass = [GTMOAuth2SignIn class];
+  }
+  return gSignInClass;
+}
+
++ (void)setSignInClass:(Class)theClass {
+  gSignInClass = theClass;
+}
+
 #pragma mark Token Revocation
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (void)revokeTokenForGoogleAuthentication:(GTMOAuth2Authentication *)auth {
-  [GTMOAuth2SignIn revokeTokenForGoogleAuthentication:auth];
+  [[self signInClass] revokeTokenForGoogleAuthentication:auth];
 }
 #endif
 
@@ -436,6 +451,8 @@ const char *kKeychainAccountName = "OAuth";
   if ([title length] > 0) {
     [self.signIn titleChanged:title];
   }
+
+  [signIn_ cookiesChanged:(NSHTTPCookieStorage *)cookieStorage_];
 }
 
 - (void)webView:(WebView *)sender resource:(id)identifier didFailLoadingWithError:(NSError *)error fromDataSource:(WebDataSource *)dataSource {
@@ -593,8 +610,9 @@ decisionListener:(id<WebPolicyDecisionListener>)listener {
 + (GTMOAuth2Authentication *)authForGoogleFromKeychainForName:(NSString *)keychainItemName
                                                      clientID:(NSString *)clientID
                                                  clientSecret:(NSString *)clientSecret {
-  NSURL *tokenURL = [GTMOAuth2SignIn googleTokenURL];
-  NSString *redirectURI = [GTMOAuth2SignIn nativeClientRedirectURI];
+  Class signInClass = [self signInClass];
+  NSURL *tokenURL = [signInClass googleTokenURL];
+  NSString *redirectURI = [signInClass nativeClientRedirectURI];
 
   GTMOAuth2Authentication *auth;
   auth = [GTMOAuth2Authentication authenticationWithServiceProvider:kGTMOAuth2ServiceProviderGoogle

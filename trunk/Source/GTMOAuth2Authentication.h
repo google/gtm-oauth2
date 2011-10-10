@@ -261,6 +261,9 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 // Pending fetcher to get a new access token, if any
 @property (retain) GTMHTTPFetcher *refreshFetcher;
 
+// Check if a request is queued up to be authorized
+- (BOOL)isAuthorizingRequest:(NSURLRequest *)request;
+
 // Check if a request appears to be authorized
 - (BOOL)isAuthorizedRequest:(NSURLRequest *)request;
 

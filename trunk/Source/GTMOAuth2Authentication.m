@@ -145,7 +145,6 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
                 object:(id)obj2
                 object:(id)obj3;
 
-+ (NSString *)encodedOAuthParameterForString:(NSString *)str;
 + (NSString *)unencodedOAuthParameterForString:(NSString *)str;
 + (NSString *)encodedQueryParametersForDictionary:(NSDictionary *)dict;
 
@@ -435,6 +434,19 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   }
 }
 
+- (BOOL)isAuthorizingRequest:(NSURLRequest *)request {
+  BOOL wasFound = NO;
+  @synchronized(authorizationQueue_) {
+    for (GTMOAuth2AuthorizationArgs *args in authorizationQueue_) {
+      if ([args request] == request) {
+        wasFound = YES;
+        break;
+      }
+    }
+  }
+  return wasFound;
+}
+
 - (BOOL)isAuthorizedRequest:(NSURLRequest *)request {
   NSString *authStr = [request valueForHTTPHeaderField:@"Authorization"];
   return ([authStr length] > 0);
@@ -636,12 +648,17 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   } else if (code) {
     // We have a code string
     [paramsDict setObject:@"authorization_code" forKey:@"grant_type"];
-    [paramsDict setObject:self.code forKey:@"code"];
+    [paramsDict setObject:code forKey:@"code"];
 
-    [paramsDict setObject:self.redirectURI forKey:@"redirect_uri"];
+    NSString *redirectURI = self.redirectURI;
+    if ([redirectURI length] > 0) {
+      [paramsDict setObject:redirectURI forKey:@"redirect_uri"];
+    }
 
     NSString *scope = self.scope;
-    if ([scope length] > 0) [paramsDict setObject:scope forKey:@"scope"];
+    if ([scope length] > 0) {
+      [paramsDict setObject:scope forKey:@"scope"];
+    }
 
     fetchType = kGTMOAuth2FetchTypeToken;
     commentTemplate = @"fetch tokens for %@";
@@ -986,7 +1003,6 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 
 + (NSString *)encodedOAuthValueForString:(NSString *)str {
   CFStringRef originalString = (CFStringRef) str;
-
   CFStringRef leaveUnescaped = NULL;
   CFStringRef forceEscaped =  CFSTR("!*'();:@&=+$,/?%#[]");
 
@@ -1033,24 +1049,6 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
     [invocation setArgument:&obj3 atIndex:4];
     [invocation invoke];
   }
-}
-
-+ (NSString *)encodedOAuthParameterForString:(NSString *)str {
-  CFStringRef originalString = (CFStringRef) str;
-  CFStringRef leaveUnescaped = NULL;
-  CFStringRef forceEscaped =  CFSTR("!*'();:@&=+$,/?%#[]");
-
-  CFStringRef escapedStr = NULL;
-  if (str) {
-    escapedStr = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                         originalString,
-                                                         leaveUnescaped,
-                                                         forceEscaped,
-                                                         kCFStringEncodingUTF8);
-    [(id)CFMakeCollectable(escapedStr) autorelease];
-  }
-
-  return (NSString *)escapedStr;
 }
 
 + (NSString *)unencodedOAuthParameterForString:(NSString *)str {

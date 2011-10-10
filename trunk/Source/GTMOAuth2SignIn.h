@@ -144,6 +144,7 @@
 
 - (BOOL)requestRedirectedToRequest:(NSURLRequest *)redirectedRequest;
 - (BOOL)titleChanged:(NSString *)title;
+- (BOOL)cookiesChanged:(NSHTTPCookieStorage *)cookieStorage;
 - (BOOL)loadFailedWithError:(NSError *)error;
 
 // Window controllers must tell the sign-in object if the window was closed
