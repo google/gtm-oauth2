@@ -90,6 +90,20 @@ _EXTERN NSString* const kGTMOAuth2ErrorInvalidScope         _INITIALIZE_AS(@"inv
 // Notification for token changes
 _EXTERN NSString* const kGTMOAuth2RefreshTokenChanged _INITIALIZE_AS(@"kGTMOAuth2RefreshTokenChanged");
 
+// Notification for WebView loading
+//
+// Note: These notifications currently accurately reflect invocation of the
+//       webViewDidStartLoad/webViewDidFinishLoad delegate messages, but
+//       experience indicates that UIWebView may not guarantee that those
+//       delegate messages are balanced, particularly when a load is partially
+//       completed and the back button is pressed, and when loading iframes.
+_EXTERN NSString* const kGTMOAuth2WebViewStartedLoading _INITIALIZE_AS(@"kGTMOAuth2WebViewStartedLoading");
+_EXTERN NSString* const kGTMOAuth2WebViewStoppedLoading _INITIALIZE_AS(@"kGTMOAuth2WebViewStoppedLoading");
+_EXTERN NSString* const kGTMOAuth2WebViewKey            _INITIALIZE_AS(@"kGTMOAuth2WebViewKey");
+_EXTERN NSString* const kGTMOAuth2WebViewStopKindKey    _INITIALIZE_AS(@"kGTMOAuth2WebViewStopKindKey");
+_EXTERN NSString* const kGTMOAuth2WebViewFinished       _INITIALIZE_AS(@"finished");
+_EXTERN NSString* const kGTMOAuth2WebViewFailed         _INITIALIZE_AS(@"failed");
+
 // Notification for network loss during html sign-in display
 _EXTERN NSString* const kGTMOAuth2NetworkLost         _INITIALIZE_AS(@"kGTMOAuthNetworkLost");
 _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuthNetworkFound");

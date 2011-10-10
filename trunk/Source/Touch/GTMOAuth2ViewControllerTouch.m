@@ -346,6 +346,20 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   }
 }
 
+- (void)notifyWithName:(NSString *)name
+               webView:(UIWebView *)webView
+                  kind:(NSString *)kind {
+  // Notification for webview load starting and stopping
+  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                        webView, kGTMOAuth2WebViewKey,
+                        kind, kGTMOAuth2WebViewStopKindKey, // kind may be nil
+                        nil];
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  [nc postNotificationName:name
+                    object:self
+                  userInfo:dict];
+}
+
 - (void)cancelSigningIn {
   // The application has explicitly asked us to cancel signing in
   // (so no further callback is required)
@@ -614,10 +628,17 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
+  [self notifyWithName:kGTMOAuth2WebViewStartedLoading
+               webView:webView
+                  kind:nil];
   [self updateUI];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+  [self notifyWithName:kGTMOAuth2WebViewStoppedLoading
+               webView:webView
+                  kind:kGTMOAuth2WebViewFinished];
+
   NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
   if ([title length] > 0) {
     [signIn_ titleChanged:title];
@@ -634,6 +655,10 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+  [self notifyWithName:kGTMOAuth2WebViewStoppedLoading
+               webView:webView
+                  kind:kGTMOAuth2WebViewFailed];
+
   // Tell the sign-in object that a load failed; if it was the authorization
   // URL, it will pop the view and return an error to the delegate.
   if (didViewAppear_) {

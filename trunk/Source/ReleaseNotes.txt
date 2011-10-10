@@ -3,6 +3,11 @@ GTM OAuth 2 Release Notes
 Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
+7-October-2011
+
+Added notifications for starting and stopping loads of UIWebView
+
+
 30-September-2011
 
 Add brief delay to view controller to allow initial html to load.
