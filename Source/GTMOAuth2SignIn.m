@@ -596,11 +596,11 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   [self finishSignInWithError:error];
 }
 
+#endif // !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
+
 - (void)finishSignInWithError:(NSError *)error {
   [self invokeFinalCallbackWithError:error];
 }
-
-#endif // !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 
 // convenience method for making the final call to our delegate
 - (void)invokeFinalCallbackWithError:(NSError *)error {
