@@ -99,6 +99,9 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
   // YES, after the view has fully transitioned in.
   BOOL didViewAppear_;
 
+  // YES between sends of start and stop notifications
+  BOOL hasNotifiedWebViewStartedLoading_;
+
   // To prevent us from calling our delegate's selector more than once.
   BOOL hasCalledFinished_;
 
