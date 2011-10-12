@@ -700,6 +700,21 @@ static Class gSignInClass = Nil;
   // Tell the sign-in object that a load failed; if it was the authorization
   // URL, it will pop the view and return an error to the delegate.
   if (didViewAppear_) {
+    BOOL isUserInterruption = ([error code] == NSURLErrorCancelled
+                               && [[error domain] isEqual:NSURLErrorDomain]);
+    if (isUserInterruption) {
+      // Ignore this error:
+      // Users report that this error occurs when clicking too quickly on the
+      // accept button, before the page has completely loaded.  Ignoring
+      // this error seems to provide a better experience than does immediately
+      // cancelling sign-in.
+      //
+      // This error also occurs whenever UIWebView is sent the stopLoading
+      // message, so if we ever send that message intentionally, we need to
+      // revisit this bypass.
+      return;
+    }
+
     [signIn_ loadFailedWithError:error];
   } else {
     // UIWebview needs time to stabilize. Animations need time to complete.
