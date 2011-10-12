@@ -358,6 +358,21 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 - (void)notifyWithName:(NSString *)name
                webView:(UIWebView *)webView
                   kind:(NSString *)kind {
+  BOOL isStarting = [name isEqual:kGTMOAuth2WebViewStartedLoading];
+  if (hasNotifiedWebViewStartedLoading_ == isStarting) {
+    // Duplicate notification
+    //
+    // UIWebView's delegate methods are so unbalanced that there's little
+    // point trying to keep a count, as it could easily end up stuck greater
+    // than zero.
+    //
+    // We don't really have a way to track the starts and stops of
+    // subframe loads, too, as the webView in the notification is always
+    // for the topmost request.
+    return;
+  }
+  hasNotifiedWebViewStartedLoading_ = isStarting;
+
   // Notification for webview load starting and stopping
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                         webView, kGTMOAuth2WebViewKey,
