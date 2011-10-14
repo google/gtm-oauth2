@@ -379,9 +379,9 @@ Finally, release the authorization object.
 
 The library's classes are designed in three layers.
 
-||Window/View Controller||user interface & application API||
+||Window/View Controller||user interface & application API, including keychain||
 ||Sign-In||OAuth sign-in sequence & !WebView handling||
-||Authentication||data handling, token fetches, and keychain||
+||Authentication||data handling, token fetches||
 
 Classes are written to be independent of the layers above them.
 
