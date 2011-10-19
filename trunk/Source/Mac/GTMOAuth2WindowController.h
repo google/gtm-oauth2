@@ -23,8 +23,8 @@
 //
 // Sample usage for signing in to a Google service:
 //
-//  static NSString *const kKeychainItemName = @”My App: Google Buzz”;
-//  NSString *scope = @"https://www.googleapis.com/auth/buzz";
+//  static NSString *const kKeychainItemName = @”My App: Google Plus”;
+//  NSString *scope = @"https://www.googleapis.com/auth/plus.me";
 //
 //
 //  GTMOAuth2WindowController *windowController;

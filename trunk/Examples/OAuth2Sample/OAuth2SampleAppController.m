@@ -39,7 +39,7 @@
 
 @implementation OAuth2SampleAppController
 
-static NSString *const kKeychainItemName = @"OAuth2 Sample: Google Buzz";
+static NSString *const kKeychainItemName = @"OAuth2 Sample: Google Plus";
 
 static NSString *const kDailyMotionKeychainItemName = @"OAuth2 Sample: DailyMotion";
 
@@ -212,7 +212,7 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
 
   // For Google APIs, the scope strings are available
   // in the service constant header files.
-  NSString *scope = @"https://www.googleapis.com/auth/buzz";
+  NSString *scope = @"https://www.googleapis.com/auth/plus.me";
 
   // Typically, applications will hardcode the client ID and client secret
   // strings into the source code; they should not be user-editable or visible.
@@ -391,8 +391,8 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
 - (void)doAnAuthenticatedAPIFetch {
   NSString *urlStr;
   if ([self isGoogleButtonSelected]) {
-    // Google Buzz feed
-    urlStr = @"https://www.googleapis.com/buzz/v1/activities/@me/@self";
+    // Google Plus feed
+    urlStr = @"https://www.googleapis.com/plus/v1/people/me/activities/public";
   } else {
     // DailyMotion user favorites feed
     urlStr = @"https://api.dailymotion.com/videos/favorites";
