@@ -483,6 +483,12 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     } else {
       self.pendingFetcher = fetcher;
     }
+
+    // notify the app so it can put up a post-sign in, pre-token exchange UI
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc postNotificationName:kGTMOAuth2UserSignedIn
+                      object:self
+                    userInfo:nil];
   } else {
     // the callback lacked an auth code
     NSString *errStr = auth.errorString;
