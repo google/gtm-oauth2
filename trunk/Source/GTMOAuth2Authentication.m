@@ -324,6 +324,10 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 #endif
         return obj;
       }
+    } else {
+#if DEBUG
+      NSAssert(0, @"GTMOAuth2Authentication: No parser available");
+#endif
     }
   }
   return nil;
