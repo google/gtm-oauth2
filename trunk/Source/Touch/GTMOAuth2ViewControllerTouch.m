@@ -342,15 +342,13 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 - (void)popView {
   if (self.navigationController.topViewController == self) {
     if (!self.view.isHidden) {
-      // set the flag to our viewWillDisappear method so it knows
+      // Set the flag to our viewWillDisappear method so it knows
       // this is a disappearance initiated by the sign-in object,
       // not the user cancelling via the navigation controller
-      isPoppingSelf_ = YES;
+      didDismissSelf_ = YES;
 
       [self.navigationController popViewControllerAnimated:YES];
       self.view.hidden = YES;
-
-      isPoppingSelf_ = NO;
     }
   }
 }
@@ -629,8 +627,8 @@ static Class gSignInClass = Nil;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-  if (!isPoppingSelf_) {
-    // we are not popping ourselves, so presumably we are being popped by the
+  if (!didDismissSelf_) {
+    // We are not popping ourselves, so presumably we are being popped by the
     // navigation controller; tell the sign-in object to close up shop
     //
     // this will indirectly call our signIn:finishedWithAuth:error: method

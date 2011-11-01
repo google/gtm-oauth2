@@ -108,8 +108,10 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
   // Set in a webView callback.
   BOOL hasDoneFinalRedirect_;
 
-  // Set during the pop initiated by the sign-in object
-  BOOL isPoppingSelf_;
+  // Set during the pop initiated by the sign-in object; otherwise,
+  // viewWillDisappear indicates that some external change of the view
+  // has stopped the sign-in.
+  BOOL didDismissSelf_;
 }
 
 // the application and service name to use for saving the auth tokens
