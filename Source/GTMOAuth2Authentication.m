@@ -867,6 +867,18 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   return result;
 }
 
+- (BOOL)primeForRefresh {
+  if (self.refreshToken == nil) {
+    // Cannot refresh without a refresh token
+    return NO;
+  }
+  self.accessToken = nil;
+  self.expiresIn = nil;
+  self.expirationDate = nil;
+  self.errorString = nil;
+  return YES;
+}
+
 - (void)reset {
   // Reset all per-authorization values
   self.code = nil;

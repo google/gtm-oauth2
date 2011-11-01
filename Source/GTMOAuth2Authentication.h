@@ -225,6 +225,10 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 //
 // The request argument may be nil to just force a refresh of the access token,
 // if needed.
+//
+// NOTE: To avoid accidental leaks of bearer tokens, the request must
+// be for a URL with the scheme https unless the shouldAuthorizeAllRequests
+// property is set.
 
 // The finish selector should have a signature matching
 //   - (void)authentication:(GTMOAuth2Authentication *)auth
