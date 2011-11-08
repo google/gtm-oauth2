@@ -628,6 +628,12 @@ static Class gSignInClass = Nil;
 
 - (void)viewWillDisappear:(BOOL)animated {
   if (!didDismissSelf_) {
+    // We won't receive further webview delegate messages, so be sure the
+    // started loading notification is balanced, if necessary
+    [self notifyWithName:kGTMOAuth2WebViewStoppedLoading
+                 webView:self.webView
+                    kind:kGTMOAuth2WebViewCancelled];
+
     // We are not popping ourselves, so presumably we are being popped by the
     // navigation controller; tell the sign-in object to close up shop
     //

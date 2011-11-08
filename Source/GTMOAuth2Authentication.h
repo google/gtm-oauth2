@@ -101,6 +101,7 @@ _EXTERN NSString* const kGTMOAuth2WebViewKey            _INITIALIZE_AS(@"kGTMOAu
 _EXTERN NSString* const kGTMOAuth2WebViewStopKindKey    _INITIALIZE_AS(@"kGTMOAuth2WebViewStopKindKey");
 _EXTERN NSString* const kGTMOAuth2WebViewFinished       _INITIALIZE_AS(@"finished");
 _EXTERN NSString* const kGTMOAuth2WebViewFailed         _INITIALIZE_AS(@"failed");
+_EXTERN NSString* const kGTMOAuth2WebViewCancelled      _INITIALIZE_AS(@"cancelled");
 
 // Notification for network loss during html sign-in display
 _EXTERN NSString* const kGTMOAuth2NetworkLost         _INITIALIZE_AS(@"kGTMOAuthNetworkLost");
