@@ -775,7 +775,10 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
       fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
     }
 
-#if NS_BLOCKS_AVAILABLE
+    // Use a completion handler fetch for better debugging, but only if we're
+    // guaranteed that blocks are available in the runtime
+#if (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060) || (__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000)
+    // Blocks are available
     [fetcher beginFetchWithCompletionHandler:^(NSData *data, NSError *error) {
   #if DEBUG
       if (error) {
@@ -783,9 +786,10 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
                                                   encoding:NSUTF8StringEncoding] autorelease];
         NSLog(@"revoke error: %@", errStr);
       }
-  #endif
+  #endif // DEBUG
     }];
 #else
+    // Blocks may not be available
     [fetcher beginFetchWithDelegate:nil didFinishSelector:NULL];
 #endif
   }
