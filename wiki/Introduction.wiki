@@ -166,7 +166,7 @@ With the [http://code.google.com/p/gtm-http-fetcher/ GTM HTTP Fetcher], the auth
 [fetcher setAuthorizer:auth];
 }}} 
 
-Similarly, in the [http://code.google.com/p/gdata-objectivec-client/ Google Data APIs library] the authentication object can be stored in a library service object to authorize future API requests:
+Similarly, in the [http://code.google.com/p/google-api-objectivec-client/ Google APIs Client library] and the [http://code.google.com/p/gdata-objectivec-client/ Google Data APIs library] the authentication object can be stored in a library service object to authorize future API requests:
 
 {{{
 [[self contactService] setAuthorizer:auth];
