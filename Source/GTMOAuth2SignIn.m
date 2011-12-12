@@ -540,6 +540,8 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   NSString *userAgent = [auth userAgent];
   [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
 
+  [request setValue:@"no-cache" forHTTPHeaderField:@"Cache-Control"];
+
   // we can do a synchronous authorization since this method is called
   // only immediately after a fresh access token has been obtained
   [auth authorizeRequest:request];
@@ -774,6 +776,7 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
     } else {
       fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
     }
+    fetcher.comment = @"revoke token";
 
     // Use a completion handler fetch for better debugging, but only if we're
     // guaranteed that blocks are available in the runtime
