@@ -103,6 +103,16 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   NSString *str = @"https://accounts.google.com/o/oauth2/token";
   return [NSURL URLWithString:str];
 }
+
++ (NSURL *)googleRevocationURL {
+  NSString *urlStr = @"https://accounts.google.com/o/oauth2/revoke";
+  return [NSURL URLWithString:urlStr];
+}
+
++ (NSURL *)googleUserInfoURL {
+  NSString *urlStr = @"https://www.googleapis.com/oauth2/v1/userinfo";
+  return [NSURL URLWithString:urlStr];
+}
 #endif
 
 + (NSString *)nativeClientRedirectURI {
@@ -152,7 +162,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     // for Google authentication, we want to automatically fetch user info
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
     NSString *host = [authorizationURL host];
-    if ([host isEqual:@"accounts.google.com"]) {
+    if ([host hasSuffix:@".google.com"]) {
       shouldFetchGoogleUserEmail_ = YES;
     }
 #endif
@@ -531,8 +541,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 - (void)fetchGoogleUserInfo {
   // fetch the user's email address
-  NSString *infoURLStr = @"https://www.googleapis.com/oauth2/v1/userinfo";
-  NSURL *infoURL = [NSURL URLWithString:infoURLStr];
+  NSURL *infoURL = [[self class] googleUserInfoURL];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:infoURL];
 
   GTMOAuth2Authentication *auth = self.authentication;
@@ -751,10 +760,8 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
   if (auth.canAuthorize
       && [auth.serviceProvider isEqual:kGTMOAuth2ServiceProviderGoogle]) {
 
-    NSString *urlStr = @"https://accounts.google.com/o/oauth2/revoke";
-
     // create a signed revocation request for this authentication object
-    NSURL *url = [NSURL URLWithString:urlStr];
+    NSURL *url = [self googleRevocationURL];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
 

@@ -560,10 +560,10 @@ decisionListener:(id<WebPolicyDecisionListener>)listener {
   const char *utf8Password = [password UTF8String];
 
   OSStatus err = SecKeychainAddGenericPassword(defaultKeychain,
-                               strlen(utf8ServiceName), utf8ServiceName,
-                               strlen(kKeychainAccountName), kKeychainAccountName,
-                               strlen(utf8Password), utf8Password,
-                               dontWantItemRef);
+                             (UInt32) strlen(utf8ServiceName), utf8ServiceName,
+                             (UInt32) strlen(kKeychainAccountName), kKeychainAccountName,
+                             (UInt32) strlen(utf8Password), utf8Password,
+                             dontWantItemRef);
   BOOL didSucceed = (err == noErr);
   if (didSucceed) {
     // write to preferences that we have a keychain item (so we know later
@@ -585,10 +585,10 @@ decisionListener:(id<WebPolicyDecisionListener>)listener {
   // we don't really care about the password here, we just want to
   // get the SecKeychainItemRef so we can delete it.
   OSStatus err = SecKeychainFindGenericPassword (defaultKeychain,
-                                       strlen(utf8ServiceName), utf8ServiceName,
-                                       strlen(kKeychainAccountName), kKeychainAccountName,
-                                       0, NULL, // ignore password
-                                       &itemRef);
+                                   (UInt32) strlen(utf8ServiceName), utf8ServiceName,
+                                   (UInt32) strlen(kKeychainAccountName), kKeychainAccountName,
+                                   0, NULL, // ignore password
+                                   &itemRef);
   if (err != noErr) {
     // failure to find is success
     return YES;
@@ -651,10 +651,10 @@ decisionListener:(id<WebPolicyDecisionListener>)listener {
   UInt32 passwordBuffLength = 0;
 
   OSStatus err = SecKeychainFindGenericPassword(defaultKeychain,
-                                      strlen(utf8ServiceName), utf8ServiceName,
-                                      strlen(kKeychainAccountName), kKeychainAccountName,
-                                      &passwordBuffLength, &passwordBuff,
-                                      dontWantItemRef);
+                                  (UInt32) strlen(utf8ServiceName), utf8ServiceName,
+                                  (UInt32) strlen(kKeychainAccountName), kKeychainAccountName,
+                                  &passwordBuffLength, &passwordBuff,
+                                  dontWantItemRef);
   if (err == noErr && passwordBuff != NULL) {
 
     NSString *password = [[[NSString alloc] initWithBytes:passwordBuff

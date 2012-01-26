@@ -162,8 +162,9 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
             finishedSelector:(SEL)finishedSelector {
 
   NSString *nibName = [[self class] authNibName];
+  NSBundle *nibBundle = [[self class] authNibBundle];
 
-  self = [super initWithNibName:nibName bundle:nil];
+  self = [super initWithNibName:nibName bundle:nibBundle];
   if (self != nil) {
     delegate_ = [delegate retain];
     finishedSelector_ = finishedSelector;
@@ -183,8 +184,10 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
     // for other service domains, or to disable clearing of the cookies,
     // set the browserCookiesURL property explicitly
     NSString *authorizationHost = [signIn_.authorizationURL host];
-    if ([authorizationHost isEqual:@"accounts.google.com"]) {
-      NSURL *cookiesURL = [NSURL URLWithString:@"https://accounts.google.com/"];
+    if ([authorizationHost hasSuffix:@".google.com"]) {
+      NSString *urlStr = [NSString stringWithFormat:@"https://%@/",
+                          authorizationHost];
+      NSURL *cookiesURL = [NSURL URLWithString:urlStr];
       [self setBrowserCookiesURL:cookiesURL];
     }
 
@@ -247,6 +250,11 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 + (NSString *)authNibName {
   // subclasses may override this to specify a custom nib name
   return @"GTMOAuth2ViewTouch";
+}
+
++ (NSBundle *)authNibBundle {
+  // subclasses may override this to specify a custom nib bundle
+  return nil;
 }
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
@@ -417,7 +425,7 @@ static Class gSignInClass = Nil;
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (void)revokeTokenForGoogleAuthentication:(GTMOAuth2Authentication *)auth {
-  [GTMOAuth2SignIn revokeTokenForGoogleAuthentication:auth];
+  [[self signInClass] revokeTokenForGoogleAuthentication:auth];
 }
 #endif
 

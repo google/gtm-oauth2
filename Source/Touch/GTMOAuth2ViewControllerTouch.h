@@ -244,6 +244,9 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // subclasses may override authNibName to specify a custom name
 + (NSString *)authNibName;
 
+// subclasses may override authNibBundle to specify a custom bundle
++ (NSBundle *)authNibBundle;
+
 // apps may replace the sign-in class with their own subclass of it
 + (Class)signInClass;
 + (void)setSignInClass:(Class)theClass;
