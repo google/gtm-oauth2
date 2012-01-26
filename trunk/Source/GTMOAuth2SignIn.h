@@ -166,6 +166,7 @@
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (NSURL *)googleAuthorizationURL;
 + (NSURL *)googleTokenURL;
++ (NSURL *)googleUserInfoURL;
 #endif
 
 @end

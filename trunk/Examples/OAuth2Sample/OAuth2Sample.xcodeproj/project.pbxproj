@@ -250,7 +250,7 @@
 				GCC_PREFIX_HEADER = OAuth2Sample_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = OAuthSample;
+				PRODUCT_NAME = OAuth2Sample;
 			};
 			name = Release;
 		};
