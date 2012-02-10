@@ -787,7 +787,8 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
 
     // Use a completion handler fetch for better debugging, but only if we're
     // guaranteed that blocks are available in the runtime
-#if (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060) || (__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000)
+#if (!TARGET_OS_IPHONE && (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060)) || \
+    (TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000))
     // Blocks are available
     [fetcher beginFetchWithCompletionHandler:^(NSData *data, NSError *error) {
   #if DEBUG
