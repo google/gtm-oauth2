@@ -67,12 +67,12 @@ Click "Services" in the left column, and check the list of APIs to verify that t
 {{{
 #import "GTMOAuth2ViewControllerTouch.h"
 
-static NSString *const kKeychainItemName = @"OAuth2 Sample: Google Buzz";
+static NSString *const kKeychainItemName = @"OAuth2 Sample: Google+";
 
 NSString *kMyClientID = @"abcd";     // pre-assigned by service
 NSString *kMyClientSecret = @"efgh"; // pre-assigned by service
 
-NSString *scope = @"https://www.googleapis.com/auth/buzz"; // scope for Google Buzz API
+NSString *scope = @"https://www.googleapis.com/auth/plus.me"; // scope for Google+ API
 
 GTMOAuth2ViewControllerTouch *viewController;
 viewController = [[[GTMOAuth2ViewControllerTouch alloc] initWithScope:scope
