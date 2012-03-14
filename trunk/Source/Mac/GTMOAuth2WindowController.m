@@ -333,6 +333,10 @@ const char *kKeychainAccountName = "OAuth";
                         withObject:nil
                         afterDelay:0.1
                            inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+
+    // Avoid more callbacks after the delayed close happens, as the window
+    // controller may be gone.
+    [[self webView] setResourceLoadDelegate:nil];
   }
   isWindowShown_ = NO;
 }
