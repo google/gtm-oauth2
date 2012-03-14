@@ -421,12 +421,19 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 
     self.refreshFetcher = nil;
 
-    // swap in a new auth queue in case the callbacks try to immediately auth
+    // Swap in a new auth queue in case the callbacks try to immediately auth
     // another request
     NSArray *pendingAuthQueue = [NSArray arrayWithArray:authorizationQueue_];
     [authorizationQueue_ removeAllObjects];
 
     BOOL hasAccessToken = ([self.accessToken length] > 0);
+
+    if (hasAccessToken && error == nil) {
+      NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+      [nc postNotificationName:kGTMOAuth2AccessTokenRefreshed
+                        object:self
+                      userInfo:nil];
+    }
 
     for (GTMOAuth2AuthorizationArgs *args in pendingAuthQueue) {
       if (!hasAccessToken && args.error == nil) {
