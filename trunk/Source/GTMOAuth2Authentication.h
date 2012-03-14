@@ -92,7 +92,8 @@ _EXTERN NSString* const kGTMOAuth2ErrorInvalidScope         _INITIALIZE_AS(@"inv
 _EXTERN NSString* const kGTMOAuth2UserSignedIn              _INITIALIZE_AS(@"kGTMOAuth2UserSignedIn");
 
 // Notification for token changes
-_EXTERN NSString* const kGTMOAuth2RefreshTokenChanged _INITIALIZE_AS(@"kGTMOAuth2RefreshTokenChanged");
+_EXTERN NSString* const kGTMOAuth2AccessTokenRefreshed _INITIALIZE_AS(@"kGTMOAuth2AccessTokenRefreshed");
+_EXTERN NSString* const kGTMOAuth2RefreshTokenChanged  _INITIALIZE_AS(@"kGTMOAuth2RefreshTokenChanged");
 
 // Notification for WebView loading
 _EXTERN NSString* const kGTMOAuth2WebViewStartedLoading _INITIALIZE_AS(@"kGTMOAuth2WebViewStartedLoading");
@@ -249,8 +250,8 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 // access token
 - (BOOL)authorizeRequest:(NSMutableURLRequest *)request;
 
-// If the authentication is waiting for a refreh to complete, spin the run loop,
-// discarding events, until the fetch has completed
+// If the authentication is waiting for a refresh to complete, spin the run
+// loop, discarding events, until the fetch has completed
 //
 // This is only for use in testing or in tools without a user interface.
 - (void)waitForCompletionWithTimeout:(NSTimeInterval)timeoutInSeconds;
