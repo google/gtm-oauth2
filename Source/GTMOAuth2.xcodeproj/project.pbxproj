@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4F2037EE133A998E00FE2666 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F2037ED133A998E00FE2666 /* SBJSON.m */; };
-		4F2037EF133A998E00FE2666 /* SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F2037EC133A998E00FE2666 /* SBJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4F2037F0133A998E00FE2666 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F2037ED133A998E00FE2666 /* SBJSON.m */; };
 		4F24484B121F2E5C00FEE1DA /* GTMOAuth2Authentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F244848121F2E5C00FEE1DA /* GTMOAuth2Authentication.m */; };
 		4F24484C121F2E5C00FEE1DA /* GTMOAuth2SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F24484A121F2E5C00FEE1DA /* GTMOAuth2SignIn.m */; };
 		4F24491A121F370000FEE1DA /* GTMHTTPFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F244919121F370000FEE1DA /* GTMHTTPFetcher.m */; };
@@ -33,14 +30,12 @@
 		4FC754F213E77E25006A0C26 /* GTMOAuth2SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F24484A121F2E5C00FEE1DA /* GTMOAuth2SignIn.m */; };
 		4FC754F313E77E25006A0C26 /* GTMHTTPFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F244919121F370000FEE1DA /* GTMHTTPFetcher.m */; };
 		4FC754F413E77E25006A0C26 /* GTMOAuth2ViewControllerTouch.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8D437C1339735D000B4396 /* GTMOAuth2ViewControllerTouch.m */; };
-		4FC754F513E77E25006A0C26 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F2037ED133A998E00FE2666 /* SBJSON.m */; };
 		4FC754FD13E77E2B006A0C26 /* GTMHTTPFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F244918121F370000FEE1DA /* GTMHTTPFetcher.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4FC754FE13E77E2B006A0C26 /* GTMHTTPFetcherLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F724BAD12248F81001A4AD0 /* GTMHTTPFetcherLogging.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4FC754FF13E77E2B006A0C26 /* GTMHTTPFetchHistory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F724BA812248F75001A4AD0 /* GTMHTTPFetchHistory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4FC7550013E77E2B006A0C26 /* GTMOAuth2Authentication.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F244847121F2E5C00FEE1DA /* GTMOAuth2Authentication.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4FC7550113E77E2B006A0C26 /* GTMOAuth2SignIn.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F244849121F2E5C00FEE1DA /* GTMOAuth2SignIn.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4FC7550213E77E2B006A0C26 /* GTMOAuth2WindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F7249FA122485EE001A4AD0 /* GTMOAuth2WindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4FC7550313E77E2B006A0C26 /* SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F2037EC133A998E00FE2666 /* SBJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4FC7550513E77E2B006A0C26 /* GTMOAuth2Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F8D436A133972F5000B4396 /* GTMOAuth2Window.xib */; };
 		4FC7550713E77E2B006A0C26 /* GTMOAuth2Authentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F244848121F2E5C00FEE1DA /* GTMOAuth2Authentication.m */; };
 		4FC7550813E77E2B006A0C26 /* GTMOAuth2SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F24484A121F2E5C00FEE1DA /* GTMOAuth2SignIn.m */; };
@@ -48,14 +43,29 @@
 		4FC7550A13E77E2B006A0C26 /* GTMHTTPFetchHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F724BA912248F75001A4AD0 /* GTMHTTPFetchHistory.m */; };
 		4FC7550B13E77E2B006A0C26 /* GTMHTTPFetcherLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F724BAE12248F81001A4AD0 /* GTMHTTPFetcherLogging.m */; };
 		4FC7550C13E77E2B006A0C26 /* GTMOAuth2WindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F7249FB122485EE001A4AD0 /* GTMOAuth2WindowController.m */; };
-		4FC7550D13E77E2B006A0C26 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F2037ED133A998E00FE2666 /* SBJSON.m */; };
 		4FC7550F13E77E2B006A0C26 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F724AB512248D6B001A4AD0 /* Security.framework */; };
 		4FC7551013E77E2B006A0C26 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F724AB712248D6B001A4AD0 /* SystemConfiguration.framework */; };
+		4FDB9F7A152BA239004A2830 /* SBJsonBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FDB9F74152BA239004A2830 /* SBJsonBase.h */; };
+		4FDB9F7B152BA239004A2830 /* SBJsonBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FDB9F74152BA239004A2830 /* SBJsonBase.h */; };
+		4FDB9F7C152BA239004A2830 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F75152BA239004A2830 /* SBJsonBase.m */; };
+		4FDB9F7D152BA239004A2830 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F75152BA239004A2830 /* SBJsonBase.m */; };
+		4FDB9F7E152BA239004A2830 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F75152BA239004A2830 /* SBJsonBase.m */; };
+		4FDB9F7F152BA239004A2830 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F75152BA239004A2830 /* SBJsonBase.m */; };
+		4FDB9F80152BA239004A2830 /* SBJsonParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FDB9F76152BA239004A2830 /* SBJsonParser.h */; };
+		4FDB9F81152BA239004A2830 /* SBJsonParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FDB9F76152BA239004A2830 /* SBJsonParser.h */; };
+		4FDB9F82152BA239004A2830 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F77152BA239004A2830 /* SBJsonParser.m */; };
+		4FDB9F83152BA239004A2830 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F77152BA239004A2830 /* SBJsonParser.m */; };
+		4FDB9F84152BA239004A2830 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F77152BA239004A2830 /* SBJsonParser.m */; };
+		4FDB9F85152BA239004A2830 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F77152BA239004A2830 /* SBJsonParser.m */; };
+		4FDB9F86152BA239004A2830 /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FDB9F78152BA239004A2830 /* SBJsonWriter.h */; };
+		4FDB9F87152BA239004A2830 /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FDB9F78152BA239004A2830 /* SBJsonWriter.h */; };
+		4FDB9F88152BA239004A2830 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F79152BA239004A2830 /* SBJsonWriter.m */; };
+		4FDB9F89152BA239004A2830 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F79152BA239004A2830 /* SBJsonWriter.m */; };
+		4FDB9F8A152BA239004A2830 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F79152BA239004A2830 /* SBJsonWriter.m */; };
+		4FDB9F8B152BA239004A2830 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F79152BA239004A2830 /* SBJsonWriter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4F2037EC133A998E00FE2666 /* SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBJSON.h; path = ../JSON/SBJSON.h; sourceTree = SOURCE_ROOT; };
-		4F2037ED133A998E00FE2666 /* SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBJSON.m; path = ../JSON/SBJSON.m; sourceTree = SOURCE_ROOT; };
 		4F244847121F2E5C00FEE1DA /* GTMOAuth2Authentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMOAuth2Authentication.h; sourceTree = "<group>"; };
 		4F244848121F2E5C00FEE1DA /* GTMOAuth2Authentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMOAuth2Authentication.m; sourceTree = "<group>"; };
 		4F244849121F2E5C00FEE1DA /* GTMOAuth2SignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMOAuth2SignIn.h; sourceTree = "<group>"; };
@@ -77,6 +87,12 @@
 		4F8D437C1339735D000B4396 /* GTMOAuth2ViewControllerTouch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2ViewControllerTouch.m; path = Touch/GTMOAuth2ViewControllerTouch.m; sourceTree = "<group>"; };
 		4F8D437D1339735D000B4396 /* GTMOAuth2ViewTouch.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = GTMOAuth2ViewTouch.xib; path = Touch/GTMOAuth2ViewTouch.xib; sourceTree = "<group>"; };
 		4FC754FA13E77E25006A0C26 /* libOAuthTouch2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libOAuthTouch2.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FDB9F74152BA239004A2830 /* SBJsonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBJsonBase.h; path = ../JSON/SBJsonBase.h; sourceTree = "<group>"; };
+		4FDB9F75152BA239004A2830 /* SBJsonBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBJsonBase.m; path = ../JSON/SBJsonBase.m; sourceTree = "<group>"; };
+		4FDB9F76152BA239004A2830 /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBJsonParser.h; path = ../JSON/SBJsonParser.h; sourceTree = "<group>"; };
+		4FDB9F77152BA239004A2830 /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBJsonParser.m; path = ../JSON/SBJsonParser.m; sourceTree = "<group>"; };
+		4FDB9F78152BA239004A2830 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBJsonWriter.h; path = ../JSON/SBJsonWriter.h; sourceTree = "<group>"; };
+		4FDB9F79152BA239004A2830 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBJsonWriter.m; path = ../JSON/SBJsonWriter.m; sourceTree = "<group>"; };
 		4FF2B2F9133BC54600D75613 /* GTMOAuth2Framework-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GTMOAuth2Framework-Info.plist"; path = "Mac/GTMOAuth2Framework-Info.plist"; sourceTree = "<group>"; };
 		D2AAC07E0554694100DB518D /* libOAuthTouch2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libOAuthTouch2.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -140,8 +156,12 @@
 		4F2037EB133A994400FE2666 /* JSON */ = {
 			isa = PBXGroup;
 			children = (
-				4F2037EC133A998E00FE2666 /* SBJSON.h */,
-				4F2037ED133A998E00FE2666 /* SBJSON.m */,
+				4FDB9F74152BA239004A2830 /* SBJsonBase.h */,
+				4FDB9F75152BA239004A2830 /* SBJsonBase.m */,
+				4FDB9F76152BA239004A2830 /* SBJsonParser.h */,
+				4FDB9F77152BA239004A2830 /* SBJsonParser.m */,
+				4FDB9F78152BA239004A2830 /* SBJsonWriter.h */,
+				4FDB9F79152BA239004A2830 /* SBJsonWriter.m */,
 			);
 			name = JSON;
 			sourceTree = "<group>";
@@ -218,7 +238,9 @@
 				4F94D2D312288B8A00BC78AA /* GTMOAuth2Authentication.h in Headers */,
 				4F94D2D812288B8A00BC78AA /* GTMOAuth2SignIn.h in Headers */,
 				4F94D2D912288B8A00BC78AA /* GTMOAuth2WindowController.h in Headers */,
-				4F2037EF133A998E00FE2666 /* SBJSON.h in Headers */,
+				4FDB9F7A152BA239004A2830 /* SBJsonBase.h in Headers */,
+				4FDB9F80152BA239004A2830 /* SBJsonParser.h in Headers */,
+				4FDB9F86152BA239004A2830 /* SBJsonWriter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,7 +254,9 @@
 				4FC7550013E77E2B006A0C26 /* GTMOAuth2Authentication.h in Headers */,
 				4FC7550113E77E2B006A0C26 /* GTMOAuth2SignIn.h in Headers */,
 				4FC7550213E77E2B006A0C26 /* GTMOAuth2WindowController.h in Headers */,
-				4FC7550313E77E2B006A0C26 /* SBJSON.h in Headers */,
+				4FDB9F7B152BA239004A2830 /* SBJsonBase.h in Headers */,
+				4FDB9F81152BA239004A2830 /* SBJsonParser.h in Headers */,
+				4FDB9F87152BA239004A2830 /* SBJsonWriter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,7 +387,9 @@
 				4F724BAB12248F75001A4AD0 /* GTMHTTPFetchHistory.m in Sources */,
 				4F724BB012248F81001A4AD0 /* GTMHTTPFetcherLogging.m in Sources */,
 				4F94D33E1228944800BC78AA /* GTMOAuth2WindowController.m in Sources */,
-				4F2037F0133A998E00FE2666 /* SBJSON.m in Sources */,
+				4FDB9F7E152BA239004A2830 /* SBJsonBase.m in Sources */,
+				4FDB9F84152BA239004A2830 /* SBJsonParser.m in Sources */,
+				4FDB9F8A152BA239004A2830 /* SBJsonWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,7 +401,9 @@
 				4FC754F213E77E25006A0C26 /* GTMOAuth2SignIn.m in Sources */,
 				4FC754F313E77E25006A0C26 /* GTMHTTPFetcher.m in Sources */,
 				4FC754F413E77E25006A0C26 /* GTMOAuth2ViewControllerTouch.m in Sources */,
-				4FC754F513E77E25006A0C26 /* SBJSON.m in Sources */,
+				4FDB9F7D152BA239004A2830 /* SBJsonBase.m in Sources */,
+				4FDB9F83152BA239004A2830 /* SBJsonParser.m in Sources */,
+				4FDB9F89152BA239004A2830 /* SBJsonWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,7 +417,9 @@
 				4FC7550A13E77E2B006A0C26 /* GTMHTTPFetchHistory.m in Sources */,
 				4FC7550B13E77E2B006A0C26 /* GTMHTTPFetcherLogging.m in Sources */,
 				4FC7550C13E77E2B006A0C26 /* GTMOAuth2WindowController.m in Sources */,
-				4FC7550D13E77E2B006A0C26 /* SBJSON.m in Sources */,
+				4FDB9F7F152BA239004A2830 /* SBJsonBase.m in Sources */,
+				4FDB9F85152BA239004A2830 /* SBJsonParser.m in Sources */,
+				4FDB9F8B152BA239004A2830 /* SBJsonWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,7 +431,9 @@
 				4F24484C121F2E5C00FEE1DA /* GTMOAuth2SignIn.m in Sources */,
 				4F24491A121F370000FEE1DA /* GTMHTTPFetcher.m in Sources */,
 				4F8D437E1339735D000B4396 /* GTMOAuth2ViewControllerTouch.m in Sources */,
-				4F2037EE133A998E00FE2666 /* SBJSON.m in Sources */,
+				4FDB9F7C152BA239004A2830 /* SBJsonBase.m in Sources */,
+				4FDB9F82152BA239004A2830 /* SBJsonParser.m in Sources */,
+				4FDB9F88152BA239004A2830 /* SBJsonWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
