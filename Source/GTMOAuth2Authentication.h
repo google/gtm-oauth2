@@ -75,6 +75,7 @@ _EXTERN NSString* const kGTMOAuth2FetcherKey          _INITIALIZE_AS(@"fetcher")
 _EXTERN NSString* const kGTMOAuth2FetchTypeKey        _INITIALIZE_AS(@"FetchType");
 _EXTERN NSString* const kGTMOAuth2FetchTypeToken      _INITIALIZE_AS(@"token");
 _EXTERN NSString* const kGTMOAuth2FetchTypeRefresh    _INITIALIZE_AS(@"refresh");
+_EXTERN NSString* const kGTMOAuth2FetchTypeAssertion  _INITIALIZE_AS(@"assertion");
 _EXTERN NSString* const kGTMOAuth2FetchTypeUserInfo   _INITIALIZE_AS(@"userInfo");
 
 // Token-issuance errors
@@ -145,8 +146,9 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 @property (copy) NSString *clientID;
 @property (copy) NSString *clientSecret;
 @property (copy) NSString *redirectURI;
-@property (copy) NSString *scope;
-@property (copy) NSString *tokenType;
+@property (retain) NSString *scope;
+@property (retain) NSString *tokenType;
+@property (retain) NSString *assertion;
 
 // Apps may optionally add parameters here to be provided to the token
 // endpoint on token requests and refreshes
