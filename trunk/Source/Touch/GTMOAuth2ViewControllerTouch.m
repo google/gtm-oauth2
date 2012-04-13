@@ -58,6 +58,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
             webView = webView_;
 
 @synthesize keychainItemName = keychainItemName_,
+            keychainItemAccessibility = keychainItemAccessibility_,
             initialHTMLString = initialHTMLString_,
             browserCookiesURL = browserCookiesURL_,
             signIn = signIn_,
@@ -302,15 +303,30 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 
 + (BOOL)saveParamsToKeychainForName:(NSString *)keychainItemName
                      authentication:(GTMOAuth2Authentication *)auth {
+  return [self saveParamsToKeychainForName:keychainItemName
+                             accessibility:NULL
+                            authentication:auth];
+}
+
++ (BOOL)saveParamsToKeychainForName:(NSString *)keychainItemName
+                      accessibility:(CFTypeRef)accessibility
+                     authentication:(GTMOAuth2Authentication *)auth {
   [self removeAuthFromKeychainForName:keychainItemName];
   // don't save unless we have a token that can really authorize requests
   if (![auth canAuthorize]) return NO;
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+  if (accessibility == NULL) {
+    accessibility = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly;
+  }
+#endif
 
   // make a response string containing the values we want to save
   NSString *password = [auth persistenceResponseString];
   GTMOAuth2Keychain *keychain = [GTMOAuth2Keychain defaultKeychain];
   return [keychain setPassword:password
                     forService:keychainItemName
+                 accessibility:accessibility
                        account:kGTMOAuth2AccountName
                          error:nil];
 }
@@ -554,7 +570,10 @@ static Class gSignInClass = Nil;
         NSString *keychainItemName = self.keychainItemName;
         if (auth.canAuthorize) {
           // save the auth params in the keychain
-          [[self class] saveParamsToKeychainForName:keychainItemName authentication:auth];
+          CFTypeRef accessibility = self.keychainItemAccessibility;
+          [[self class] saveParamsToKeychainForName:keychainItemName
+                                      accessibility:accessibility
+                                     authentication:auth];
         } else {
           // remove the auth params from the keychain
           [[self class] removeAuthFromKeychainForName:keychainItemName];
@@ -826,6 +845,7 @@ static Class gSignInClass = Nil;
 // Simulator - just simulated, not secure.
 - (BOOL)setPassword:(NSString *)password
          forService:(NSString *)service
+      accessibility:(CFTypeRef)accessibility
             account:(NSString *)account
               error:(NSError **)error {
   BOOL didSucceed = NO;
@@ -909,6 +929,7 @@ static Class gSignInClass = Nil;
 // iPhone
 - (BOOL)setPassword:(NSString *)password
          forService:(NSString *)service
+      accessibility:(CFTypeRef)accessibility
             account:(NSString *)account
               error:(NSError **)error {
   OSStatus status = kGTMOAuth2KeychainErrorBadArguments;
@@ -918,6 +939,12 @@ static Class gSignInClass = Nil;
       NSMutableDictionary *keychainQuery = [self keychainQueryForService:service account:account];
       NSData *passwordData = [password dataUsingEncoding:NSUTF8StringEncoding];
       [keychainQuery setObject:passwordData forKey:(id)kSecValueData];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+      if (accessibility) {
+        [keychainQuery setObject:(id)accessibility
+                          forKey:(id)kSecAttrAccessible];
+      }
+#endif
       status = SecItemAdd((CFDictionaryRef)keychainQuery, NULL);
     }
   }

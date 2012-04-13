@@ -76,6 +76,7 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 #endif
 
   NSString *keychainItemName_;
+  CFTypeRef keychainItemAccessibility_;
 
   // if non-nil, the html string to be displayed immediately upon opening
   // of the web view
@@ -117,6 +118,12 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // the application and service name to use for saving the auth tokens
 // to the keychain
 @property (nonatomic, copy) NSString *keychainItemName;
+
+// the keychain item accessibility is a system constant for use
+// with kSecAttrAccessible.
+//
+// Since it's a system constant, we do not need to retain it.
+@property (nonatomic, assign) CFTypeRef keychainItemAccessibility;
 
 // optional html string displayed immediately upon opening the web view
 //
@@ -281,8 +288,12 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // out"
 + (BOOL)removeAuthFromKeychainForName:(NSString *)keychainItemName;
 
-// method for saving the stored access token and secret; typically, this method
-// is used only by this.
+// method for saving the stored access token and secret
++ (BOOL)saveParamsToKeychainForName:(NSString *)keychainItemName
+                      accessibility:(CFTypeRef)accessibility
+                     authentication:(GTMOAuth2Authentication *)auth;
+
+// older version, defaults to kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
 + (BOOL)saveParamsToKeychainForName:(NSString *)keychainItemName
                      authentication:(GTMOAuth2Authentication *)auth;
 
@@ -314,8 +325,12 @@ enum {
                            error:(NSError **)error;
 
 // OK to pass nil for the error parameter.
+//
+// accessibility should be one of the constants for kSecAttrAccessible
+// such as kSecAttrAccessibleWhenUnlocked
 - (BOOL)setPassword:(NSString *)password
          forService:(NSString *)service
+      accessibility:(CFTypeRef)accessibility
             account:(NSString *)account
               error:(NSError **)error;
 

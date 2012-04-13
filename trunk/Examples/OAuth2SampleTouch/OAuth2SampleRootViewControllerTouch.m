@@ -125,7 +125,9 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
     }
   }
 
-  // Save the authentication object, which holds the auth tokens
+  // Save the authentication object, which holds the auth tokens and
+  // the scope string used to obtain the token.  For Google services,
+  // the auth object also holds the user's email address.
   self.auth = auth;
 
   // Update the client ID value text fields to match the radio button selection
@@ -272,9 +274,16 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
                                                     keychainItemName:keychainItemName
                                                             delegate:self
                                                     finishedSelector:finishedSel];
-  
+
   // You can set the title of the navigationItem of the controller here, if you
   // want.
+
+  // If the keychainItemName is not nil, the user's authorization information
+  // will be saved to the keychain. By default, it saves with accessibility
+  // kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly, but that may be
+  // customized here. For example,
+  //
+  //   viewController.keychainItemAccessibility = kSecAttrAccessibleAlways;
 
   // During display of the sign-in window, loss and regain of network
   // connectivity will be reported with the notifications
@@ -432,7 +441,6 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
                 // Synchronous fetches like this are a really bad idea in Cocoa applications
                 //
                 // For a very easy async alternative, we could use GTMHTTPFetcher
-                NSError *error = nil;
                 NSURLResponse *response = nil;
                 NSData *data = [NSURLConnection sendSynchronousRequest:request
                                                      returningResponse:&response

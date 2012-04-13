@@ -3,6 +3,23 @@ GTM OAuth 2 Release Notes
 Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
+
+13-April-2012
+
+Support setting keychain accessibility for iOS.
+
+
+4-April-2012
+
+Add scope to persistenceResponseString so applications can inspect
+the prior scope after loading the token from the keychain.
+
+
+3-April-2012
+
+Now pulls version 2.3.2 of SBJSON sources from github.
+
+
 14-March-2012
 
 Added notification on access token refresh.
