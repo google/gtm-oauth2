@@ -100,7 +100,9 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
     }
   }
 
-  // Save the authentication object, which holds the auth tokens
+  // Save the authentication object, which holds the auth tokens and
+  // the scope string used to obtain the token.  For Google services,
+  // the auth object also holds the user's email address.
   [self setAuthentication:auth];
 
   // Update the client ID value text fields to match the radio button selection

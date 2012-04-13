@@ -883,6 +883,7 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   [dict setValue:self.serviceProvider forKey:kServiceProviderKey];
   [dict setValue:self.userEmail forKey:kUserEmailKey];
   [dict setValue:self.userEmailIsVerified forKey:kUserEmailIsVerifiedKey];
+  [dict setValue:self.scope forKey:kOAuth2ScopeKey];
 
   NSString *result = [[self class] encodedQueryParametersForDictionary:dict];
   return result;
