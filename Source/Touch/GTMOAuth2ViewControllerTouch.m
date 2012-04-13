@@ -315,11 +315,10 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   // don't save unless we have a token that can really authorize requests
   if (![auth canAuthorize]) return NO;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
-  if (accessibility == NULL) {
+  if (accessibility == NULL
+      && &kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly != NULL) {
     accessibility = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly;
   }
-#endif
 
   // make a response string containing the values we want to save
   NSString *password = [auth persistenceResponseString];
@@ -939,12 +938,11 @@ static Class gSignInClass = Nil;
       NSMutableDictionary *keychainQuery = [self keychainQueryForService:service account:account];
       NSData *passwordData = [password dataUsingEncoding:NSUTF8StringEncoding];
       [keychainQuery setObject:passwordData forKey:(id)kSecValueData];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
-      if (accessibility) {
+
+      if (accessibility != NULL && &kSecAttrAccessible != NULL) {
         [keychainQuery setObject:(id)accessibility
                           forKey:(id)kSecAttrAccessible];
       }
-#endif
       status = SecItemAdd((CFDictionaryRef)keychainQuery, NULL);
     }
   }
