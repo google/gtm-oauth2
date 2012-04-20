@@ -316,6 +316,13 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   viewController.initialHTMLString = html;
 
   [[self navigationController] pushViewController:viewController animated:YES];
+
+  // The view controller will be popped before signing in has completed, as
+  // there are some additional fetches done by the sign-in controller.
+  // The kGTMOAuth2UserSignedIn notification will be posted to indicate
+  // that the view has been popped and those additional fetches have begun.
+  // It may be useful to display a temporary UI when kGTMOAuth2UserSignedIn is
+  // posted, just until the finished selector is invoked.
 }
 
 - (GTMOAuth2Authentication *)authForDailyMotion {
@@ -367,7 +374,7 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
                                                              keychainItemName:keychainItemName
                                                                      delegate:self
                                                              finishedSelector:sel];
-  
+
   // We can set a URL for deleting the cookies after sign-in so the next time
   // the user signs in, the browser does not assume the user is already signed
   // in

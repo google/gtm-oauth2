@@ -343,6 +343,13 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   if (nibPath != nil && [[NSFileManager defaultManager] fileExistsAtPath:nibPath]) {
     [super loadView];
   } else {
+    // One of the requirements of loadView is that a valid view object is set to
+    // self.view upon completion. Otherwise, subclasses that attempt to
+    // access self.view after calling [super loadView] will enter an infinite
+    // loop due to the fact that UIViewController's -view accessor calls
+    // loadView when self.view is nil.
+    self.view = [[[UIView alloc] init] autorelease];
+
 #if DEBUG
     NSLog(@"missing %@.nib", nibName);
 #endif
