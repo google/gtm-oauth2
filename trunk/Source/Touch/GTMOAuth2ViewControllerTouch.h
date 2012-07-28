@@ -73,6 +73,8 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 
 #if NS_BLOCKS_AVAILABLE
   void (^completionBlock_)(GTMOAuth2ViewControllerTouch *, GTMOAuth2Authentication *, NSError *);
+
+  void (^popViewBlock_)(void);
 #endif
 
   NSString *keychainItemName_;
@@ -145,6 +147,12 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 @property (nonatomic, retain) IBOutlet UIView *navButtonsView;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *rightBarButtonItem;
 @property (nonatomic, retain) IBOutlet UIWebView *webView;
+
+#if NS_BLOCKS_AVAILABLE
+// An optional block to be called when the view should be popped. If not set,
+// the view controller will use its navigation controller to pop the view.
+@property (nonatomic, copy) void (^popViewBlock)(void);
+#endif
 
 // the default timeout for an unreachable network during display of the
 // sign-in page is 10 seconds; set this to 0 to have no timeout

@@ -4,6 +4,12 @@ Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
 
+26-July-2012
+
+Added popViewBlock property to GTMOAuth2ViewControllerTouch to allow
+dismissing the view when it lacks a navigation controller.
+
+
 13-April-2012
 
 Support setting keychain accessibility for iOS.
