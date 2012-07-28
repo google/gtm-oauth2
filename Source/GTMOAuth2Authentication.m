@@ -44,9 +44,12 @@ static NSString *const kTokenFetchSelectorKey = @"sel";
 static NSString *const kRefreshFetchArgsKey = @"requestArgs";
 
 // If GTMNSJSONSerialization is available, it is used for formatting JSON
+#if (TARGET_OS_MAC && !TARGET_OS_IPHONE && (MAC_OS_X_VERSION_MAX_ALLOWED < 1070)) || \
+  (TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED < 50000))
 @interface GTMNSJSONSerialization : NSObject
 + (id)JSONObjectWithData:(NSData *)data options:(NSUInteger)opt error:(NSError **)error;
 @end
+#endif
 
 @interface GTMOAuth2ParserClass : NSObject
 // just enough of SBJSON to be able to parse

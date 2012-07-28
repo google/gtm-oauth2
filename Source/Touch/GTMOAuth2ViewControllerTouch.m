@@ -65,6 +65,10 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
             userData = userData_,
             properties = properties_;
 
+#if NS_BLOCKS_AVAILABLE
+@synthesize popViewBlock = popViewBlock_;
+#endif
+
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (id)controllerWithScope:(NSString *)scope
                  clientID:(NSString *)clientID
@@ -238,6 +242,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   [delegate_ release];
 #if NS_BLOCKS_AVAILABLE
   [completionBlock_ release];
+  [popViewBlock_ release];
 #endif
   [keychainItemName_ release];
   [initialHTMLString_ release];
@@ -370,14 +375,27 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 }
 
 - (void)popView {
-  if (self.navigationController.topViewController == self) {
+#if NS_BLOCKS_AVAILABLE
+  void (^popViewBlock)() = self.popViewBlock;
+#else
+  id popViewBlock = nil;
+#endif
+
+  if (popViewBlock || self.navigationController.topViewController == self) {
     if (!self.view.isHidden) {
       // Set the flag to our viewWillDisappear method so it knows
       // this is a disappearance initiated by the sign-in object,
       // not the user cancelling via the navigation controller
       didDismissSelf_ = YES;
 
-      [self.navigationController popViewControllerAnimated:YES];
+      if (popViewBlock) {
+#if NS_BLOCKS_AVAILABLE
+        popViewBlock();
+        self.popViewBlock = nil;
+#endif
+      } else {
+        [self.navigationController popViewControllerAnimated:YES];
+      }
       self.view.hidden = YES;
     }
   }
