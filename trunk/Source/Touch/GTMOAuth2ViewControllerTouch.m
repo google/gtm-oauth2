@@ -691,6 +691,10 @@ static Class gSignInClass = Nil;
     // this will indirectly call our signIn:finishedWithAuth:error: method
     // for us
     [signIn_ windowWasClosed];
+
+#if NS_BLOCKS_AVAILABLE
+    self.popViewBlock = nil;
+#endif
   }
 
   // prevent the next sign-in from showing in the WebView that the user is
