@@ -3,6 +3,9 @@ GTM OAuth 2 Release Notes
 Project site:     http://code.google.com/p/gtm-oauth2/
 Discussion group: http://groups.google.com/group/gtm-oauth2
 
+7-August-2012
+
+Replaced initial html delay fix with a pending request mechanism.
 
 26-July-2012
 

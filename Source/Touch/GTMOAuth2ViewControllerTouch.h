@@ -252,10 +252,6 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
            completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler;
 #endif
 
-// Override default in UIViewController. If we have a navigationController, ask
-// it. else default result (i.e., Portrait mode only).
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
-
 // subclasses may override authNibName to specify a custom name
 + (NSString *)authNibName;
 

@@ -157,7 +157,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
                               authorizationURL:authorizationURL
                               keychainItemName:keychainItemName
                                       delegate:delegate
-                              finishedSelector:finishedSelector] autorelease];  
+                              finishedSelector:finishedSelector] autorelease];
 }
 
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
@@ -182,7 +182,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
                                                  delegate:self
                                        webRequestSelector:@selector(signIn:displayRequest:)
                                          finishedSelector:@selector(signIn:finishedWithAuth:error:)];
-    
+
     // if the user is signing in to a Google service, we'll delete the
     // Google authentication browser cookies upon completion
     //
@@ -363,13 +363,6 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 
 
 - (void)viewDidLoad {
-  // the app may prefer some html other than blank white to be displayed
-  // before the sign-in web page loads
-  NSString *html = self.initialHTMLString;
-  if ([html length] > 0) {
-    [[self webView] loadHTMLString:html baseURL:nil];
-  }
-
   rightBarButtonItem_.customView = navButtonsView_;
   self.navigationItem.rightBarButtonItem = rightBarButtonItem_;
 }
@@ -532,8 +525,9 @@ static Class gSignInClass = Nil;
 #pragma mark SignIn callbacks
 
 - (void)signIn:(GTMOAuth2SignIn *)signIn displayRequest:(NSURLRequest *)request {
-  // this is the signIn object's webRequest method, telling the controller
-  // to either display the request in the webview, or close the window
+  // This is the signIn object's webRequest method, telling the controller
+  // to either display the request in the webview, or if the request is nil,
+  // to close the window.
   //
   // All web requests and all window closing goes through this routine
 
@@ -553,11 +547,16 @@ static Class gSignInClass = Nil;
     if (isDateValid) {
       // Display the request.
       self.request = request;
-      BOOL shouldWaitForHTML = ([self.initialHTMLString length] > 0);
-      if (shouldWaitForHTML) {
-        [self.webView performSelector:@selector(loadRequest:)
-                           withObject:request
-                           afterDelay:0.05];
+      // The app may prefer some html other than blank white to be displayed
+      // before the sign-in web page loads.
+      // The first fetch might be slow, so the client programmer may want
+      // to show a local "loading" message.
+      // On iOS 5+, UIWebView will ignore loadHTMLString: if it's followed by
+      // a loadRequest: call, so if there is a "loading" message we defer
+      // the loadRequest: until after after we've drawn the "loading" message.
+      NSString *html = self.initialHTMLString;
+      if ([html length] > 0) {
+        [self.webView loadHTMLString:html baseURL:nil];
       } else {
         [self.webView loadRequest:request];
       }
@@ -746,9 +745,15 @@ static Class gSignInClass = Nil;
 #endif
   }
 
-  [signIn_ cookiesChanged:[NSHTTPCookieStorage sharedHTTPCookieStorage]];
+  if (self.request && [self.initialHTMLString length] > 0) {
+    // The request was pending.
+    [self setInitialHTMLString:nil];
+    [self.webView loadRequest:self.request];
+  } else {
+    [signIn_ cookiesChanged:[NSHTTPCookieStorage sharedHTTPCookieStorage]];
 
-  [self updateUI];
+    [self updateUI];
+  }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
@@ -784,6 +789,8 @@ static Class gSignInClass = Nil;
   }
 }
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+// Deployment target < iOS 6.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
   BOOL value = YES;
   if (!isInsideShouldAutorotateToInterfaceOrientation_) {
@@ -798,6 +805,12 @@ static Class gSignInClass = Nil;
   }
   return value;
 }
+#else
+// Deployment target >= iOS 6.
+- (NSUInteger)supportedInterfaceOrientations {
+  return UIInterfaceOrientationMaskAll;
+}
+#endif
 
 @end
 
