@@ -91,10 +91,12 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
   id userData_;
   NSMutableDictionary *properties_;
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
   // We delegate the decision to our owning NavigationController (if any).
   // But, the NavigationController will call us back, and ask us.
   // BOOL keeps us from infinite looping.
   BOOL isInsideShouldAutorotateToInterfaceOrientation_;
+#endif
 
   // YES, when view first shown in this signIn session.
   BOOL isViewShown_;
