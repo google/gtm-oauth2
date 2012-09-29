@@ -375,7 +375,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 #endif
 
   if (popViewBlock || self.navigationController.topViewController == self) {
-    if (!self.view.isHidden) {
+    if (!self.view.hidden) {
       // Set the flag to our viewWillDisappear method so it knows
       // this is a disappearance initiated by the sign-in object,
       // not the user cancelling via the navigation controller
