@@ -527,10 +527,24 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
     NSThread *targetThread = args.thread;
     BOOL isSameThread = [targetThread isEqual:[NSThread currentThread]];
 
-    [self performSelector:@selector(invokeCallbackArgs:)
-                 onThread:targetThread
-               withObject:args
-            waitUntilDone:isSameThread];
+    if (isSameThread) {
+      [self invokeCallbackArgs:args];
+    } else {
+      SEL sel = @selector(invokeCallbackArgs:);
+      NSOperationQueue *delegateQueue = self.fetcherService.delegateQueue;
+      if (delegateQueue) {
+        NSInvocationOperation *op;
+        op = [[[NSInvocationOperation alloc] initWithTarget:self
+                                                   selector:sel
+                                                     object:args] autorelease];
+        [delegateQueue addOperation:op];
+      } else {
+        [self performSelector:sel
+                     onThread:targetThread
+                   withObject:args
+                waitUntilDone:NO];
+      }
+    }
   }
 
   BOOL didAuth = (args.error == nil);
