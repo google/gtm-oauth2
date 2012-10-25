@@ -55,7 +55,8 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
             forwardButton = forwardButton_,
             navButtonsView = navButtonsView_,
             rightBarButtonItem = rightBarButtonItem_,
-            webView = webView_;
+            webView = webView_,
+            initialActivityIndicator = initialActivityIndicator_;
 
 @synthesize keychainItemName = keychainItemName_,
             keychainItemAccessibility = keychainItemAccessibility_,
@@ -234,6 +235,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 
   [backButton_ release];
   [forwardButton_ release];
+  [initialActivityIndicator_ release];
   [navButtonsView_ release];
   [rightBarButtonItem_ release];
   [webView_ release];
@@ -499,6 +501,14 @@ static Class gSignInClass = Nil;
   return ([name length] > 0);
 }
 
+- (BOOL)showsInitialActivityIndicator {
+  return (mustShowActivityIndicator_ == 1 || initialHTMLString_ == nil);
+}
+
+- (void)setShowsInitialActivityIndicator:(BOOL)flag {
+  mustShowActivityIndicator_ = (flag ? 1 : -1);
+}
+
 #pragma mark User Properties
 
 - (void)setProperty:(id)obj forKey:(NSString *)key {
@@ -554,10 +564,17 @@ static Class gSignInClass = Nil;
       // On iOS 5+, UIWebView will ignore loadHTMLString: if it's followed by
       // a loadRequest: call, so if there is a "loading" message we defer
       // the loadRequest: until after after we've drawn the "loading" message.
+      //
+      // If there is no initial html string, we show the activity indicator
+      // unless the user set showsInitialActivityIndicator to NO; if there
+      // is an initial html string, we hide the indicator unless the user set
+      // showsInitialActivityIndicator to YES.
       NSString *html = self.initialHTMLString;
       if ([html length] > 0) {
+        [initialActivityIndicator_ setHidden:(mustShowActivityIndicator_ < 1)];
         [self.webView loadHTMLString:html baseURL:nil];
       } else {
+        [initialActivityIndicator_ setHidden:(mustShowActivityIndicator_ < 0)];
         [self.webView loadRequest:request];
       }
     } else {
@@ -750,6 +767,7 @@ static Class gSignInClass = Nil;
     [self setInitialHTMLString:nil];
     [self.webView loadRequest:self.request];
   } else {
+    [initialActivityIndicator_ setHidden:YES];
     [signIn_ cookiesChanged:[NSHTTPCookieStorage sharedHTTPCookieStorage]];
 
     [self updateUI];
@@ -790,7 +808,16 @@ static Class gSignInClass = Nil;
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-// Deployment target < iOS 6.
+// When running on a device with an OS version < 6, this gets called.
+//
+// Since it is never called in iOS 6 or greater, if your min deployment
+// target is iOS6 or greater, then you don't need to have this method compiled
+// into your app.
+//
+// When running on a device with an OS version 6 or greater, this code is
+// not called. - (NSUInteger)supportedInterfaceOrientations; would be called,
+// if it existed. Since it is absent,
+// Allow the default orientations: All for iPad, all but upside down for iPhone.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
   BOOL value = YES;
   if (!isInsideShouldAutorotateToInterfaceOrientation_) {
@@ -805,12 +832,8 @@ static Class gSignInClass = Nil;
   }
   return value;
 }
-#else
-// Deployment target >= iOS 6.
-- (NSUInteger)supportedInterfaceOrientations {
-  return UIInterfaceOrientationMaskAll;
-}
 #endif
+
 
 @end
 

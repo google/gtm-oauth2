@@ -53,6 +53,7 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
  @private
   UIButton *backButton_;
   UIButton *forwardButton_;
+  UIActivityIndicatorView *initialActivityIndicator_;
   UIView *navButtonsView_;
   UIBarButtonItem *rightBarButtonItem_;
   UIWebView *webView_;
@@ -83,6 +84,10 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
   // if non-nil, the html string to be displayed immediately upon opening
   // of the web view
   NSString *initialHTMLString_;
+
+  // set to 1 or -1 if the user sets the showsInitialActivityIndicator
+  // property
+  int mustShowActivityIndicator_;
 
   // if non-nil, the URL for which cookies will be deleted when the
   // browser view is dismissed
@@ -136,6 +141,11 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // initial view color
 @property (nonatomic, copy) NSString *initialHTMLString;
 
+// an activity indicator shows during initial webview load when no initial HTML
+// string is specified, but the activity indicator can be forced to be shown
+// with this property
+@property (nonatomic, assign) BOOL showsInitialActivityIndicator;
+
 // the underlying object to hold authentication tokens and authorize http
 // requests
 @property (nonatomic, retain, readonly) GTMOAuth2Authentication *authentication;
@@ -146,6 +156,7 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 // user interface elements
 @property (nonatomic, retain) IBOutlet UIButton *backButton;
 @property (nonatomic, retain) IBOutlet UIButton *forwardButton;
+@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *initialActivityIndicator;
 @property (nonatomic, retain) IBOutlet UIView *navButtonsView;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *rightBarButtonItem;
 @property (nonatomic, retain) IBOutlet UIWebView *webView;
