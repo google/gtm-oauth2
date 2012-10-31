@@ -720,6 +720,13 @@ static Class gSignInClass = Nil;
   [super viewWillDisappear:animated];
 }
 
+- (void)viewDidLayoutSubviews {
+  // We don't call super's version of this method because
+  // -[UIViewController viewDidLayoutSubviews] is documented as a no-op, that
+  // didn't exist before iOS 5.
+  [initialActivityIndicator_ setCenter:[[self view] center]];
+}
+
 - (BOOL)webView:(UIWebView *)webView
   shouldStartLoadWithRequest:(NSURLRequest *)request
               navigationType:(UIWebViewNavigationType)navigationType {
