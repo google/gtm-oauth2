@@ -757,7 +757,8 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 + (void)revokeTokenForGoogleAuthentication:(GTMOAuth2Authentication *)auth {
-  if (auth.canAuthorize
+  if (auth.refreshToken != nil
+      && auth.canAuthorize
       && [auth.serviceProvider isEqual:kGTMOAuth2ServiceProviderGoogle]) {
 
     // create a signed revocation request for this authentication object
@@ -767,44 +768,45 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
 
     NSString *token = auth.refreshToken;
     NSString *encoded = [GTMOAuth2Authentication encodedOAuthValueForString:token];
-    NSString *body = [@"token=" stringByAppendingString:encoded];
+    if (encoded != nil) {
+      NSString *body = [@"token=" stringByAppendingString:encoded];
 
-    [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
-    [request setHTTPMethod:@"POST"];
+      [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
+      [request setHTTPMethod:@"POST"];
 
-    NSString *userAgent = [auth userAgent];
-    [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+      NSString *userAgent = [auth userAgent];
+      [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
 
-    // there's nothing to be done if revocation succeeds or fails
-    GTMHTTPFetcher *fetcher;
-    id <GTMHTTPFetcherServiceProtocol> fetcherService = auth.fetcherService;
-    if (fetcherService) {
-      fetcher = [fetcherService fetcherWithRequest:request];
-    } else {
-      fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
-    }
-    fetcher.comment = @"revoke token";
+      // there's nothing to be done if revocation succeeds or fails
+      GTMHTTPFetcher *fetcher;
+      id <GTMHTTPFetcherServiceProtocol> fetcherService = auth.fetcherService;
+      if (fetcherService) {
+        fetcher = [fetcherService fetcherWithRequest:request];
+      } else {
+        fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+      }
+      fetcher.comment = @"revoke token";
 
-    // Use a completion handler fetch for better debugging, but only if we're
-    // guaranteed that blocks are available in the runtime
+      // Use a completion handler fetch for better debugging, but only if we're
+      // guaranteed that blocks are available in the runtime
 #if (!TARGET_OS_IPHONE && (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060)) || \
     (TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000))
-    // Blocks are available
-    [fetcher beginFetchWithCompletionHandler:^(NSData *data, NSError *error) {
+      // Blocks are available
+      [fetcher beginFetchWithCompletionHandler:^(NSData *data, NSError *error) {
   #if DEBUG
-      if (error) {
-        NSString *errStr = [[[NSString alloc] initWithData:data
-                                                  encoding:NSUTF8StringEncoding] autorelease];
-        NSLog(@"revoke error: %@", errStr);
-      }
+        if (error) {
+          NSString *errStr = [[[NSString alloc] initWithData:data
+                                                    encoding:NSUTF8StringEncoding] autorelease];
+          NSLog(@"revoke error: %@", errStr);
+        }
   #endif // DEBUG
-    }];
+      }];
 #else
-    // Blocks may not be available
-    [fetcher beginFetchWithDelegate:nil didFinishSelector:NULL];
+      // Blocks may not be available
+      [fetcher beginFetchWithDelegate:nil didFinishSelector:NULL];
 #endif
+    }
   }
-
   [auth reset];
 }
 #endif // !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT

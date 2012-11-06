@@ -724,7 +724,7 @@ static Class gSignInClass = Nil;
   // We don't call super's version of this method because
   // -[UIViewController viewDidLayoutSubviews] is documented as a no-op, that
   // didn't exist before iOS 5.
-  [initialActivityIndicator_ setCenter:[[self view] center]];
+  [initialActivityIndicator_ setCenter:[webView_ center]];
 }
 
 - (BOOL)webView:(UIWebView *)webView
