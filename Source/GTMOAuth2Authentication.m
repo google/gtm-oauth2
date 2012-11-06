@@ -478,6 +478,29 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   }
 }
 
+- (void)stopAuthorizationForRequest:(NSURLRequest *)request {
+  @synchronized(authorizationQueue_) {
+    NSUInteger argIndex = 0;
+    BOOL found = NO;
+    for (GTMOAuth2AuthorizationArgs *args in authorizationQueue_) {
+      if ([args request] == request) {
+        found = YES;
+        break;
+      }
+      argIndex++;
+    }
+
+    if (found) {
+      [authorizationQueue_ removeObjectAtIndex:argIndex];
+
+      // If the queue is now empty, go ahead and stop the fetcher.
+      if ([authorizationQueue_ count] == 0) {
+        [self stopAuthorization];
+      }
+    }
+  }
+}
+
 - (BOOL)authorizeRequestImmediateArgs:(GTMOAuth2AuthorizationArgs *)args {
   // This authorization entry point never attempts to refresh the access token,
   // but does call the completion routine
