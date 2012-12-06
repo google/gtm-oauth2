@@ -586,7 +586,7 @@ static Class gSignInClass = Nil;
       //
       // Even better is for apps to check the system clock and show some more
       // helpful, localized instructions for users; this is really a fallback.
-      NSString *html = @"<html><body><div align=center><font size='7'>"
+      NSString *const html = @"<html><body><div align=center><font size='7'>"
         @"&#x231A; ?<br><i>System Clock Incorrect</i><br>%@"
         @"</font></div></body></html>";
       NSString *errHTML = [NSString stringWithFormat:html, [NSDate date]];

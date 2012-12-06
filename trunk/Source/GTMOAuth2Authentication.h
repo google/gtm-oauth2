@@ -149,6 +149,7 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 @property (retain) NSString *scope;
 @property (retain) NSString *tokenType;
 @property (retain) NSString *assertion;
+@property (retain) NSString *refreshScope;
 
 // Apps may optionally add parameters here to be provided to the token
 // endpoint on token requests and refreshes
@@ -175,6 +176,9 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 // The provider name is just for allowing stored authorization to be associated
 // with the authorizing service.
 @property (copy) NSString *serviceProvider;
+
+// User ID; not used for authentication
+@property (retain) NSString *userID;
 
 // User email and verified status; not used for authentication
 //

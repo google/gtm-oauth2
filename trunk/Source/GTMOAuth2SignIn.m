@@ -601,6 +601,10 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
       if (profileDict) {
         self.userProfile = profileDict;
 
+        // Save the ID into the auth object
+        NSString *identifier = [profileDict objectForKey:@"id"];
+        [auth setUserID:identifier];
+
         // Save the email into the auth object
         NSString *email = [profileDict objectForKey:@"email"];
         [auth setUserEmail:email];
