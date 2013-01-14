@@ -51,6 +51,12 @@ The OAuth 2 controllers require linking to the system frameworks Security.framew
 
 The sample applications use Objective-C blocks, so are intended for iOS 4 and Mac OS X 10.6.
 
+=== Threading and Queues ===
+
+Sign-in calls should be made on the main thread. Authorizing a request is best done on the main thread as well. 
+
+Authorizing a request may be done on a background thread if the thread has a spinning run loop. Alternatively, a GTMOAuth2Authentication object may be assigned a GTMHTTPFetcherService object, where the fetcher service object has a delegateQueue property indicating the queue to be used for calling back to the application. Note that delegateQueue support requires iOS 6 or Mac OS X 10.7. 
+
 == Signing In to Google Services ==
 
 === Registering Your Application ===
