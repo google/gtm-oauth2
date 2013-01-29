@@ -46,11 +46,10 @@ NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 + (NSMutableURLRequest *)mutableURLRequestWithURL:(NSURL *)oldURL
                                       paramString:(NSString *)paramStr;
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
+- (void)addScopeForGoogleUserInfo;
 - (void)fetchGoogleUserInfo;
 #endif
 - (void)finishSignInWithError:(NSError *)error;
-
-- (void)handleCallbackReached;
 
 - (void)auth:(GTMOAuth2Authentication *)auth
 finishedWithFetcher:(GTMHTTPFetcher *)fetcher
@@ -136,6 +135,27 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 
   return auth;
 }
+
+- (void)addScopeForGoogleUserInfo {
+  GTMOAuth2Authentication *auth = self.authentication;
+  if (self.shouldFetchGoogleUserEmail) {
+    NSString *const emailScope = @"https://www.googleapis.com/auth/userinfo.email";
+    NSString *scope = auth.scope;
+    if ([scope rangeOfString:emailScope].location == NSNotFound) {
+      scope = [GTMOAuth2Authentication scopeWithStrings:scope, emailScope, nil];
+      auth.scope = scope;
+    }
+  }
+
+  if (self.shouldFetchGoogleUserProfile) {
+    NSString *const profileScope = @"https://www.googleapis.com/auth/userinfo.profile";
+    NSString *scope = auth.scope;
+    if ([scope rangeOfString:profileScope].location == NSNotFound) {
+      scope = [GTMOAuth2Authentication scopeWithStrings:scope, profileScope, nil];
+      auth.scope = scope;
+    }
+  }
+}
 #endif
 
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
@@ -217,24 +237,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   // For signing in to Google, append the scope for obtaining the authenticated
   // user email and profile, as appropriate
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
-  GTMOAuth2Authentication *auth = self.authentication;
-  if (self.shouldFetchGoogleUserEmail) {
-    NSString *const emailScope = @"https://www.googleapis.com/auth/userinfo.email";
-    NSString *scope = auth.scope;
-    if ([scope rangeOfString:emailScope].location == NSNotFound) {
-      scope = [GTMOAuth2Authentication scopeWithStrings:scope, emailScope, nil];
-      auth.scope = scope;
-    }
-  }
-
-  if (self.shouldFetchGoogleUserProfile) {
-    NSString *const profileScope = @"https://www.googleapis.com/auth/userinfo.profile";
-    NSString *scope = auth.scope;
-    if ([scope rangeOfString:profileScope].location == NSNotFound) {
-      scope = [GTMOAuth2Authentication scopeWithStrings:scope, profileScope, nil];
-      auth.scope = scope;
-    }
-  }
+  [self addScopeForGoogleUserInfo];
 #endif
 
   // start the authorization
@@ -350,7 +353,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 // requested
 //
 // When the request is for the callback URL, this method invokes
-// handleCallbackReached and returns YES
+// authCodeObtained and returns YES
 - (BOOL)requestRedirectedToRequest:(NSURLRequest *)redirectedRequest {
   // for Google's installed app sign-in protocol, we'll look for the
   // end-of-sign-in indicator in the titleChanged: method below
@@ -400,7 +403,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
              @"response lacks auth code or error");
 #endif
 
-    [self handleCallbackReached];
+    [self authCodeObtained];
   }
   // tell the delegate that we did handle this request
   return YES;
@@ -410,7 +413,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 // been loadded
 //
 // When the title indicates sign-in has completed, this method invokes
-// handleCallbackReached and returns YES
+// authCodeObtained and returns YES
 - (BOOL)titleChanged:(NSString *)title {
   // return YES if the OAuth flow ending title was detected
 
@@ -432,7 +435,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
       if (!self.hasHandledCallback) {
         [self.authentication setKeysForResponseDictionary:dict];
 
-        [self handleCallbackReached];
+        [self authCodeObtained];
       }
       return YES;
     }
@@ -467,7 +470,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   return NO;
 }
 
-- (void)handleCallbackReached {
+- (void)authCodeObtained {
   // the callback page was requested, or the authenticate code was loaded
   // into a page's title, so exchange the auth code for access & refresh tokens
   // and tell the window to close
@@ -475,7 +478,19 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   // avoid duplicate signals that the callback point has been reached
   self.hasHandledCallback = YES;
 
-  [self closeTheWindow];
+  // If the signin was request for exchanging an authentication token to a
+  // refresh token, there is no window to close.
+  if (self.webRequestSelector) {
+    [self closeTheWindow];
+  } else {
+    // For signing in to Google, append the scope for obtaining the
+    // authenticated user email and profile, as appropriate. This is usually
+    // done by the startSigningIn method, but this method is not called when
+    // exchanging an authentication token for a refresh token.
+#if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
+    [self addScopeForGoogleUserInfo];
+#endif
+  }
 
   NSError *error = nil;
 
