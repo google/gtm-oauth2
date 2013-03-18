@@ -35,6 +35,8 @@ The source files required are:
 
 These source files can be browsed in the project's [http://code.google.com/p/gtm-oauth2/source/browse/#svn/trunk/Source/ source directory].
 
+Add the [https://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/AddingaLibrarytoaTarget.html standard frameworks] Security.framework and !SystemConfiguration.framework to your project.
+
 When linking against a static library build of the controller, specify the [http://developer.apple.com/mac/library/qa/qa2006/qa1490.html -ObjC build option] for the application target's "Other Linker Flags".
 
 === ARC Compatibility ===
@@ -46,8 +48,6 @@ To disable ARC for source files in Xcode 4, select the project and the target in
 === System Requirements ===
 
 The Mac controller is compatible with Mac OS X 10.5 and later. The iOS controller is compatible with iPhone OS 3 and later.
-
-The OAuth 2 controllers require linking to the system frameworks Security.framework and !SystemConfiguration.framework.
 
 The sample applications use Objective-C blocks, so are intended for iOS 4 and Mac OS X 10.6.
 
