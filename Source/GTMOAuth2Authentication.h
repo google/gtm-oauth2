@@ -122,6 +122,8 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
   NSURL *tokenURL_;
   NSDate *expirationDate_;
 
+  NSString *authorizationTokenKey_;
+
   NSDictionary *additionalTokenRequestParameters_;
 
   // queue of requests for authorization waiting for a valid access token
