@@ -21,9 +21,6 @@
 		4F244813121F263E00FEE1DA /* OAuth2SampleMainTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F244810121F253B00FEE1DA /* OAuth2SampleMainTouch.xib */; };
 		4F64A4071305E3F90058B9BA /* GTMOAuth2Authentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F64A4041305E3F90058B9BA /* GTMOAuth2Authentication.m */; };
 		4F64A4081305E3F90058B9BA /* GTMOAuth2SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F64A4061305E3F90058B9BA /* GTMOAuth2SignIn.m */; };
-		4FDB9FA3152BA2D0004A2830 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9F9E152BA2D0004A2830 /* SBJsonBase.m */; };
-		4FDB9FA4152BA2D0004A2830 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9FA0152BA2D0004A2830 /* SBJsonParser.m */; };
-		4FDB9FA5152BA2D0004A2830 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FDB9FA2152BA2D0004A2830 /* SBJsonWriter.m */; };
 		4FEED6C512233486006FB4BC /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F2447D7121F211300FEE1DA /* GTMOAuth2ViewTouch.xib */; };
 /* End PBXBuildFile section */
 
@@ -51,12 +48,6 @@
 		4F64A4041305E3F90058B9BA /* GTMOAuth2Authentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2Authentication.m; path = ../../Source/GTMOAuth2Authentication.m; sourceTree = SOURCE_ROOT; };
 		4F64A4051305E3F90058B9BA /* GTMOAuth2SignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMOAuth2SignIn.h; path = ../../Source/GTMOAuth2SignIn.h; sourceTree = SOURCE_ROOT; };
 		4F64A4061305E3F90058B9BA /* GTMOAuth2SignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2SignIn.m; path = ../../Source/GTMOAuth2SignIn.m; sourceTree = SOURCE_ROOT; };
-		4FDB9F9D152BA2D0004A2830 /* SBJsonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBJsonBase.h; path = ../../JSON/SBJsonBase.h; sourceTree = "<group>"; };
-		4FDB9F9E152BA2D0004A2830 /* SBJsonBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBJsonBase.m; path = ../../JSON/SBJsonBase.m; sourceTree = "<group>"; };
-		4FDB9F9F152BA2D0004A2830 /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBJsonParser.h; path = ../../JSON/SBJsonParser.h; sourceTree = "<group>"; };
-		4FDB9FA0152BA2D0004A2830 /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBJsonParser.m; path = ../../JSON/SBJsonParser.m; sourceTree = "<group>"; };
-		4FDB9FA1152BA2D0004A2830 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBJsonWriter.h; path = ../../JSON/SBJsonWriter.h; sourceTree = "<group>"; };
-		4FDB9FA2152BA2D0004A2830 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SBJsonWriter.m; path = ../../JSON/SBJsonWriter.m; sourceTree = "<group>"; };
 		4FF23DC011754C0300E96C5A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F49B45D213315AA200EAA732 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -153,22 +144,8 @@
 				4F2447EC121F220A00FEE1DA /* GTMHTTPFetcher.h */,
 				4F2447ED121F220A00FEE1DA /* GTMHTTPFetcher.m */,
 				4F2447D7121F211300FEE1DA /* GTMOAuth2ViewTouch.xib */,
-				4FDB9F9C152BA2BB004A2830 /* JSON */,
 			);
 			name = "OAuth Classes and Resources";
-			sourceTree = "<group>";
-		};
-		4FDB9F9C152BA2BB004A2830 /* JSON */ = {
-			isa = PBXGroup;
-			children = (
-				4FDB9F9D152BA2D0004A2830 /* SBJsonBase.h */,
-				4FDB9F9E152BA2D0004A2830 /* SBJsonBase.m */,
-				4FDB9F9F152BA2D0004A2830 /* SBJsonParser.h */,
-				4FDB9FA0152BA2D0004A2830 /* SBJsonParser.m */,
-				4FDB9FA1152BA2D0004A2830 /* SBJsonWriter.h */,
-				4FDB9FA2152BA2D0004A2830 /* SBJsonWriter.m */,
-			);
-			name = JSON;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,6 +173,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "OAuth2SampleTouch" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -241,9 +221,6 @@
 				4F2447EF121F220A00FEE1DA /* GTMHTTPFetcher.m in Sources */,
 				4F64A4071305E3F90058B9BA /* GTMOAuth2Authentication.m in Sources */,
 				4F64A4081305E3F90058B9BA /* GTMOAuth2SignIn.m in Sources */,
-				4FDB9FA3152BA2D0004A2830 /* SBJsonBase.m in Sources */,
-				4FDB9FA4152BA2D0004A2830 /* SBJsonParser.m in Sources */,
-				4FDB9FA5152BA2D0004A2830 /* SBJsonWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,13 +263,25 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_CFLAGS = "-DDEBUG=1";
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
+				"WARNING_CFLAGS[arch=*]" = (
+					"-Wall",
+					"-Werror",
+				);
 			};
 			name = Debug;
 		};
@@ -302,12 +291,24 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
+				"WARNING_CFLAGS[arch=*]" = (
+					"-Wall",
+					"-Werror",
+				);
 			};
 			name = Release;
 		};
