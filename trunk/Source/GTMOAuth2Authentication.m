@@ -169,6 +169,7 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
             tokenURL = tokenURL_,
             expirationDate = expirationDate_,
             additionalTokenRequestParameters = additionalTokenRequestParameters_,
+            additionalGrantTypeRequestParameters = additionalGrantTypeRequestParameters_,
             refreshFetcher = refreshFetcher_,
             fetcherService = fetcherService_,
             parserClass = parserClass_,
@@ -243,6 +244,7 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   [tokenURL_ release];
   [expirationDate_ release];
   [additionalTokenRequestParameters_ release];
+  [additionalGrantTypeRequestParameters_ release];
   [refreshFetcher_ release];
   [authorizationQueue_ release];
   [userData_ release];
@@ -723,10 +725,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   NSString *refreshToken = self.refreshToken;
   NSString *code = self.code;
   NSString *assertion = self.assertion;
+  NSString *grantType = nil;
   
   if (refreshToken) {
     // We have a refresh token
-    [paramsDict setObject:@"refresh_token" forKey:@"grant_type"];
+    grantType = @"refresh_token";
     [paramsDict setObject:refreshToken forKey:@"refresh_token"];
 
     NSString *refreshScope = self.refreshScope;
@@ -737,7 +740,7 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
     fetchType = kGTMOAuth2FetchTypeRefresh;
   } else if (code) {
     // We have a code string
-    [paramsDict setObject:@"authorization_code" forKey:@"grant_type"];
+    grantType = @"authorization_code";
     [paramsDict setObject:code forKey:@"code"];
 
     NSString *redirectURI = self.redirectURI;
@@ -753,9 +756,8 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
     fetchType = kGTMOAuth2FetchTypeToken;
   } else if (assertion) {
     // We have an assertion string
+    grantType = @"http://oauth.net/grant_type/jwt/1.0/bearer";
     [paramsDict setObject:assertion forKey:@"assertion"];
-    [paramsDict setObject:@"http://oauth.net/grant_type/jwt/1.0/bearer"
-                   forKey:@"grant_type"];
     fetchType = kGTMOAuth2FetchTypeAssertion;
   } else {
 #if DEBUG
@@ -763,7 +765,8 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 #endif
     return nil;
   }
-  
+  [paramsDict setObject:grantType forKey:@"grant_type"];
+
   NSString *clientID = self.clientID;
   if ([clientID length] > 0) {
     [paramsDict setObject:clientID forKey:@"client_id"];
@@ -777,6 +780,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   NSDictionary *additionalParams = self.additionalTokenRequestParameters;
   if (additionalParams) {
     [paramsDict addEntriesFromDictionary:additionalParams];
+  }
+  NSDictionary *grantTypeParams =
+    [self.additionalGrantTypeRequestParameters objectForKey:grantType];
+  if (grantTypeParams) {
+    [paramsDict addEntriesFromDictionary:grantTypeParams];
   }
 
   NSString *paramStr = [[self class] encodedQueryParametersForDictionary:paramsDict];

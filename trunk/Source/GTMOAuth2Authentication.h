@@ -125,6 +125,7 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
   NSString *authorizationTokenKey_;
 
   NSDictionary *additionalTokenRequestParameters_;
+  NSDictionary *additionalGrantTypeRequestParameters_;
 
   // queue of requests for authorization waiting for a valid access token
   GTMHTTPFetcher *refreshFetcher_;
@@ -156,8 +157,19 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 @property (retain) NSString *refreshScope;
 
 // Apps may optionally add parameters here to be provided to the token
-// endpoint on token requests and refreshes
+// endpoint on token requests and refreshes.
 @property (retain) NSDictionary *additionalTokenRequestParameters;
+
+// Apps may optionally add parameters here to be provided to the token
+// endpoint on specific token requests and refreshes, keyed by the grant_type.
+// For example, if a different "type" parameter is required for obtaining
+// the auth code and on refresh, this might be:
+//
+//  viewController.authentication.additionalGrantTypeRequestParameters = @{
+//    @"authorization_code" : @{ @"type" : @"code" },
+//    @"refresh_token" : @{ @"type" : @"refresh" }
+//  };
+@property (retain) NSDictionary *additionalGrantTypeRequestParameters;
 
 // Response properties
 @property (retain) NSMutableDictionary *parameters;
