@@ -45,9 +45,10 @@
 
 _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com.google.GTMOAuthKeychain");
 
-
 @class GTMOAuth2SignIn;
 @class GTMOAuth2ViewControllerTouch;
+
+typedef void (^GTMOAuth2ViewControllerCompletionHandler)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error);
 
 @interface GTMOAuth2ViewControllerTouch : UIViewController<UINavigationControllerDelegate, UIWebViewDelegate> {
  @private
@@ -73,7 +74,7 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
   SEL finishedSelector_;
 
 #if NS_BLOCKS_AVAILABLE
-  void (^completionBlock_)(GTMOAuth2ViewControllerTouch *, GTMOAuth2Authentication *, NSError *);
+  GTMOAuth2ViewControllerCompletionHandler completionBlock_;
 
   void (^popViewBlock_)(void);
 #endif
@@ -228,13 +229,13 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
                  clientID:(NSString *)clientID
              clientSecret:(NSString *)clientSecret
          keychainItemName:(NSString *)keychainItemName
-        completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler;
+        completionHandler:(GTMOAuth2ViewControllerCompletionHandler)handler;
 
 - (id)initWithScope:(NSString *)scope
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret
    keychainItemName:(NSString *)keychainItemName
-  completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler;
+  completionHandler:(GTMOAuth2ViewControllerCompletionHandler)handler;
 #endif
 #endif
 
@@ -257,12 +258,12 @@ _EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com
 + (id)controllerWithAuthentication:(GTMOAuth2Authentication *)auth
                   authorizationURL:(NSURL *)authorizationURL
                   keychainItemName:(NSString *)keychainItemName  // may be nil
-                 completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler;
+                 completionHandler:(GTMOAuth2ViewControllerCompletionHandler)handler;
 
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL
             keychainItemName:(NSString *)keychainItemName
-           completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler;
+           completionHandler:(GTMOAuth2ViewControllerCompletionHandler)handler;
 #endif
 
 // subclasses may override authNibName to specify a custom name
