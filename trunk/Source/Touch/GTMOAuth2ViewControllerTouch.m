@@ -113,7 +113,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
                  clientID:(NSString *)clientID
              clientSecret:(NSString *)clientSecret
          keychainItemName:(NSString *)keychainItemName
-        completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler {
+        completionHandler:(GTMOAuth2ViewControllerCompletionHandler)handler {
   return [[[self alloc] initWithScope:scope
                              clientID:clientID
                          clientSecret:clientSecret
@@ -125,7 +125,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
            clientID:(NSString *)clientID
        clientSecret:(NSString *)clientSecret
    keychainItemName:(NSString *)keychainItemName
-  completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler {
+  completionHandler:(GTMOAuth2ViewControllerCompletionHandler)handler {
   // convenient entry point for Google authentication
 
   Class signInClass = [[self class] signInClass];
@@ -206,7 +206,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 + (id)controllerWithAuthentication:(GTMOAuth2Authentication *)auth
                   authorizationURL:(NSURL *)authorizationURL
                   keychainItemName:(NSString *)keychainItemName
-                 completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler {
+                 completionHandler:(GTMOAuth2ViewControllerCompletionHandler)handler {
   return [[[self alloc] initWithAuthentication:auth
                               authorizationURL:authorizationURL
                               keychainItemName:keychainItemName
@@ -216,7 +216,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 - (id)initWithAuthentication:(GTMOAuth2Authentication *)auth
             authorizationURL:(NSURL *)authorizationURL
             keychainItemName:(NSString *)keychainItemName
-           completionHandler:(void (^)(GTMOAuth2ViewControllerTouch *viewController, GTMOAuth2Authentication *auth, NSError *error))handler {
+           completionHandler:(GTMOAuth2ViewControllerCompletionHandler)handler {
   // fall back to the non-blocks init
   self = [self initWithAuthentication:auth
                      authorizationURL:authorizationURL
