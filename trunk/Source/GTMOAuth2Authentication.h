@@ -348,6 +348,8 @@ _EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuth
 
 + (NSDictionary *)dictionaryWithResponseString:(NSString *)responseStr;
 
++ (NSDictionary *)dictionaryWithJSONData:(NSData *)data;
+
 + (NSString *)scopeWithStrings:(NSString *)firsStr, ... NS_REQUIRES_NIL_TERMINATION;
 @end
 

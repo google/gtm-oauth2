@@ -169,7 +169,7 @@ typedef void (^GTMOAuth2ViewControllerCompletionHandler)(GTMOAuth2ViewController
 #endif
 
 // the default timeout for an unreachable network during display of the
-// sign-in page is 10 seconds; set this to 0 to have no timeout
+// sign-in page is 30 seconds; set this to 0 to have no timeout
 @property (nonatomic, assign) NSTimeInterval networkLossTimeoutInterval;
 
 // if set, cookies are deleted for this URL when the view is hidden
