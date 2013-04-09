@@ -323,20 +323,22 @@ const char *kKeychainAccountName = "OAuth";
 }
 
 - (void)destroyWindow {
-  // no request; close the window (but not immediately, in case
-  // we're called in response to some window event)
+  // no request; close the window
+
+  // Avoid more callbacks after the close happens, as the window
+  // controller may be gone.
+  [self.webView stopLoading:nil];
+
   NSWindow *parentWindow = self.sheetModalForWindow;
   if (parentWindow) {
     [NSApp endSheet:[self window]];
   } else {
+    // defer closing the window, in case we're responding to some window event
     [[self window] performSelector:@selector(close)
                         withObject:nil
                         afterDelay:0.1
                            inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 
-    // Avoid more callbacks after the delayed close happens, as the window
-    // controller may be gone.
-    [[self webView] setResourceLoadDelegate:nil];
   }
   isWindowShown_ = NO;
 }
