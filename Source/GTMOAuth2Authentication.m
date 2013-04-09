@@ -134,8 +134,6 @@ static NSString *const kRefreshFetchArgsKey = @"requestArgs";
 
 - (void)updateExpirationDate;
 
-- (NSDictionary *)dictionaryWithJSONData:(NSData *)data;
-
 - (void)tokenFetcher:(GTMHTTPFetcher *)fetcher
     finishedWithData:(NSData *)data
                error:(NSError *)error;
@@ -295,11 +293,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 }
 
 - (void)setKeysForResponseJSONData:(NSData *)data {
-  NSDictionary *dict = [self dictionaryWithJSONData:data];
+  NSDictionary *dict = [[self class] dictionaryWithJSONData:data];
   [self setKeysForResponseDictionary:dict];
 }
 
-- (NSDictionary *)dictionaryWithJSONData:(NSData *)data {
++ (NSDictionary *)dictionaryWithJSONData:(NSData *)data {
   NSMutableDictionary *obj = nil;
   NSError *error = nil;
 
@@ -853,11 +851,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
   BOOL hasData = ([data length] > 0);
 
   if (error) {
-    // Failed; if the error body is JSON, parse it and add it to the error's
-    // userInfo dictionary
+    // Failed. If the error body is JSON, parse it and add it to the error's
+    // userInfo dictionary.
     if (hasData) {
       if (isResponseJSON) {
-        NSDictionary *errorJson = [self dictionaryWithJSONData:data];
+        NSDictionary *errorJson = [[self class] dictionaryWithJSONData:data];
         if ([errorJson count] > 0) {
 #if DEBUG
           NSLog(@"Error %@\nError data:\n%@", error, errorJson);
@@ -877,7 +875,7 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
       }
     }
   } else {
-    // Succeeded; we have an access token
+    // Succeeded; we have the requested token.
 #if DEBUG
     NSAssert(hasData, @"data missing in token response");
 #endif
