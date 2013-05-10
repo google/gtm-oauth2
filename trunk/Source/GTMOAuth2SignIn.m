@@ -557,12 +557,17 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   NSURL *infoURL = [[self class] googleUserInfoURL];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:infoURL];
 
-  NSString *userAgent = [auth userAgent];
-  [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+  if ([auth respondsToSelector:@selector(userAgent)]) {
+    NSString *userAgent = [auth userAgent];
+    [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+  }
   [request setValue:@"no-cache" forHTTPHeaderField:@"Cache-Control"];
 
   GTMHTTPFetcher *fetcher;
-  id <GTMHTTPFetcherServiceProtocol> fetcherService = auth.fetcherService;
+  id <GTMHTTPFetcherServiceProtocol> fetcherService = nil;
+  if ([auth respondsToSelector:@selector(fetcherService)]) {
+    fetcherService = auth.fetcherService;
+  };
   if (fetcherService) {
     fetcher = [fetcherService fetcherWithRequest:request];
   } else {
