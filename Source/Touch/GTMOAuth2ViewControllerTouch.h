@@ -272,6 +272,10 @@ typedef void (^GTMOAuth2ViewControllerCompletionHandler)(GTMOAuth2ViewController
 // subclasses may override authNibBundle to specify a custom bundle
 + (NSBundle *)authNibBundle;
 
+// subclasses may override setUpNavigation to provide their own navigation
+// controls
+- (void)setUpNavigation;
+
 // apps may replace the sign-in class with their own subclass of it
 + (Class)signInClass;
 + (void)setSignInClass:(Class)theClass;
