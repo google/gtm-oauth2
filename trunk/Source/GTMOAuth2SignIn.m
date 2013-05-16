@@ -55,6 +55,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 - (void)infoFetcher:(GTMHTTPFetcher *)fetcher
    finishedWithData:(NSData *)data
               error:(NSError *)error;
++ (NSData *)decodeWebSafeBase64:(NSString *)base64Str;
 #endif
 
 - (void)closeTheWindow;
@@ -64,8 +65,6 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 - (void)reachabilityTarget:(SCNetworkReachabilityRef)reachabilityRef
               changedFlags:(SCNetworkConnectionFlags)flags;
 - (void)reachabilityTimerFired:(NSTimer *)timer;
-
-+ (NSData *)decodeWebSafeBase64:(NSString *)base64Str;
 @end
 
 @implementation GTMOAuth2SignIn
