@@ -116,7 +116,8 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
         auth.clientSecret = clientSecret;
 
         BOOL didAuth = [GTMOAuth2ViewControllerTouch authorizeFromKeychainForName:kDailyMotionAppServiceName
-                                                                   authentication:auth];
+                                                                   authentication:auth
+                                                                            error:NULL];
         if (didAuth) {
           // select the DailyMotion radio button
           self.serviceSegments.selectedSegmentIndex = 1;

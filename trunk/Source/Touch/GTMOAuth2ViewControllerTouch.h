@@ -293,8 +293,13 @@ typedef void (^GTMOAuth2ViewControllerCompletionHandler)(GTMOAuth2ViewController
 
 // create an authentication object for Google services from the access
 // token and secret stored in the keychain; if no token is available, return
-// an unauthorized auth object
+// an unauthorized auth object. OK to pass NULL for the error parameter.
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
++ (GTMOAuth2Authentication *)authForGoogleFromKeychainForName:(NSString *)keychainItemName
+                                                     clientID:(NSString *)clientID
+                                                 clientSecret:(NSString *)clientSecret
+                                                        error:(NSError **)error;
+// Equivalent to calling the method above with a NULL error parameter.
 + (GTMOAuth2Authentication *)authForGoogleFromKeychainForName:(NSString *)keychainItemName
                                                      clientID:(NSString *)clientID
                                                  clientSecret:(NSString *)clientSecret;
@@ -304,7 +309,8 @@ typedef void (^GTMOAuth2ViewControllerCompletionHandler)(GTMOAuth2ViewController
 //
 // returns YES if the authentication object was authorized from the keychain
 + (BOOL)authorizeFromKeychainForName:(NSString *)keychainItemName
-                      authentication:(GTMOAuth2Authentication *)auth;
+                      authentication:(GTMOAuth2Authentication *)auth
+                               error:(NSError **)error;
 
 // method for deleting the stored access token and secret, useful for "signing
 // out"
