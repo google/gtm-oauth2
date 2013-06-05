@@ -303,6 +303,10 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 // utility for making a request from an old URL with some additional parameters
 + (NSMutableURLRequest *)mutableURLRequestWithURL:(NSURL *)oldURL
                                       paramString:(NSString *)paramStr {
+  if ([paramStr length] == 0) {
+    return [NSMutableURLRequest requestWithURL:oldURL];
+  }
+
   NSString *query = [oldURL query];
   if ([query length] > 0) {
     query = [query stringByAppendingFormat:@"&%@", paramStr];

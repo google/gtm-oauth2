@@ -808,8 +808,8 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
     fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
   }
 
-  NSString *const template = (refreshToken ? @"refresh token for %@" : @"fetch tokens for %@");
-  [fetcher setCommentWithFormat:template, [tokenURL host]];
+  NSString *const template = (refreshToken ? @"refresh token for %@ %@" : @"fetch tokens for %@ %@");
+  [fetcher setCommentWithFormat:template, [tokenURL host], [self userEmail]];
   fetcher.postData = paramData;
   fetcher.retryEnabled = YES;
   fetcher.maxRetryInterval = 15.0;

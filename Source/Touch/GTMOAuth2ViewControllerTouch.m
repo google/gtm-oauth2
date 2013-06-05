@@ -269,10 +269,20 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
 + (GTMOAuth2Authentication *)authForGoogleFromKeychainForName:(NSString *)keychainItemName
                                                      clientID:(NSString *)clientID
                                                  clientSecret:(NSString *)clientSecret {
+  return [self authForGoogleFromKeychainForName:keychainItemName
+                                       clientID:clientID
+                                   clientSecret:clientSecret
+                                          error:NULL];
+}
+
++ (GTMOAuth2Authentication *)authForGoogleFromKeychainForName:(NSString *)keychainItemName
+                                                     clientID:(NSString *)clientID
+                                                 clientSecret:(NSString *)clientSecret
+                                                        error:(NSError **)error {
   Class signInClass = [self signInClass];
   NSURL *tokenURL = [signInClass googleTokenURL];
   NSString *redirectURI = [signInClass nativeClientRedirectURI];
-  
+
   GTMOAuth2Authentication *auth;
   auth = [GTMOAuth2Authentication authenticationWithServiceProvider:kGTMOAuth2ServiceProviderGoogle
                                                            tokenURL:tokenURL
@@ -280,20 +290,23 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
                                                            clientID:clientID
                                                        clientSecret:clientSecret];
   [[self class] authorizeFromKeychainForName:keychainItemName
-                              authentication:auth];
+                              authentication:auth
+                                       error:error];
   return auth;
 }
+
 #endif
 
 + (BOOL)authorizeFromKeychainForName:(NSString *)keychainItemName
-                      authentication:(GTMOAuth2Authentication *)newAuth {
+                      authentication:(GTMOAuth2Authentication *)newAuth
+                               error:(NSError **)error {
   newAuth.accessToken = nil;
 
   BOOL didGetTokens = NO;
   GTMOAuth2Keychain *keychain = [GTMOAuth2Keychain defaultKeychain];
   NSString *password = [keychain passwordForService:keychainItemName
                                             account:kGTMOAuth2AccountName
-                                              error:nil];
+                                              error:error];
   if (password != nil) {
     [newAuth setKeysForResponseString:password];
     didGetTokens = YES;
