@@ -325,15 +325,24 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
                      authentication:(GTMOAuth2Authentication *)auth {
   return [self saveParamsToKeychainForName:keychainItemName
                              accessibility:NULL
-                            authentication:auth];
+                            authentication:auth
+                                     error:NULL];
 }
 
 + (BOOL)saveParamsToKeychainForName:(NSString *)keychainItemName
                       accessibility:(CFTypeRef)accessibility
-                     authentication:(GTMOAuth2Authentication *)auth {
+                     authentication:(GTMOAuth2Authentication *)auth
+                              error:(NSError **)error {
   [self removeAuthFromKeychainForName:keychainItemName];
   // don't save unless we have a token that can really authorize requests
-  if (![auth canAuthorize]) return NO;
+  if (![auth canAuthorize]) {
+    if (error) {
+      *error = [NSError errorWithDomain:kGTMOAuth2ErrorDomain
+                                   code:kGTMOAuth2ErrorTokenUnavailable
+                               userInfo:nil];
+    }
+    return NO;
+  }
 
   if (accessibility == NULL
       && &kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly != NULL) {
@@ -347,7 +356,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
                     forService:keychainItemName
                  accessibility:accessibility
                        account:kGTMOAuth2AccountName
-                         error:nil];
+                         error:error];
 }
 
 - (void)loadView {
@@ -630,7 +639,8 @@ static Class gSignInClass = Nil;
           CFTypeRef accessibility = self.keychainItemAccessibility;
           [[self class] saveParamsToKeychainForName:keychainItemName
                                       accessibility:accessibility
-                                     authentication:auth];
+                                     authentication:auth
+                                              error:NULL];
         } else {
           // remove the auth params from the keychain
           [[self class] removeAuthFromKeychainForName:keychainItemName];

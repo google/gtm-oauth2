@@ -317,9 +317,13 @@ typedef void (^GTMOAuth2ViewControllerCompletionHandler)(GTMOAuth2ViewController
 + (BOOL)removeAuthFromKeychainForName:(NSString *)keychainItemName;
 
 // method for saving the stored access token and secret
+//
+// returns YES if the save was successful.  OK to pass NULL for the error
+// parameter.
 + (BOOL)saveParamsToKeychainForName:(NSString *)keychainItemName
                       accessibility:(CFTypeRef)accessibility
-                     authentication:(GTMOAuth2Authentication *)auth;
+                     authentication:(GTMOAuth2Authentication *)auth
+                              error:(NSError **)error;
 
 // older version, defaults to kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
 + (BOOL)saveParamsToKeychainForName:(NSString *)keychainItemName
