@@ -15,29 +15,77 @@
 
 #if GTM_INCLUDE_OAUTH2 || !GDATA_REQUIRE_SERVICE_INCLUDES
 
-#define GTMOAUTH2AUTHENTICATION_DEFINE_GLOBALS 1
 #import "GTMOAuth2Authentication.h"
 
+// Extern strings
+
+NSString *const kGTMOAuth2ServiceProviderGoogle = @"Google";
+
+NSString *const kGTMOAuth2ErrorDomain  = @"com.google.GTMOAuth2";
+
+NSString *const kGTMOAuth2ErrorMessageKey = @"error";
+NSString *const kGTMOAuth2ErrorRequestKey = @"request";
+NSString *const kGTMOAuth2ErrorJSONKey    = @"json";
+
+// Notifications
+NSString *const kGTMOAuth2FetchStarted        = @"kGTMOAuth2FetchStarted";
+NSString *const kGTMOAuth2FetchStopped        = @"kGTMOAuth2FetchStopped";
+
+NSString *const kGTMOAuth2FetcherKey          = @"fetcher";
+NSString *const kGTMOAuth2FetchTypeKey        = @"FetchType";
+NSString *const kGTMOAuth2FetchTypeToken      = @"token";
+NSString *const kGTMOAuth2FetchTypeRefresh    = @"refresh";
+NSString *const kGTMOAuth2FetchTypeAssertion  = @"assertion";
+NSString *const kGTMOAuth2FetchTypeUserInfo   = @"userInfo";
+
+NSString *const kGTMOAuth2ErrorKey                  = @"error";
+NSString *const kGTMOAuth2ErrorObjectKey            = @"kGTMOAuth2ErrorObjectKey";
+
+NSString *const kGTMOAuth2ErrorInvalidRequest       = @"invalid_request";
+NSString *const kGTMOAuth2ErrorInvalidClient        = @"invalid_client";
+NSString *const kGTMOAuth2ErrorInvalidGrant         = @"invalid_grant";
+NSString *const kGTMOAuth2ErrorUnauthorizedClient   = @"unauthorized_client";
+NSString *const kGTMOAuth2ErrorUnsupportedGrantType = @"unsupported_grant_type";
+NSString *const kGTMOAuth2ErrorInvalidScope         = @"invalid_scope";
+
+NSString *const kGTMOAuth2UserSignedIn              = @"kGTMOAuth2UserSignedIn";
+
+NSString *const kGTMOAuth2AccessTokenRefreshed     = @"kGTMOAuth2AccessTokenRefreshed";
+NSString *const kGTMOAuth2RefreshTokenChanged      = @"kGTMOAuth2RefreshTokenChanged";
+NSString *const kGTMOAuth2AccessTokenRefreshFailed = @"kGTMOAuth2AccessTokenRefreshFailed";
+
+NSString *const kGTMOAuth2WebViewStartedLoading = @"kGTMOAuth2WebViewStartedLoading";
+NSString *const kGTMOAuth2WebViewStoppedLoading = @"kGTMOAuth2WebViewStoppedLoading";
+NSString *const kGTMOAuth2WebViewKey            = @"kGTMOAuth2WebViewKey";
+NSString *const kGTMOAuth2WebViewStopKindKey    = @"kGTMOAuth2WebViewStopKindKey";
+NSString *const kGTMOAuth2WebViewFinished       = @"finished";
+NSString *const kGTMOAuth2WebViewFailed         = @"failed";
+NSString *const kGTMOAuth2WebViewCancelled      = @"cancelled";
+
+NSString *const kGTMOAuth2NetworkLost         = @"kGTMOAuthNetworkLost";
+NSString *const kGTMOAuth2NetworkFound        = @"kGTMOAuthNetworkFound";
+
+
 // standard OAuth keys
-static NSString *const kOAuth2AccessTokenKey       = @"access_token";
-static NSString *const kOAuth2RefreshTokenKey      = @"refresh_token";
-static NSString *const kOAuth2ClientIDKey          = @"client_id";
-static NSString *const kOAuth2ClientSecretKey      = @"client_secret";
-static NSString *const kOAuth2RedirectURIKey       = @"redirect_uri";
-static NSString *const kOAuth2ResponseTypeKey      = @"response_type";
-static NSString *const kOAuth2ScopeKey             = @"scope";
-static NSString *const kOAuth2ErrorKey             = @"error";
-static NSString *const kOAuth2TokenTypeKey         = @"token_type";
-static NSString *const kOAuth2ExpiresInKey         = @"expires_in";
-static NSString *const kOAuth2CodeKey              = @"code";
-static NSString *const kOAuth2AssertionKey         = @"assertion";
-static NSString *const kOAuth2RefreshScopeKey      = @"refreshScope";
+static NSString *const kOAuth2AccessTokenKey   = @"access_token";
+static NSString *const kOAuth2RefreshTokenKey  = @"refresh_token";
+static NSString *const kOAuth2ClientIDKey      = @"client_id";
+static NSString *const kOAuth2ClientSecretKey  = @"client_secret";
+static NSString *const kOAuth2RedirectURIKey   = @"redirect_uri";
+static NSString *const kOAuth2ResponseTypeKey  = @"response_type";
+static NSString *const kOAuth2ScopeKey         = @"scope";
+static NSString *const kOAuth2ErrorKey         = @"error";
+static NSString *const kOAuth2TokenTypeKey     = @"token_type";
+static NSString *const kOAuth2ExpiresInKey     = @"expires_in";
+static NSString *const kOAuth2CodeKey          = @"code";
+static NSString *const kOAuth2AssertionKey     = @"assertion";
+static NSString *const kOAuth2RefreshScopeKey  = @"refreshScope";
 
 // additional persistent keys
-static NSString *const kServiceProviderKey        = @"serviceProvider";
-static NSString *const kUserIDKey                 = @"userID";
-static NSString *const kUserEmailKey              = @"email";
-static NSString *const kUserEmailIsVerifiedKey    = @"isVerified";
+static NSString *const kServiceProviderKey     = @"serviceProvider";
+static NSString *const kUserIDKey              = @"userID";
+static NSString *const kUserEmailKey           = @"email";
+static NSString *const kUserEmailIsVerifiedKey = @"isVerified";
 
 // fetcher keys
 static NSString *const kTokenFetchDelegateKey = @"delegate";

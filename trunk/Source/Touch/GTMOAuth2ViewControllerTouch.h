@@ -33,17 +33,15 @@
 
 #import "GTMOAuth2Authentication.h"
 
-#undef _EXTERN
-#undef _INITIALIZE_AS
-#ifdef GTMOAUTH2VIEWCONTROLLERTOUCH_DEFINE_GLOBALS
-#define _EXTERN
-#define _INITIALIZE_AS(x) =x
-#else
-#define _EXTERN extern
-#define _INITIALIZE_AS(x)
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-_EXTERN NSString* const kGTMOAuth2KeychainErrorDomain       _INITIALIZE_AS(@"com.google.GTMOAuthKeychain");
+extern NSString *const kGTMOAuth2KeychainErrorDomain;
+
+#ifdef __cplusplus
+}
+#endif
 
 @class GTMOAuth2SignIn;
 @class GTMOAuth2ViewControllerTouch;

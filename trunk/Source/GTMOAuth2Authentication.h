@@ -23,39 +23,29 @@
 // GTMHTTPFetcher.h brings in GTLDefines/GDataDefines
 #import "GTMHTTPFetcher.h"
 
-#undef _EXTERN
-#undef _INITIALIZE_AS
-#ifdef GTMOAUTH2AUTHENTICATION_DEFINE_GLOBALS
-  #define _EXTERN
-  #define _INITIALIZE_AS(x) =x
-#else
-  #if defined(__cplusplus)
-    #define _EXTERN extern "C"
-  #else
-    #define _EXTERN extern
-  #endif
-  #define _INITIALIZE_AS(x)
-#endif
-
 // Until all OAuth 2 providers are up to the same spec, we'll provide a crude
 // way here to override the "Bearer" string in the Authorization header
 #ifndef GTM_OAUTH2_BEARER
 #define GTM_OAUTH2_BEARER "Bearer"
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Service provider name allows stored authorization to be associated with
 // the authorizing service
-_EXTERN NSString* const kGTMOAuth2ServiceProviderGoogle _INITIALIZE_AS(@"Google");
+extern NSString *const kGTMOAuth2ServiceProviderGoogle;
 
 //
 // GTMOAuth2SignIn constants, included here for use by clients
 //
-_EXTERN NSString* const kGTMOAuth2ErrorDomain  _INITIALIZE_AS(@"com.google.GTMOAuth2");
+extern NSString *const kGTMOAuth2ErrorDomain;
 
 // Error userInfo keys
-_EXTERN NSString* const kGTMOAuth2ErrorMessageKey _INITIALIZE_AS(@"error");
-_EXTERN NSString* const kGTMOAuth2ErrorRequestKey _INITIALIZE_AS(@"request");
-_EXTERN NSString* const kGTMOAuth2ErrorJSONKey    _INITIALIZE_AS(@"json");
+extern NSString *const kGTMOAuth2ErrorMessageKey;
+extern NSString *const kGTMOAuth2ErrorRequestKey;
+extern NSString *const kGTMOAuth2ErrorJSONKey;
 
 enum {
   // Error code indicating that the window was prematurely closed
@@ -68,48 +58,52 @@ enum {
 
 
 // Notifications for token fetches
-_EXTERN NSString* const kGTMOAuth2FetchStarted        _INITIALIZE_AS(@"kGTMOAuth2FetchStarted");
-_EXTERN NSString* const kGTMOAuth2FetchStopped        _INITIALIZE_AS(@"kGTMOAuth2FetchStopped");
+extern NSString *const kGTMOAuth2FetchStarted;
+extern NSString *const kGTMOAuth2FetchStopped;
 
-_EXTERN NSString* const kGTMOAuth2FetcherKey          _INITIALIZE_AS(@"fetcher");
-_EXTERN NSString* const kGTMOAuth2FetchTypeKey        _INITIALIZE_AS(@"FetchType");
-_EXTERN NSString* const kGTMOAuth2FetchTypeToken      _INITIALIZE_AS(@"token");
-_EXTERN NSString* const kGTMOAuth2FetchTypeRefresh    _INITIALIZE_AS(@"refresh");
-_EXTERN NSString* const kGTMOAuth2FetchTypeAssertion  _INITIALIZE_AS(@"assertion");
-_EXTERN NSString* const kGTMOAuth2FetchTypeUserInfo   _INITIALIZE_AS(@"userInfo");
+extern NSString *const kGTMOAuth2FetcherKey;
+extern NSString *const kGTMOAuth2FetchTypeKey;
+extern NSString *const kGTMOAuth2FetchTypeToken;
+extern NSString *const kGTMOAuth2FetchTypeRefresh;
+extern NSString *const kGTMOAuth2FetchTypeAssertion;
+extern NSString *const kGTMOAuth2FetchTypeUserInfo;
 
 // Token-issuance errors
-_EXTERN NSString* const kGTMOAuth2ErrorKey                  _INITIALIZE_AS(@"error");
-_EXTERN NSString* const kGTMOAuth2ErrorObjectKey            _INITIALIZE_AS(@"kGTMOAuth2ErrorObjectKey");
+extern NSString *const kGTMOAuth2ErrorKey;
+extern NSString *const kGTMOAuth2ErrorObjectKey;
 
-_EXTERN NSString* const kGTMOAuth2ErrorInvalidRequest       _INITIALIZE_AS(@"invalid_request");
-_EXTERN NSString* const kGTMOAuth2ErrorInvalidClient        _INITIALIZE_AS(@"invalid_client");
-_EXTERN NSString* const kGTMOAuth2ErrorInvalidGrant         _INITIALIZE_AS(@"invalid_grant");
-_EXTERN NSString* const kGTMOAuth2ErrorUnauthorizedClient   _INITIALIZE_AS(@"unauthorized_client");
-_EXTERN NSString* const kGTMOAuth2ErrorUnsupportedGrantType _INITIALIZE_AS(@"unsupported_grant_type");
-_EXTERN NSString* const kGTMOAuth2ErrorInvalidScope         _INITIALIZE_AS(@"invalid_scope");
+extern NSString *const kGTMOAuth2ErrorInvalidRequest;
+extern NSString *const kGTMOAuth2ErrorInvalidClient;
+extern NSString *const kGTMOAuth2ErrorInvalidGrant;
+extern NSString *const kGTMOAuth2ErrorUnauthorizedClient;
+extern NSString *const kGTMOAuth2ErrorUnsupportedGrantType;
+extern NSString *const kGTMOAuth2ErrorInvalidScope;
 
 // Notification that sign-in has completed, and token fetches will begin (useful
 // for displaying interstitial messages after the window has closed)
-_EXTERN NSString* const kGTMOAuth2UserSignedIn              _INITIALIZE_AS(@"kGTMOAuth2UserSignedIn");
+extern NSString *const kGTMOAuth2UserSignedIn;
 
 // Notification for token changes
-_EXTERN NSString* const kGTMOAuth2AccessTokenRefreshed     _INITIALIZE_AS(@"kGTMOAuth2AccessTokenRefreshed");
-_EXTERN NSString* const kGTMOAuth2RefreshTokenChanged      _INITIALIZE_AS(@"kGTMOAuth2RefreshTokenChanged");
-_EXTERN NSString* const kGTMOAuth2AccessTokenRefreshFailed _INITIALIZE_AS(@"kGTMOAuth2AccessTokenRefreshFailed");
+extern NSString *const kGTMOAuth2AccessTokenRefreshed;
+extern NSString *const kGTMOAuth2RefreshTokenChanged;
+extern NSString *const kGTMOAuth2AccessTokenRefreshFailed;
 
 // Notification for WebView loading
-_EXTERN NSString* const kGTMOAuth2WebViewStartedLoading _INITIALIZE_AS(@"kGTMOAuth2WebViewStartedLoading");
-_EXTERN NSString* const kGTMOAuth2WebViewStoppedLoading _INITIALIZE_AS(@"kGTMOAuth2WebViewStoppedLoading");
-_EXTERN NSString* const kGTMOAuth2WebViewKey            _INITIALIZE_AS(@"kGTMOAuth2WebViewKey");
-_EXTERN NSString* const kGTMOAuth2WebViewStopKindKey    _INITIALIZE_AS(@"kGTMOAuth2WebViewStopKindKey");
-_EXTERN NSString* const kGTMOAuth2WebViewFinished       _INITIALIZE_AS(@"finished");
-_EXTERN NSString* const kGTMOAuth2WebViewFailed         _INITIALIZE_AS(@"failed");
-_EXTERN NSString* const kGTMOAuth2WebViewCancelled      _INITIALIZE_AS(@"cancelled");
+extern NSString *const kGTMOAuth2WebViewStartedLoading;
+extern NSString *const kGTMOAuth2WebViewStoppedLoading;
+extern NSString *const kGTMOAuth2WebViewKey;
+extern NSString *const kGTMOAuth2WebViewStopKindKey;
+extern NSString *const kGTMOAuth2WebViewFinished;
+extern NSString *const kGTMOAuth2WebViewFailed;
+extern NSString *const kGTMOAuth2WebViewCancelled;
 
 // Notification for network loss during html sign-in display
-_EXTERN NSString* const kGTMOAuth2NetworkLost         _INITIALIZE_AS(@"kGTMOAuthNetworkLost");
-_EXTERN NSString* const kGTMOAuth2NetworkFound        _INITIALIZE_AS(@"kGTMOAuthNetworkFound");
+extern NSString *const kGTMOAuth2NetworkLost;
+extern NSString *const kGTMOAuth2NetworkFound;
+
+#ifdef __cplusplus
+}
+#endif
 
 @interface GTMOAuth2Authentication : NSObject <GTMFetcherAuthorizationProtocol>  {
  @private
