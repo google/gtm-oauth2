@@ -24,11 +24,12 @@
 
 #if TARGET_OS_IPHONE
 
-#define GTMOAUTH2VIEWCONTROLLERTOUCH_DEFINE_GLOBALS 1
 #import "GTMOAuth2ViewControllerTouch.h"
 
 #import "GTMOAuth2SignIn.h"
 #import "GTMOAuth2Authentication.h"
+
+NSString *const kGTMOAuth2KeychainErrorDomain = @"com.google.GTMOAuthKeychain";
 
 static NSString * const kGTMOAuth2AccountName = @"OAuth";
 static GTMOAuth2Keychain* sDefaultKeychain = nil;
@@ -697,7 +698,7 @@ static Class gSignInClass = Nil;
 #pragma mark Protocol implementations
 
 - (void)viewWillAppear:(BOOL)animated {
-  // See the comment on clearBrowserCookies in viewDidDisappear.
+  // See the comment on clearBrowserCookies in viewWillDisappear.
   [self clearBrowserCookies];
 
   if (!isViewShown_) {
@@ -743,16 +744,12 @@ static Class gSignInClass = Nil;
 #endif
   }
 
-  [super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-  [super viewDidDisappear:animated];
-
   // prevent the next sign-in from showing in the WebView that the user is
   // already signed in.  It's possible for the WebView to set the cookies even
   // after this, so we also clear them when the view first appears.
   [self clearBrowserCookies];
+
+  [super viewWillDisappear:animated];
 }
 
 - (void)viewDidLayoutSubviews {

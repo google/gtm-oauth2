@@ -15,7 +15,6 @@
 
 #if GTM_INCLUDE_OAUTH2 || !GDATA_REQUIRE_SERVICE_INCLUDES
 
-#define GTMOAUTH2SIGNIN_DEFINE_GLOBALS 1
 #import "GTMOAuth2SignIn.h"
 
 // we'll default to timing out if the network becomes unreachable for more
