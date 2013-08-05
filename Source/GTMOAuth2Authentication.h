@@ -344,7 +344,7 @@ extern NSString *const kGTMOAuth2NetworkFound;
 
 + (NSDictionary *)dictionaryWithJSONData:(NSData *)data;
 
-+ (NSString *)scopeWithStrings:(NSString *)firsStr, ... NS_REQUIRES_NIL_TERMINATION;
++ (NSString *)scopeWithStrings:(NSString *)firstStr, ... NS_REQUIRES_NIL_TERMINATION;
 @end
 
 #endif // GTM_INCLUDE_OAUTH2 || !GDATA_REQUIRE_SERVICE_INCLUDES
