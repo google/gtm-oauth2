@@ -1121,7 +1121,11 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
 }
 
 - (NSNumber *)expiresIn {
-  return [self.parameters objectForKey:kOAuth2ExpiresInKey];
+  id value = [self.parameters objectForKey:kOAuth2ExpiresInKey];
+  if ([value isKindOfClass:[NSString class]]) {
+    value = [NSNumber numberWithInteger:[value integerValue]];
+  }
+  return value;
 }
 
 - (void)setExpiresIn:(NSNumber *)num {
