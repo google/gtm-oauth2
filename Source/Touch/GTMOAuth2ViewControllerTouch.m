@@ -32,20 +32,11 @@
 NSString *const kGTMOAuth2KeychainErrorDomain = @"com.google.GTMOAuthKeychain";
 
 static NSString * const kGTMOAuth2AccountName = @"OAuth";
-static GTMOAuth2Keychain* sDefaultKeychain = nil;
+static GTMOAuth2Keychain* gGTMOAuth2DefaultKeychain = nil;
 
 @interface GTMOAuth2ViewControllerTouch()
-
 @property (nonatomic, copy) NSURLRequest *request;
-
-- (void)signIn:(GTMOAuth2SignIn *)signIn displayRequest:(NSURLRequest *)request;
-- (void)signIn:(GTMOAuth2SignIn *)signIn
-finishedWithAuth:(GTMOAuth2Authentication *)auth
-         error:(NSError *)error;
-- (BOOL)isNavigationBarTranslucent;
-- (void)moveWebViewFromUnderNavigationBar;
-- (void)popView;
-- (void)clearBrowserCookies;
+@property (nonatomic, copy) NSArray *savedCookies;
 @end
 
 @implementation GTMOAuth2ViewControllerTouch
@@ -199,6 +190,8 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
     }
 
     [self setKeychainItemName:keychainItemName];
+
+    savedCookiePolicy_ = (NSHTTPCookieAcceptPolicy)NSUIntegerMax;
   }
   return self;
 }
@@ -239,6 +232,7 @@ finishedWithAuth:(GTMOAuth2Authentication *)auth
   [initialActivityIndicator_ release];
   [navButtonsView_ release];
   [rightBarButtonItem_ release];
+  [webView_ stopLoading];
   [webView_ release];
   [signIn_ release];
   [request_ release];
@@ -497,8 +491,30 @@ static Class gSignInClass = Nil;
   return self.signIn.authentication;
 }
 
-- (void)clearBrowserCookies {
-  // if browserCookiesURL is non-nil, then get cookies for that URL
+- (void)saveBrowserCookies {
+  NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+  self.savedCookies = [cookieStorage cookies];
+}
+
+- (void)restoreBrowserCookies {
+  // Remove all current cookies and restore the saved array.
+  NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+  NSHTTPCookieAcceptPolicy savedPolicy = [cookieStorage cookieAcceptPolicy];
+  [cookieStorage setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
+
+  for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
+    [cookieStorage deleteCookie:cookie];
+  }
+  for (NSHTTPCookie *cookie in self.savedCookies) {
+    [cookieStorage setCookie:cookie];
+  }
+  self.savedCookies = nil;
+
+  [cookieStorage setCookieAcceptPolicy:savedPolicy];
+}
+
+- (void)clearSpecifiedBrowserCookies {
+  // If browserCookiesURL is non-nil, then get cookies for that URL
   // and delete them from the common application cookie storage
   NSURL *cookiesURL = [self browserCookiesURL];
   if (cookiesURL) {
@@ -699,7 +715,8 @@ static Class gSignInClass = Nil;
 
 - (void)viewWillAppear:(BOOL)animated {
   // See the comment on clearBrowserCookies in viewWillDisappear.
-  [self clearBrowserCookies];
+  [self saveBrowserCookies];
+  [self clearSpecifiedBrowserCookies];
 
   if (!isViewShown_) {
     isViewShown_ = YES;
@@ -715,7 +732,18 @@ static Class gSignInClass = Nil;
                  afterDelay:0.5
                     inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
     }
+
+    // Work around iOS 7.0 bug described in https://devforums.apple.com/thread/207323 by temporarily
+    // setting our cookie storage policy to be permissive enough to keep the sign-in server
+    // satisfied, just in case the app inherited from Safari a policy that blocks all cookies.
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSHTTPCookieAcceptPolicy policy = [storage cookieAcceptPolicy];
+    if (policy == NSHTTPCookieAcceptPolicyNever) {
+      savedCookiePolicy_ = policy;
+      [storage setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyOnlyFromMainDocumentDomain];
+    }
   }
+
   [super viewWillAppear:animated];
 }
 
@@ -744,10 +772,13 @@ static Class gSignInClass = Nil;
 #endif
   }
 
-  // prevent the next sign-in from showing in the WebView that the user is
-  // already signed in.  It's possible for the WebView to set the cookies even
-  // after this, so we also clear them when the view first appears.
-  [self clearBrowserCookies];
+  [self restoreBrowserCookies];
+
+  if (savedCookiePolicy_ != (NSHTTPCookieAcceptPolicy)NSUIntegerMax) {
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    [storage setCookieAcceptPolicy:savedCookiePolicy_];
+    savedCookiePolicy_ = (NSHTTPCookieAcceptPolicy)NSUIntegerMax;
+  }
 
   [super viewWillDisappear:animated];
 }
@@ -882,18 +913,18 @@ static Class gSignInClass = Nil;
 @implementation GTMOAuth2Keychain
 
 + (GTMOAuth2Keychain *)defaultKeychain {
-  if (sDefaultKeychain == nil) {
-    sDefaultKeychain = [[self alloc] init];
+  if (gGTMOAuth2DefaultKeychain == nil) {
+    gGTMOAuth2DefaultKeychain = [[self alloc] init];
   }
-  return sDefaultKeychain;
+  return gGTMOAuth2DefaultKeychain;
 }
 
 
 // For unit tests: allow setting a mock object
 + (void)setDefaultKeychain:(GTMOAuth2Keychain *)keychain {
-  if (sDefaultKeychain != keychain) {
-    [sDefaultKeychain release];
-    sDefaultKeychain = [keychain retain];
+  if (gGTMOAuth2DefaultKeychain != keychain) {
+    [gGTMOAuth2DefaultKeychain release];
+    gGTMOAuth2DefaultKeychain = [keychain retain];
   }
 }
 
