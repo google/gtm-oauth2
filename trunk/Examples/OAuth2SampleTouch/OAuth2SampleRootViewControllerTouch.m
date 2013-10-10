@@ -173,7 +173,7 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
 }
 
 - (BOOL)isGoogleSegmentSelected {
-  int segmentIndex = self.serviceSegments.selectedSegmentIndex;
+  NSInteger segmentIndex = self.serviceSegments.selectedSegmentIndex;
   return (segmentIndex == 0);
 }
 

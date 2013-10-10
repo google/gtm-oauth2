@@ -121,6 +121,9 @@ typedef void (^GTMOAuth2ViewControllerCompletionHandler)(GTMOAuth2ViewController
   // viewWillDisappear indicates that some external change of the view
   // has stopped the sign-in.
   BOOL didDismissSelf_;
+
+  // Work around default cookie policy bug in iOS 7; see comments in viewWillAppear.
+  NSHTTPCookieAcceptPolicy savedCookiePolicy_;
 }
 
 // the application and service name to use for saving the auth tokens
