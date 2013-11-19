@@ -55,6 +55,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
    finishedWithData:(NSData *)data
               error:(NSError *)error;
 + (NSData *)decodeWebSafeBase64:(NSString *)base64Str;
+- (void)updateGoogleUserInfoWithData:(NSData *)data;
 #endif
 
 - (void)closeTheWindow;
