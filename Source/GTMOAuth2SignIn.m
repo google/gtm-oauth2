@@ -670,6 +670,11 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     NSString *email = [profileDict objectForKey:@"email"];
     [auth setUserEmail:email];
 
+#if DEBUG
+    NSAssert([subjectID length] > 0 && [email length] > 0,
+             @"profile lacks userID or userEmail: %@", profileDict);
+#endif
+
     // The email_verified key is a boolean NSNumber in the userinfo
     // endpoint response, but it is a string like "true" in the id_token.
     // We want to consistently save it as a string of the boolean value,
