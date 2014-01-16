@@ -65,14 +65,9 @@ NSString *const kGTMOAuth2WebViewCancelled      = @"cancelled";
 NSString *const kGTMOAuth2NetworkLost         = @"kGTMOAuthNetworkLost";
 NSString *const kGTMOAuth2NetworkFound        = @"kGTMOAuthNetworkFound";
 
-
 // standard OAuth keys
 static NSString *const kOAuth2AccessTokenKey   = @"access_token";
 static NSString *const kOAuth2RefreshTokenKey  = @"refresh_token";
-static NSString *const kOAuth2ClientIDKey      = @"client_id";
-static NSString *const kOAuth2ClientSecretKey  = @"client_secret";
-static NSString *const kOAuth2RedirectURIKey   = @"redirect_uri";
-static NSString *const kOAuth2ResponseTypeKey  = @"response_type";
 static NSString *const kOAuth2ScopeKey         = @"scope";
 static NSString *const kOAuth2ErrorKey         = @"error";
 static NSString *const kOAuth2TokenTypeKey     = @"token_type";
@@ -90,8 +85,6 @@ static NSString *const kUserEmailIsVerifiedKey = @"isVerified";
 // fetcher keys
 static NSString *const kTokenFetchDelegateKey = @"delegate";
 static NSString *const kTokenFetchSelectorKey = @"sel";
-
-static NSString *const kRefreshFetchArgsKey = @"requestArgs";
 
 // If GTMNSJSONSerialization is available, it is used for formatting JSON
 #if (TARGET_OS_MAC && !TARGET_OS_IPHONE && (MAC_OS_X_VERSION_MAX_ALLOWED < 1070)) || \
@@ -858,8 +851,13 @@ finishedRefreshWithFetcher:(GTMHTTPFetcher *)fetcher
     fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
   }
 
-  NSString *const template = (refreshToken ? @"refresh token for %@ %@" : @"fetch tokens for %@ %@");
-  [fetcher setCommentWithFormat:template, [tokenURL host], [self userEmail]];
+#if !STRIP_GTM_FETCH_LOGGING
+  // The user email address is known at token refresh time, not during the initial code exchange.
+  NSString *userEmail = [self userEmail];
+  NSString *forStr = userEmail ? [NSString stringWithFormat:@"for \"%@\"", userEmail] : @"";
+  [fetcher setCommentWithFormat:@"GTMOAuth2 %@ fetch to %@ %@", fetchType, [tokenURL host], forStr];
+#endif
+
   fetcher.postData = paramData;
   fetcher.retryEnabled = YES;
   fetcher.maxRetryInterval = 15.0;
