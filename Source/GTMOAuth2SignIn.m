@@ -254,7 +254,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
     NSAssert(hasClientID, @"GTMOAuth2SignIn: clientID needed");
     NSAssert(hasRedirect, @"GTMOAuth2SignIn: redirectURI needed");
 #endif
-    return NO;
+    return nil;
   }
 
   // invoke the UI controller's web request selector to display
@@ -579,7 +579,12 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   fetcher.authorizer = auth;
   fetcher.retryEnabled = YES;
   fetcher.maxRetryInterval = 15.0;
-  fetcher.comment = @"user info";
+#if !STRIP_GTM_FETCH_LOGGING
+  // The user email address is known at token refresh time, not during the initial code exchange.
+  NSString *userEmail = auth.userEmail;
+  NSString *forStr = userEmail ? [NSString stringWithFormat:@"for \"%@\"", userEmail] : @"";
+  [fetcher setCommentWithFormat:@"GTMOAuth2 user info %@", forStr];
+#endif
   return fetcher;
 }
 
@@ -860,7 +865,7 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
       } else {
         fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
       }
-      fetcher.comment = @"revoke token";
+      [fetcher setCommentWithFormat:@"GTMOAuth2 revoke token for %@", auth.userEmail];
 
       // Use a completion handler fetch for better debugging, but only if we're
       // guaranteed that blocks are available in the runtime
