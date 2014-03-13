@@ -61,7 +61,7 @@ Authorizing a request may be done on a background thread if the thread has a spi
 
 === Registering Your Application ===
 
-To sign in to Google services with the Objective-C OAuth 2 controllers, first obtain a client ID and secret from the [https://code.google.com/apis/console API Console]
+To sign in to Google services with the Objective-C OAuth 2 controllers, first obtain a client ID and secret from the [https://console.developers.google.com/ API Console]
 
 In the console, create a project, then click "API Access" in the left column.  Create a new Client ID for an *Installed Application* (not a web application) type *other* (not iOS).  This will provide Client ID and Secret strings to be used with the controller.
 
@@ -92,7 +92,7 @@ viewController = [[[GTMOAuth2ViewControllerTouch alloc] initWithScope:scope
                                        animated:YES];
 }}}
 
-Each service will provide developers with *Client ID* and *Client Secret* strings intended to be hardcoded as constants into applications.  Google services issue the strings via the [https://code.google.com/apis/console Google API Console].
+Each service will provide developers with *Client ID* and *Client Secret* strings intended to be hardcoded as constants into applications.  Google services issue the strings via the [https://console.developers.google.com/ Google API Console].
 
 *Mac:* A Mac application would display sign-in as a sheet on the current window, like this:
 
