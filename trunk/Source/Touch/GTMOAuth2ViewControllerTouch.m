@@ -31,18 +31,24 @@
 
 NSString *const kGTMOAuth2KeychainErrorDomain = @"com.google.GTMOAuthKeychain";
 
+NSString *const kGTMOAuth2CookiesWillSwapOut = @"kGTMOAuth2CookiesWillSwapOut";
+NSString *const kGTMOAuth2CookiesDidSwapIn   = @"kGTMOAuth2CookiesDidSwapIn";
+
 static NSString * const kGTMOAuth2AccountName = @"OAuth";
 static GTMOAuth2Keychain* gGTMOAuth2DefaultKeychain = nil;
 
 @interface GTMOAuth2ViewControllerTouch()
 @property (nonatomic, copy) NSURLRequest *request;
-@property (nonatomic, copy) NSArray *savedCookies;
+@property (nonatomic, copy) NSArray *systemCookies;
+@property (nonatomic, copy) NSArray *signInCookies;
 @end
 
 @implementation GTMOAuth2ViewControllerTouch
 
 // IBOutlets
 @synthesize request = request_,
+            systemCookies = systemCookies_,
+            signInCookies = signInCookies_,
             backButton = backButton_,
             forwardButton = forwardButton_,
             navButtonsView = navButtonsView_,
@@ -176,19 +182,6 @@ static GTMOAuth2Keychain* gGTMOAuth2DefaultKeychain = nil;
                                        webRequestSelector:@selector(signIn:displayRequest:)
                                          finishedSelector:@selector(signIn:finishedWithAuth:error:)];
 
-    // if the user is signing in to a Google service, we'll delete the
-    // Google authentication browser cookies upon completion
-    //
-    // for other service domains, or to disable clearing of the cookies,
-    // set the browserCookiesURL property explicitly
-    NSString *authorizationHost = [signIn_.authorizationURL host];
-    if ([authorizationHost hasSuffix:@".google.com"]) {
-      NSString *urlStr = [NSString stringWithFormat:@"https://%@/",
-                          authorizationHost];
-      NSURL *cookiesURL = [NSURL URLWithString:urlStr];
-      [self setBrowserCookiesURL:cookiesURL];
-    }
-
     [self setKeychainItemName:keychainItemName];
 
     savedCookiePolicy_ = (NSHTTPCookieAcceptPolicy)NSUIntegerMax;
@@ -236,6 +229,8 @@ static GTMOAuth2Keychain* gGTMOAuth2DefaultKeychain = nil;
   [webView_ release];
   [signIn_ release];
   [request_ release];
+  [systemCookies_ release];
+  [signInCookies_ release];
   [delegate_ release];
 #if NS_BLOCKS_AVAILABLE
   [completionBlock_ release];
@@ -382,6 +377,7 @@ static GTMOAuth2Keychain* gGTMOAuth2DefaultKeychain = nil;
 
 
 - (void)viewDidLoad {
+  [super viewDidLoad];
   [self setUpNavigation];
 }
 
@@ -492,41 +488,40 @@ static Class gSignInClass = Nil;
 }
 
 - (void)saveBrowserCookies {
-  NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-  self.savedCookies = [cookieStorage cookies];
+  [[NSNotificationCenter defaultCenter] postNotificationName:kGTMOAuth2CookiesWillSwapOut
+                                                      object:self
+                                                    userInfo:nil];
+
+  // Switch to the cookie set used for sign-in, initially empty.
+  self.systemCookies = [self swapBrowserCookies:self.signInCookies];
 }
 
 - (void)restoreBrowserCookies {
-  // Remove all current cookies and restore the saved array.
+  // Switch back to the saved system cookies.
+  self.signInCookies = [self swapBrowserCookies:self.systemCookies];
+
+  [[NSNotificationCenter defaultCenter] postNotificationName:kGTMOAuth2CookiesDidSwapIn
+                                                      object:self
+                                                    userInfo:nil];
+}
+
+- (NSArray *)swapBrowserCookies:(NSArray *)newCookies {
   NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+
   NSHTTPCookieAcceptPolicy savedPolicy = [cookieStorage cookieAcceptPolicy];
   [cookieStorage setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
 
-  for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
+  NSArray *priorCookies = [[[cookieStorage cookies] copy] autorelease];
+  for (NSHTTPCookie *cookie in priorCookies) {
     [cookieStorage deleteCookie:cookie];
   }
-  for (NSHTTPCookie *cookie in self.savedCookies) {
+  for (NSHTTPCookie *cookie in newCookies) {
     [cookieStorage setCookie:cookie];
   }
-  self.savedCookies = nil;
 
   [cookieStorage setCookieAcceptPolicy:savedPolicy];
-}
 
-- (void)clearSpecifiedBrowserCookies {
-  // If browserCookiesURL is non-nil, then get cookies for that URL
-  // and delete them from the common application cookie storage
-  NSURL *cookiesURL = [self browserCookiesURL];
-  if (cookiesURL) {
-    NSHTTPCookieStorage *cookieStorage;
-
-    cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSArray *cookies =  [cookieStorage cookiesForURL:cookiesURL];
-
-    for (NSHTTPCookie *cookie in cookies) {
-      [cookieStorage deleteCookie:cookie];
-    }
-  }
+  return priorCookies;
 }
 
 #pragma mark Accessors
@@ -716,7 +711,6 @@ static Class gSignInClass = Nil;
 - (void)viewWillAppear:(BOOL)animated {
   // See the comment on clearBrowserCookies in viewWillDisappear.
   [self saveBrowserCookies];
-  [self clearSpecifiedBrowserCookies];
 
   if (!isViewShown_) {
     isViewShown_ = YES;
@@ -753,34 +747,49 @@ static Class gSignInClass = Nil;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-  if (!didDismissSelf_) {
-    // We won't receive further webview delegate messages, so be sure the
-    // started loading notification is balanced, if necessary
-    [self notifyWithName:kGTMOAuth2WebViewStoppedLoading
-                 webView:self.webView
-                    kind:kGTMOAuth2WebViewCancelled];
+  if (![self isBeingObscured:self]) {
+    if (!didDismissSelf_) {
+      // We won't receive further webview delegate messages, so be sure the
+      // started loading notification is balanced, if necessary
+      [self notifyWithName:kGTMOAuth2WebViewStoppedLoading
+                   webView:self.webView
+                      kind:kGTMOAuth2WebViewCancelled];
 
-    // We are not popping ourselves, so presumably we are being popped by the
-    // navigation controller; tell the sign-in object to close up shop
-    //
-    // this will indirectly call our signIn:finishedWithAuth:error: method
-    // for us
-    [signIn_ windowWasClosed];
+      // We are not popping ourselves, so presumably we are being popped by the
+      // navigation controller; tell the sign-in object to close up shop
+      //
+      // this will indirectly call our signIn:finishedWithAuth:error: method
+      // for us
+      [signIn_ windowWasClosed];
 
 #if NS_BLOCKS_AVAILABLE
-    self.popViewBlock = nil;
+      self.popViewBlock = nil;
 #endif
+    }
+
+    if (savedCookiePolicy_ != (NSHTTPCookieAcceptPolicy)NSUIntegerMax) {
+      NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+      [storage setCookieAcceptPolicy:savedCookiePolicy_];
+      savedCookiePolicy_ = (NSHTTPCookieAcceptPolicy)NSUIntegerMax;
+    }
   }
 
   [self restoreBrowserCookies];
 
-  if (savedCookiePolicy_ != (NSHTTPCookieAcceptPolicy)NSUIntegerMax) {
-    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    [storage setCookieAcceptPolicy:savedCookiePolicy_];
-    savedCookiePolicy_ = (NSHTTPCookieAcceptPolicy)NSUIntegerMax;
-  }
-
   [super viewWillDisappear:animated];
+}
+
+- (BOOL)isBeingObscured:(UIViewController *)vc {
+  // Check if this view controller, or an ancestor, is being disappearing because
+  // of being obscured by another view.
+  if ([vc isBeingDismissed] || [vc isMovingFromParentViewController]) {
+    return NO;
+  }
+  UIViewController *parentVC = vc.parentViewController;
+  if (parentVC) {
+    return [self isBeingObscured:parentVC];
+  }
+  return YES;
 }
 
 - (void)viewDidLayoutSubviews {
