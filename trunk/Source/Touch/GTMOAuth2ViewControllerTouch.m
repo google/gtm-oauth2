@@ -834,11 +834,11 @@ static Class gSignInClass = Nil;
   if ([title length] > 0) {
     [signIn_ titleChanged:title];
   } else {
-#if DEBUG
+#if DEBUG && !defined(NS_BLOCK_ASSERTIONS)
     // Verify that Javascript is enabled
     NSString *result = [webView stringByEvaluatingJavaScriptFromString:@"1+1"];
     NSAssert([result integerValue] == 2, @"GTMOAuth2: Javascript is required");
-#endif
+#endif  // DEBUG && !defined(NS_BLOCK_ASSERTIONS)
   }
 
   if (self.request && [self.initialHTMLString length] > 0) {
