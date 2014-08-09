@@ -30,7 +30,7 @@ NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 
 @interface GTMOAuth2SignIn ()
 @property (assign) BOOL hasHandledCallback;
-@property (retain) GTMHTTPFetcher *pendingFetcher;
+@property (retain) GTMOAuth2Fetcher *pendingFetcher;
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
 @property (nonatomic, retain, readwrite) NSDictionary *userProfile;
 #endif
@@ -47,11 +47,11 @@ NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 - (void)finishSignInWithError:(NSError *)error;
 
 - (void)auth:(GTMOAuth2Authentication *)auth
-finishedWithFetcher:(GTMHTTPFetcher *)fetcher
+finishedWithFetcher:(GTMOAuth2Fetcher *)fetcher
        error:(NSError *)error;
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
-- (void)infoFetcher:(GTMHTTPFetcher *)fetcher
+- (void)infoFetcher:(GTMOAuth2Fetcher *)fetcher
    finishedWithData:(NSData *)data
               error:(NSError *)error;
 + (NSData *)decodeWebSafeBase64:(NSString *)base64Str;
@@ -106,7 +106,11 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 }
 
 + (NSURL *)googleUserInfoURL {
+#if GTM_OAUTH2_USES_OPENIDCONNECT
+  NSString *urlStr = @" https://www.googleapis.com/plus/v1/people/me/openIdConnect";
+#else
   NSString *urlStr = @"https://www.googleapis.com/oauth2/v3/userinfo";
+#endif
   return [NSURL URLWithString:urlStr];
 }
 #endif
@@ -133,23 +137,38 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   return auth;
 }
 
+
 - (void)addScopeForGoogleUserInfo {
+#if GTM_OAUTH2_USES_OPENIDCONNECT
+  NSString *const emailScope = @"email";
+  NSString *const profileScope = @"profile";
+  BOOL (^hasScope)(NSString *, NSString *) = ^(NSString *scopesString, NSString *scope) {
+    // For one-word scopes, we need an exact match rather than a substring match.
+    NSArray *words = [scopesString componentsSeparatedByString:@" "];
+    return [words containsObject:scope];
+  };
+#else
+  NSString *const emailScope = @"https://www.googleapis.com/auth/userinfo.email";
+  NSString *const profileScope = @"https://www.googleapis.com/auth/userinfo.profile";
+  BOOL (^hasScope)(NSString *, NSString *) = ^BOOL(NSString *scopesString, NSString *scope) {
+    return [scopesString rangeOfString:scope].location != NSNotFound;
+  };
+#endif  // GTM_OAUTH2_USES_OPENIDCONNECT
+
   GTMOAuth2Authentication *auth = self.authentication;
   if (self.shouldFetchGoogleUserEmail) {
-    NSString *const emailScope = @"https://www.googleapis.com/auth/userinfo.email";
-    NSString *scope = auth.scope;
-    if ([scope rangeOfString:emailScope].location == NSNotFound) {
-      scope = [GTMOAuth2Authentication scopeWithStrings:scope, emailScope, nil];
-      auth.scope = scope;
+    NSString *scopeStrings = auth.scope;
+    if (!hasScope(scopeStrings, emailScope)) {
+      scopeStrings = [GTMOAuth2Authentication scopeWithStrings:scopeStrings, emailScope, nil];
+      auth.scope = scopeStrings;
     }
   }
 
   if (self.shouldFetchGoogleUserProfile) {
-    NSString *const profileScope = @"https://www.googleapis.com/auth/userinfo.profile";
-    NSString *scope = auth.scope;
-    if ([scope rangeOfString:profileScope].location == NSNotFound) {
-      scope = [GTMOAuth2Authentication scopeWithStrings:scope, profileScope, nil];
-      auth.scope = scope;
+    NSString *scopeStrings = auth.scope;
+    if (!hasScope(scopeStrings, profileScope)) {
+      scopeStrings = [GTMOAuth2Authentication scopeWithStrings:scopeStrings, profileScope, nil];
+      auth.scope = scopeStrings;
     }
   }
 }
@@ -161,9 +180,9 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
           webRequestSelector:(SEL)webRequestSelector
             finishedSelector:(SEL)finishedSelector {
   // check the selectors on debug builds
-  GTMAssertSelectorNilOrImplementedWithArgs(delegate, webRequestSelector,
+  GTMOAuth2AssertValidSelector(delegate, webRequestSelector,
     @encode(GTMOAuth2SignIn *), @encode(NSURLRequest *), 0);
-  GTMAssertSelectorNilOrImplementedWithArgs(delegate, finishedSelector,
+  GTMOAuth2AssertValidSelector(delegate, finishedSelector,
     @encode(GTMOAuth2SignIn *), @encode(GTMOAuth2Authentication *),
     @encode(NSError *), 0);
 
@@ -500,10 +519,10 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   if ([code length] > 0) {
     // exchange the code for a token
     SEL sel = @selector(auth:finishedWithFetcher:error:);
-    GTMHTTPFetcher *fetcher = [auth beginTokenFetchWithDelegate:self
-                                              didFinishSelector:sel];
+    GTMOAuth2Fetcher *fetcher = [auth beginTokenFetchWithDelegate:self
+                                                didFinishSelector:sel];
     if (fetcher == nil) {
-      error = [NSError errorWithDomain:kGTMHTTPFetcherStatusDomain
+      error = [NSError errorWithDomain:kGTMOAuth2FetcherStatusDomain
                                   code:-1
                               userInfo:nil];
     } else {
@@ -535,7 +554,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 }
 
 - (void)auth:(GTMOAuth2Authentication *)auth
-finishedWithFetcher:(GTMHTTPFetcher *)fetcher
+finishedWithFetcher:(GTMOAuth2Fetcher *)fetcher
        error:(NSError *)error {
   self.pendingFetcher = nil;
 
@@ -555,7 +574,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 }
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
-+ (GTMHTTPFetcher *)userInfoFetcherWithAuth:(GTMOAuth2Authentication *)auth {
++ (GTMOAuth2Fetcher *)userInfoFetcherWithAuth:(GTMOAuth2Authentication *)auth {
   // create a fetcher for obtaining the user's email or profile
   NSURL *infoURL = [[self class] googleUserInfoURL];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:infoURL];
@@ -566,15 +585,15 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
   }
   [request setValue:@"no-cache" forHTTPHeaderField:@"Cache-Control"];
 
-  GTMHTTPFetcher *fetcher;
-  id <GTMHTTPFetcherServiceProtocol> fetcherService = nil;
+  GTMOAuth2Fetcher *fetcher;
+  id <GTMOAuth2FetcherServiceProtocol> fetcherService = nil;
   if ([auth respondsToSelector:@selector(fetcherService)]) {
     fetcherService = auth.fetcherService;
   };
   if (fetcherService) {
-    fetcher = [fetcherService fetcherWithRequest:request];
+    fetcher = (GTMOAuth2Fetcher *)[fetcherService fetcherWithRequest:request];
   } else {
-    fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+    fetcher = [GTMOAuth2Fetcher fetcherWithRequest:request];
   }
   fetcher.authorizer = auth;
   fetcher.retryEnabled = YES;
@@ -620,7 +639,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
 
   // Fetch the email and profile from the userinfo endpoint.
   GTMOAuth2Authentication *auth = self.authentication;
-  GTMHTTPFetcher *fetcher = [[self class] userInfoFetcherWithAuth:auth];
+  GTMOAuth2Fetcher *fetcher = [[self class] userInfoFetcherWithAuth:auth];
   [fetcher beginFetchWithDelegate:self
                 didFinishSelector:@selector(infoFetcher:finishedWithData:error:)];
 
@@ -631,7 +650,7 @@ finishedWithFetcher:(GTMHTTPFetcher *)fetcher
                         type:kGTMOAuth2FetchTypeUserInfo];
 }
 
-- (void)infoFetcher:(GTMHTTPFetcher *)fetcher
+- (void)infoFetcher:(GTMOAuth2Fetcher *)fetcher
    finishedWithData:(NSData *)data
               error:(NSError *)error {
   GTMOAuth2Authentication *auth = self.authentication;
@@ -858,12 +877,12 @@ static void ReachabilityCallBack(SCNetworkReachabilityRef target,
       [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
 
       // there's nothing to be done if revocation succeeds or fails
-      GTMHTTPFetcher *fetcher;
-      id <GTMHTTPFetcherServiceProtocol> fetcherService = auth.fetcherService;
+      GTMOAuth2Fetcher *fetcher;
+      id <GTMOAuth2FetcherServiceProtocol> fetcherService = auth.fetcherService;
       if (fetcherService) {
-        fetcher = [fetcherService fetcherWithRequest:request];
+        fetcher = (GTMOAuth2Fetcher *)[fetcherService fetcherWithRequest:request];
       } else {
-        fetcher = [GTMHTTPFetcher fetcherWithRequest:request];
+        fetcher = [GTMOAuth2Fetcher fetcherWithRequest:request];
       }
       [fetcher setCommentWithFormat:@"GTMOAuth2 revoke token for %@", auth.userEmail];
 

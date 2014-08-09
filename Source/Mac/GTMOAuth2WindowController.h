@@ -75,11 +75,15 @@
 #import <WebKit/WebKit.h>
 
 // GTMHTTPFetcher.h brings in GTLDefines/GDataDefines
+#if GTM_USE_SESSION_FETCHER
+#import "GTMSessionFetcher.h"
+#else
 #import "GTMHTTPFetcher.h"
+#import "GTMHTTPFetchHistory.h" // for GTMCookieStorage
+#endif
 
 #import "GTMOAuth2SignIn.h"
 #import "GTMOAuth2Authentication.h"
-#import "GTMHTTPFetchHistory.h" // for GTMCookieStorage
 
 @class GTMOAuth2SignIn;
 
@@ -99,7 +103,7 @@
   NSURLRequest *initialRequest_;
 
   // local storage for WebKit cookies so they're not shared with Safari
-  GTMCookieStorage *cookieStorage_;
+  GTMOAuth2CookieStorage *cookieStorage_;
 
   // the user we're calling back
   //
