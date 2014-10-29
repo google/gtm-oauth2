@@ -487,22 +487,14 @@ static Class gSignInClass = Nil;
   return self.signIn.authentication;
 }
 
-- (void)saveBrowserCookies {
-  [[NSNotificationCenter defaultCenter] postNotificationName:kGTMOAuth2CookiesWillSwapOut
-                                                      object:self
-                                                    userInfo:nil];
-
+- (void)swapOutCookies {
   // Switch to the cookie set used for sign-in, initially empty.
   self.systemCookies = [self swapBrowserCookies:self.signInCookies];
 }
 
-- (void)restoreBrowserCookies {
+- (void)swapInCookies {
   // Switch back to the saved system cookies.
   self.signInCookies = [self swapBrowserCookies:self.systemCookies];
-
-  [[NSNotificationCenter defaultCenter] postNotificationName:kGTMOAuth2CookiesDidSwapIn
-                                                      object:self
-                                                    userInfo:nil];
 }
 
 - (NSArray *)swapBrowserCookies:(NSArray *)newCookies {
@@ -710,7 +702,10 @@ static Class gSignInClass = Nil;
 
 - (void)viewWillAppear:(BOOL)animated {
   // See the comment on clearBrowserCookies in viewWillDisappear.
-  [self saveBrowserCookies];
+  [[NSNotificationCenter defaultCenter] postNotificationName:kGTMOAuth2CookiesWillSwapOut
+                                                      object:self
+                                                    userInfo:nil];
+  [self swapOutCookies];
 
   if (!isViewShown_) {
     isViewShown_ = YES;
@@ -774,8 +769,10 @@ static Class gSignInClass = Nil;
     }
   }
 
-  [self restoreBrowserCookies];
-
+  [self swapInCookies];
+  [[NSNotificationCenter defaultCenter] postNotificationName:kGTMOAuth2CookiesDidSwapIn
+                                                      object:self
+                                                    userInfo:nil];
   [super viewWillDisappear:animated];
 }
 
