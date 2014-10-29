@@ -283,6 +283,21 @@ typedef void (^GTMOAuth2ViewControllerCompletionHandler)(GTMOAuth2ViewController
 // controls
 - (void)setUpNavigation;
 
+// Swaps out the system cookies. The default implementation saves the system
+// cookies and then switches to the cookies used for sign-in, initally empty.
+//
+// subclasses may override swapOutCookies to implement their own cookie
+// management scheme.
+- (void)swapOutCookies;
+
+// Swaps in the system cookies that were swapped out. The default implementation
+// saves the cookies used for sign-in and then restores the system cookies
+// that were saved in |swapOutCookies|.
+//
+// subclasses may override swapInCookies to implement their own cookie
+// management scheme.
+- (void)swapInCookies;
+
 // apps may replace the sign-in class with their own subclass of it
 + (Class)signInClass;
 + (void)setSignInClass:(Class)theClass;
