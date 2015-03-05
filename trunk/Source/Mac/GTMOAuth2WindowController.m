@@ -137,6 +137,13 @@ const char *kKeychainAccountName = "OAuth";
 }
 
 - (void)dealloc {
+  // The destroyWindow method below calls the WebView's stopLoading, which should avoid
+  // any later callbacks, but apparently doesn't accomplish that, as we're seeing calls
+  // back to the controller after it has dealloc'd.  So we'll explicitly set the delegate
+  // pointers to nil.
+  [webView_ setResourceLoadDelegate:nil];
+  [webView_ setPolicyDelegate:nil];
+
   [signIn_ release];
   [initialRequest_ release];
   [cookieStorage_ release];
