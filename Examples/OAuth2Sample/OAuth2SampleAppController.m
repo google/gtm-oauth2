@@ -222,10 +222,7 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   NSString *clientSecret = [mClientSecretField stringValue];
 
   if ([clientID length] == 0 || [clientSecret length] == 0) {
-    NSBeginAlertSheet(@"Error", nil, nil, nil, mMainWindow,
-                      self, NULL, NULL, NULL,
-                      @"The sample code requires a valid client ID"
-                      " and client secret to sign in.");
+    [self alertClientIDNeeded];
     return;
   }
 
@@ -304,10 +301,7 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   auth.scope = @"read";
 
   if ([auth.clientID length] == 0 || [auth.clientSecret length] == 0) {
-    NSBeginAlertSheet(@"Error", nil, nil, nil, mMainWindow,
-                      self, NULL, NULL, NULL,
-                      @"The sample code requires a valid client ID"
-                      " and client secret to sign in.");
+    [self alertClientIDNeeded];
     return;
   }
 
@@ -386,6 +380,15 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   }
 
   [self updateUI];
+}
+
+- (void)alertClientIDNeeded {
+  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+  alert.messageText = @"Error";
+  alert.informativeText =
+      @"The sample code requires a valid client ID and client secret to sign in.";
+  [alert beginSheetModalForWindow:mMainWindow
+                completionHandler:nil];
 }
 
 #pragma mark -
