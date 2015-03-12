@@ -21,7 +21,6 @@
 		4F244813121F263E00FEE1DA /* OAuth2SampleMainTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F244810121F253B00FEE1DA /* OAuth2SampleMainTouch.xib */; };
 		4F64A4071305E3F90058B9BA /* GTMOAuth2Authentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F64A4041305E3F90058B9BA /* GTMOAuth2Authentication.m */; };
 		4F64A4081305E3F90058B9BA /* GTMOAuth2SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F64A4061305E3F90058B9BA /* GTMOAuth2SignIn.m */; };
-		4F74F7761AB227CB00B6B575 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4F74F7751AB227CB00B6B575 /* Default-568h@2x.png */; };
 		4FEED6C512233486006FB4BC /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F2447D7121F211300FEE1DA /* GTMOAuth2ViewTouch.xib */; };
 /* End PBXBuildFile section */
 
@@ -49,7 +48,6 @@
 		4F64A4041305E3F90058B9BA /* GTMOAuth2Authentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2Authentication.m; path = ../../Source/GTMOAuth2Authentication.m; sourceTree = SOURCE_ROOT; };
 		4F64A4051305E3F90058B9BA /* GTMOAuth2SignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMOAuth2SignIn.h; path = ../../Source/GTMOAuth2SignIn.h; sourceTree = SOURCE_ROOT; };
 		4F64A4061305E3F90058B9BA /* GTMOAuth2SignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2SignIn.m; path = ../../Source/GTMOAuth2SignIn.m; sourceTree = SOURCE_ROOT; };
-		4F74F7751AB227CB00B6B575 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4FF23DC011754C0300E96C5A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F49B45D213315AA200EAA732 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -103,7 +101,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				4F74F7751AB227CB00B6B575 /* Default-568h@2x.png */,
 				13FA93DF113867A700E1AAA4 /* README.txt */,
 				13C82E9111373B3000ACAEDD /* Sample App Classes */,
 				4F41065D1149BCAE009202D9 /* OAuth Classes and Resources */,
@@ -205,7 +202,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4FEED6C512233486006FB4BC /* GTMOAuth2ViewTouch.xib in Resources */,
-				4F74F7761AB227CB00B6B575 /* Default-568h@2x.png in Resources */,
 				4F244813121F263E00FEE1DA /* OAuth2SampleMainTouch.xib in Resources */,
 				1301BB45119CB4B100A33D6C /* OAuth2SampleMainiPad.xib in Resources */,
 			);
