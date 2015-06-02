@@ -576,11 +576,12 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 
   NSURL *requestURL = [request URL];
   NSString *scheme = [requestURL scheme];
-  BOOL isAuthorizableRequest = self.shouldAuthorizeAllRequests
-    || [scheme caseInsensitiveCompare:@"https"] == NSOrderedSame
-    || [requestURL isFileURL];
+  BOOL isAuthorizableRequest = (requestURL == nil)
+    || (scheme != nil && [scheme caseInsensitiveCompare:@"https"] == NSOrderedSame)
+    || [requestURL isFileURL]
+    || self.shouldAuthorizeAllRequests;
   if (!isAuthorizableRequest) {
-    // Request is not https, so may be insecure
+    // Request is not https, a local file, or nil, so may be insecure
     //
     // The NSError will be created below
 #if DEBUG
