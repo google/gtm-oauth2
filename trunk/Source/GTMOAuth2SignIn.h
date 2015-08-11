@@ -48,13 +48,6 @@
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
-// GTMHTTPFetcher brings in GTLDefines/GDataDefines
-#if GTM_USE_SESSION_FETCHER
-#import "GTMSessionFetcher.h"
-#else
-#import "GTMHTTPFetcher.h"
-#endif
-
 #import "GTMOAuth2Authentication.h"
 
 @interface GTMOAuth2SignIn : NSObject {
@@ -174,6 +167,9 @@
 //
 // The fetcher's response data can be parsed with NSJSONSerialization.
 + (GTMOAuth2Fetcher *)userInfoFetcherWithAuth:(GTMOAuth2Authentication *)auth;
+
+// Decode a web-safe Base64 encoded string.
++ (NSData *)decodeWebSafeBase64:(NSString *)base64Str;
 #endif
 
 #pragma mark -

@@ -74,16 +74,12 @@
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
 
-// GTMHTTPFetcher.h brings in GTLDefines/GDataDefines
-#if GTM_USE_SESSION_FETCHER
-#import "GTMSessionFetcher.h"
-#else
-#import "GTMHTTPFetcher.h"
-#import "GTMHTTPFetchHistory.h" // for GTMCookieStorage
-#endif
-
 #import "GTMOAuth2SignIn.h"
 #import "GTMOAuth2Authentication.h"
+
+#if !GTM_USE_SESSION_FETCHER
+#import "GTMHTTPFetchHistory.h" // for GTMCookieStorage
+#endif
 
 @class GTMOAuth2SignIn;
 

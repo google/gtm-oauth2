@@ -19,6 +19,13 @@
 
 #if !TARGET_OS_IPHONE
 
+#ifndef GTM_USE_BEGIN_SHEET
+  #if (defined(MAC_OS_X_VERSION_10_9) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9)
+    #define GTM_USE_BEGIN_SHEET 1
+  #endif
+#endif
+
+
 #import "GTMOAuth2WindowController.h"
 
 @interface GTMOAuth2WindowController ()
@@ -34,7 +41,6 @@
 - (BOOL)shouldUseKeychain;
 - (void)signIn:(GTMOAuth2SignIn *)signIn displayRequest:(NSURLRequest *)request;
 - (void)signIn:(GTMOAuth2SignIn *)signIn finishedWithAuth:(GTMOAuth2Authentication *)auth error:(NSError *)error;
-- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
 - (void)handleCookiesForResponse:(NSURLResponse *)response;
 - (NSURLRequest *)addCookiesToRequest:(NSURLRequest *)request;
@@ -296,12 +302,21 @@ const char *kKeychainAccountName = "OAuth";
     if (parentWindow) {
       [self setupSheetTerminationHandling];
 
+#if GTM_USE_BEGIN_SHEET
+      NSWindow *sheet = [self window];
+      [parentWindow beginSheet:sheet completionHandler:^(NSModalResponse returnCode) {
+        [sheet orderOut:self];
+
+        self.sheetModalForWindow = nil;
+      }];
+#else
       NSWindow *sheet = [self window];
       [NSApp beginSheet:sheet
          modalForWindow:parentWindow
           modalDelegate:self
          didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:)
             contextInfo:nil];
+#endif
     } else {
       // modeless
       [self showWindow:self];
@@ -312,6 +327,16 @@ const char *kKeychainAccountName = "OAuth";
     [self destroyWindow];
   }
 }
+
+#if !GTM_USE_BEGIN_SHEET
+- (void)sheetDidEnd:(NSWindow *)sheet
+         returnCode:(NSInteger)returnCode
+        contextInfo:(void *)contextInfo {
+  [sheet orderOut:self];
+
+  self.sheetModalForWindow = nil;
+}
+#endif
 
 - (void)setupSheetTerminationHandling {
   NSWindow *sheet = [self window];
@@ -339,7 +364,11 @@ const char *kKeychainAccountName = "OAuth";
 
   NSWindow *parentWindow = self.sheetModalForWindow;
   if (parentWindow) {
+#if GTM_USE_BEGIN_SHEET
+    [parentWindow endSheet:[self window]];
+#else
     [NSApp endSheet:[self window]];
+#endif
   } else {
     // defer closing the window, in case we're responding to some window event
     [[self window] performSelector:@selector(close)
@@ -358,12 +387,6 @@ const char *kKeychainAccountName = "OAuth";
     [self.signIn windowWasClosed];
     hasDoneFinalRedirect_ = YES;
   }
-}
-
-- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-  [sheet orderOut:self];
-
-  self.sheetModalForWindow = nil;
 }
 
 - (void)signIn:(GTMOAuth2SignIn *)signIn finishedWithAuth:(GTMOAuth2Authentication *)auth error:(NSError *)error {
