@@ -882,6 +882,7 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
   fetcher.bodyData = paramData;
   fetcher.retryEnabled = YES;
   fetcher.maxRetryInterval = 15.0;
+  fetcher.servicePriority = NSIntegerMin;  // Exempt from maxRunningFetchersPerHost delay.
 
   // Fetcher properties will retain the delegate
   [fetcher setProperty:delegate forKey:kTokenFetchDelegateKey];
@@ -1217,20 +1218,33 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 
 #pragma mark Utility Routines
 
-+ (NSString *)encodedOAuthValueForString:(NSString *)str {
-  CFStringRef originalString = (CFStringRef) str;
++ (NSString *)encodedOAuthValueForString:(NSString *)originalString {
+  // For parameters, we'll explicitly leave spaces unescaped now, and replace
+  // them with +'s
+  NSString *const kForceEscape = @"!*'();:@&=+$,/?%#[]";
+
+#if (!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_9) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9) \
+    || (TARGET_OS_IPHONE && defined(__IPHONE_7_0) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0)
+  // Builds targeting iOS 7/OS X 10.9 and higher only.
+  NSMutableCharacterSet *cs =
+      [[[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy] autorelease];
+  [cs removeCharactersInString:kForceEscape];
+
+  NSString *escapedStr = [originalString stringByAddingPercentEncodingWithAllowedCharacters:cs];
+#else
+  // Builds targeting iOS 6/OS X 10.8.
   CFStringRef leaveUnescaped = NULL;
-  CFStringRef forceEscaped =  CFSTR("!*'();:@&=+$,/?%#[]");
 
   CFStringRef escapedStr = NULL;
-  if (str) {
+  if (originalString) {
     escapedStr = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                         originalString,
+                                                         (CFStringRef)originalString,
                                                          leaveUnescaped,
-                                                         forceEscaped,
+                                                         (CFStringRef)kForceEscape,
                                                          kCFStringEncodingUTF8);
-    [(id)CFMakeCollectable(escapedStr) autorelease];
+    [(NSString *)escapedStr autorelease];
   }
+#endif
 
   return (NSString *)escapedStr;
 }
@@ -1268,8 +1282,17 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 }
 
 + (NSString *)unencodedOAuthParameterForString:(NSString *)str {
+#if (!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_9) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_9) \
+    || (TARGET_OS_IPHONE && defined(__IPHONE_7_0) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0)
+  // On iOS 7, -stringByRemovingPercentEncoding incorrectly returns nil for an empty string.
+  if (str != nil && [str length] == 0) return @"";
+
+  NSString *plainStr = [str stringByRemovingPercentEncoding];
+  return plainStr;
+#else
   NSString *plainStr = [str stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
   return plainStr;
+#endif
 }
 
 + (NSDictionary *)dictionaryWithResponseString:(NSString *)responseStr {

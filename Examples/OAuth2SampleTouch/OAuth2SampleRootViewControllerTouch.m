@@ -25,22 +25,6 @@ static NSString *const kShouldSaveInKeychainKey = @"shouldSaveInKeychain";
 static NSString *const kDailyMotionAppServiceName = @"OAuth Sample: DailyMotion";
 static NSString *const kDailyMotionServiceName = @"DailyMotion";
 
-@interface OAuth2SampleRootViewControllerTouch()
-- (void)viewController:(GTMOAuth2ViewControllerTouch *)viewController
-      finishedWithAuth:(GTMOAuth2Authentication *)auth
-                 error:(NSError *)error;
-- (void)incrementNetworkActivity:(NSNotification *)notify;
-- (void)decrementNetworkActivity:(NSNotification *)notify;
-- (void)signInNetworkLostOrFound:(NSNotification *)notify;
-- (GTMOAuth2Authentication *)authForDailyMotion;
-- (void)doAnAuthenticatedAPIFetch;
-- (void)displayAlertWithMessage:(NSString *)str;
-- (BOOL)shouldSaveInKeychain;
-- (void)saveClientIDValues;
-- (void)loadClientIDValues;
-
-@end
-
 @implementation OAuth2SampleRootViewControllerTouch
 
 @synthesize clientIDField = mClientIDField,
@@ -438,33 +422,34 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
   NSURL *url = [NSURL URLWithString:urlStr];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
   [self.auth authorizeRequest:request
-            completionHandler:^(NSError *error) {
-              NSString *output = nil;
-              if (error) {
-                output = [error description];
-              } else {
-                // Synchronous fetches like this are a really bad idea in Cocoa applications
-                //
-                // For a very easy async alternative, we could use GTMHTTPFetcher
-                NSURLResponse *response = nil;
-                NSData *data = [NSURLConnection sendSynchronousRequest:request
-                                                     returningResponse:&response
-                                                                 error:&error];
-                if (data) {
-                  // API fetch succeeded
-                  output = [[[NSString alloc] initWithData:data
-                                                  encoding:NSUTF8StringEncoding] autorelease];
-                } else {
-                  // fetch failed
-                  output = [error description];
-                }
-              }
+            completionHandler:^(NSError *authError) {
+    if (authError) {
+      [self displayAlertWithMessage:[authError description]];
+    } else {
+      NSURLSessionConfiguration *cfg = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+      NSURLSession *session = [NSURLSession sessionWithConfiguration:cfg
+                                                            delegate:nil
+                                                       delegateQueue:[NSOperationQueue mainQueue]];
+      NSURLSessionDataTask *task = [session dataTaskWithRequest:request
+                                              completionHandler:^(NSData *data,
+                                                                  NSURLResponse *response,
+                                                                  NSError *taskError) {
+         NSString *output = nil;
 
-              [self displayAlertWithMessage:output];
-
-              // the access token may have changed
-              [self updateUI];
-            }];
+         if (!taskError) {
+           // API fetch succeeded
+           output = [[[NSString alloc] initWithData:data
+                                           encoding:NSUTF8StringEncoding] autorelease];
+         } else {
+           // fetch failed
+           output = [taskError description];
+         }
+         [self displayAlertWithMessage:output];
+         [self updateUI];
+       }];
+      [task resume];
+    }
+  }];
 }
 
 #pragma mark -
@@ -529,15 +514,18 @@ static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
 }
 
 - (void)displayAlertWithMessage:(NSString *)message {
-  UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"OAuth2Sample"
-                                                   message:message
-                                                  delegate:nil
-                                         cancelButtonTitle:@"OK"
-                                         otherButtonTitles:nil] autorelease];
-  [alert show];
+  UIAlertController *alert =
+      [UIAlertController alertControllerWithTitle:@"OAuth2Sample"
+                                          message:message
+                                   preferredStyle:UIAlertControllerStyleAlert];
+  UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK"
+                                                   style:UIAlertActionStyleDefault
+                                                 handler:nil];
+  [alert addAction:action];
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
   [textField resignFirstResponder];
   return YES;
 }
