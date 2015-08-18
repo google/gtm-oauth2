@@ -1,3 +1,11 @@
+# GTM OAuth 2: Google Toolbox for Mac - OAuth 2 Controllers #
+
+**Project site** <https://github.com/google/gtm-oauth2><br>
+**Discussion group** <http://groups.google.com/group/gtm-oauth2>
+
+
+## Release History ##
+
 GTM OAuth 2 Release Notes
 
 Project site:     http://code.google.com/p/gtm-oauth2/
