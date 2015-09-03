@@ -1250,7 +1250,7 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 }
 
 + (NSString *)encodedQueryParametersForDictionary:(NSDictionary *)dict {
-  // Make a string like "cat=fluffy@dog=spot"
+  // Make a string like "cat=fluffy&dog=spot"
   NSMutableString *result = [NSMutableString string];
   NSArray *sortedKeys = [[dict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
   NSString *joiner = @"";
