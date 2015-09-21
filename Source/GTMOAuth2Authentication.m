@@ -609,8 +609,8 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
                                              forKey:kGTMOAuth2ErrorRequestKey];
     }
     NSInteger code = (isAuthorizableRequest ?
-                      kGTMOAuth2ErrorAuthorizationFailed :
-                      kGTMOAuth2ErrorUnauthorizableRequest);
+                      GTMOAuth2ErrorAuthorizationFailed :
+                      GTMOAuth2ErrorUnauthorizableRequest);
     args.error = [NSError errorWithDomain:kGTMOAuth2ErrorDomain
                                      code:code
                                  userInfo:userInfo];
