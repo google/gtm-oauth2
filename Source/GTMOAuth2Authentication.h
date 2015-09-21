@@ -194,7 +194,9 @@ extern NSString *const kGTMOAuth2NetworkFound;
 @property (retain) NSDictionary *additionalGrantTypeRequestParameters;
 
 // Response properties
-@property (retain) NSMutableDictionary *parameters;
+
+// Dictionary of response and other properties; not KVO compliant
+@property (readonly) NSDictionary *parameters;
 
 @property (retain) NSString *accessToken;
 @property (retain) NSString *refreshToken;

@@ -203,7 +203,6 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 @synthesize clientID = clientID_,
             clientSecret = clientSecret_,
             redirectURI = redirectURI_,
-            parameters = parameters_,
             authorizationTokenKey = authorizationTokenKey_,
             tokenURL = tokenURL_,
             expirationDate = expirationDate_,
@@ -316,7 +315,7 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
         }
   }
 
-  [self.parameters addEntriesFromDictionary:dict];
+  [self addParametersFromDictionary:dict];
   [self updateExpirationDate];
 
   if (didRefreshTokenChange) {
@@ -1053,13 +1052,19 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 
 #pragma mark Accessors for Response Parameters
 
+- (NSDictionary *)parameters {
+  @synchronized(parameters_) {
+    return [[parameters_ copy] autorelease];
+  }
+}
+
 - (NSString *)authorizationToken {
   // The token used for authorization is typically the access token unless
   // the user has specified that an alternative parameter be used.
   NSString *authorizationToken;
   NSString *authTokenKey = self.authorizationTokenKey;
   if (authTokenKey != nil) {
-    authorizationToken = [self.parameters objectForKey:authTokenKey];
+    authorizationToken = [self parameterForKey:authTokenKey];
   } else {
     authorizationToken = self.accessToken;
   }
@@ -1067,71 +1072,71 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 }
 
 - (NSString *)accessToken {
-  return [self.parameters objectForKey:kOAuth2AccessTokenKey];
+  return [self parameterForKey:kOAuth2AccessTokenKey];
 }
 
 - (void)setAccessToken:(NSString *)str {
-  [self.parameters setValue:str forKey:kOAuth2AccessTokenKey];
+  [self setParameter:str forKey:kOAuth2AccessTokenKey];
 }
 
 - (NSString *)refreshToken {
-  return [self.parameters objectForKey:kOAuth2RefreshTokenKey];
+  return [self parameterForKey:kOAuth2RefreshTokenKey];
 }
 
 - (void)setRefreshToken:(NSString *)str {
-  [self.parameters setValue:str forKey:kOAuth2RefreshTokenKey];
+  [self setParameter:str forKey:kOAuth2RefreshTokenKey];
 }
 
 - (NSString *)code {
-  return [self.parameters objectForKey:kOAuth2CodeKey];
+  return [self parameterForKey:kOAuth2CodeKey];
 }
 
 - (void)setCode:(NSString *)str {
-  [self.parameters setValue:str forKey:kOAuth2CodeKey];
+  [self setParameter:str forKey:kOAuth2CodeKey];
 }
 
 - (NSString *)assertion {
-  return [self.parameters objectForKey:kOAuth2AssertionKey];
+  return [self parameterForKey:kOAuth2AssertionKey];
 }
 
 - (void)setAssertion:(NSString *)str {
-  [self.parameters setValue:str forKey:kOAuth2AssertionKey];
+  [self setParameter:str forKey:kOAuth2AssertionKey];
 }
 
 - (NSString *)refreshScope {
-  return [self.parameters objectForKey:kOAuth2RefreshScopeKey];
+  return [self parameterForKey:kOAuth2RefreshScopeKey];
 }
 
 - (void)setRefreshScope:(NSString *)str {
-  [self.parameters setValue:str forKey:kOAuth2RefreshScopeKey];
+  [self setParameter:str forKey:kOAuth2RefreshScopeKey];
 }
 
 - (NSString *)errorString {
-  return [self.parameters objectForKey:kOAuth2ErrorKey];
+  return [self parameterForKey:kOAuth2ErrorKey];
 }
 
 - (void)setErrorString:(NSString *)str {
-  [self.parameters setValue:str forKey:kOAuth2ErrorKey];
+  [self setParameter:str forKey:kOAuth2ErrorKey];
 }
 
 - (NSString *)tokenType {
-  return [self.parameters objectForKey:kOAuth2TokenTypeKey];
+  return [self parameterForKey:kOAuth2TokenTypeKey];
 }
 
 - (void)setTokenType:(NSString *)str {
-  [self.parameters setValue:str forKey:kOAuth2TokenTypeKey];
+  [self setParameter:str forKey:kOAuth2TokenTypeKey];
 }
 
 - (NSString *)scope {
-  return [self.parameters objectForKey:kOAuth2ScopeKey];
+  return [self parameterForKey:kOAuth2ScopeKey];
 }
 
 - (void)setScope:(NSString *)str {
-  [self.parameters setValue:str forKey:kOAuth2ScopeKey];
+  [self setParameter:str forKey:kOAuth2ScopeKey];
 }
 
 - (NSNumber *)expiresIn {
-  id value = [self.parameters objectForKey:kOAuth2ExpiresInKey];
+  id value = [self parameterForKey:kOAuth2ExpiresInKey];
   if ([value isKindOfClass:[NSString class]]) {
     value = [NSNumber numberWithInteger:[value integerValue]];
   }
@@ -1139,7 +1144,7 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 }
 
 - (void)setExpiresIn:(NSNumber *)num {
-  [self.parameters setValue:num forKey:kOAuth2ExpiresInKey];
+  [self setParameter:num forKey:kOAuth2ExpiresInKey];
   [self updateExpirationDate];
 }
 
@@ -1162,35 +1167,55 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
 //
 
 - (NSString *)serviceProvider {
-  return [self.parameters objectForKey:kServiceProviderKey];
+  return [self parameterForKey:kServiceProviderKey];
 }
 
 - (void)setServiceProvider:(NSString *)str {
-  [self.parameters setValue:str forKey:kServiceProviderKey];
+  [self setParameter:str forKey:kServiceProviderKey];
 }
 
 - (NSString *)userID {
-  return [self.parameters objectForKey:kUserIDKey];
+  return [self parameterForKey:kUserIDKey];
 }
 
 - (void)setUserID:(NSString *)str {
-  [self.parameters setValue:str forKey:kUserIDKey];
+  [self setParameter:str forKey:kUserIDKey];
 }
 
 - (NSString *)userEmail {
-  return [self.parameters objectForKey:kUserEmailKey];
+  return [self parameterForKey:kUserEmailKey];
 }
 
 - (void)setUserEmail:(NSString *)str {
-  [self.parameters setValue:str forKey:kUserEmailKey];
+  [self setParameter:str forKey:kUserEmailKey];
 }
 
 - (NSString *)userEmailIsVerified {
-  return [self.parameters objectForKey:kUserEmailIsVerifiedKey];
+  return [self parameterForKey:kUserEmailIsVerifiedKey];
 }
 
 - (void)setUserEmailIsVerified:(NSString *)str {
-  [self.parameters setValue:str forKey:kUserEmailIsVerifiedKey];
+  [self setParameter:str forKey:kUserEmailIsVerifiedKey];
+}
+
+#pragma mark Parameters
+
+- (id)parameterForKey:(NSString *)key {
+  @synchronized(parameters_) {
+    return [parameters_ objectForKey:key];
+  }
+}
+
+- (void)setParameter:(id)parameter forKey:(NSString *)key {
+  @synchronized(parameters_) {
+    [parameters_ setValue:parameter forKey:key];
+  }
+}
+
+- (void)addParametersFromDictionary:(NSDictionary *)dict {
+  @synchronized(parameters_) {
+    [parameters_ addEntriesFromDictionary:dict];
+  }
 }
 
 #pragma mark User Properties
