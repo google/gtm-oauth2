@@ -354,7 +354,7 @@ finishedWithFetcher:(GTMOAuth2Fetcher *)fetcher
   [self stopReachabilityCheck];
 
   NSError *error = [NSError errorWithDomain:kGTMOAuth2ErrorDomain
-                                       code:kGTMOAuth2ErrorWindowClosed
+                                       code:GTMOAuth2ErrorWindowClosed
                                    userInfo:nil];
   [self invokeFinalCallbackWithError:error];
 }
@@ -544,7 +544,7 @@ finishedWithFetcher:(GTMOAuth2Fetcher *)fetcher
     }
 
     error = [NSError errorWithDomain:kGTMOAuth2ErrorDomain
-                                code:kGTMOAuth2ErrorAuthorizationFailed
+                                code:GTMOAuth2ErrorAuthorizationFailed
                             userInfo:userInfo];
   }
 

@@ -328,7 +328,7 @@ static GTMOAuth2Keychain* gGTMOAuth2DefaultKeychain = nil;
   if (![auth canAuthorize]) {
     if (error) {
       *error = [NSError errorWithDomain:kGTMOAuth2ErrorDomain
-                                   code:kGTMOAuth2ErrorTokenUnavailable
+                                   code:GTMOAuth2ErrorTokenUnavailable
                                userInfo:nil];
     }
     return NO;
@@ -1023,7 +1023,7 @@ static Class gSignInClass = Nil;
 
 // iPhone
 - (NSString *)passwordForService:(NSString *)service account:(NSString *)account error:(NSError **)error {
-  OSStatus status = kGTMOAuth2KeychainErrorBadArguments;
+  OSStatus status = GTMOAuth2KeychainErrorBadArguments;
   NSString *result = nil;
   if (0 < [service length] && 0 < [account length]) {
     CFDataRef passwordData = NULL;
@@ -1052,7 +1052,7 @@ static Class gSignInClass = Nil;
 
 // iPhone
 - (BOOL)removePasswordForService:(NSString *)service account:(NSString *)account error:(NSError **)error {
-  OSStatus status = kGTMOAuth2KeychainErrorBadArguments;
+  OSStatus status = GTMOAuth2KeychainErrorBadArguments;
   if (0 < [service length] && 0 < [account length]) {
     NSMutableDictionary *keychainQuery = [self keychainQueryForService:service account:account];
     status = SecItemDelete((CFDictionaryRef)keychainQuery);
@@ -1071,7 +1071,7 @@ static Class gSignInClass = Nil;
       accessibility:(CFTypeRef)accessibility
             account:(NSString *)account
               error:(NSError **)error {
-  OSStatus status = kGTMOAuth2KeychainErrorBadArguments;
+  OSStatus status = GTMOAuth2KeychainErrorBadArguments;
   if (0 < [service length] && 0 < [account length]) {
     [self removePasswordForService:service account:account error:nil];
     if (0 < [password length]) {
