@@ -90,13 +90,15 @@ finishedWithFetcher:(GTMOAuth2Fetcher *)fetcher
 @synthesize networkLossTimeoutInterval = networkLossTimeoutInterval_;
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
+// Endpoint URLs are available at https://accounts.google.com/.well-known/openid-configuration
+
 + (NSURL *)googleAuthorizationURL {
-  NSString *str = @"https://accounts.google.com/o/oauth2/auth";
+  NSString *str = @"https://accounts.google.com/o/oauth2/v2/auth";
   return [NSURL URLWithString:str];
 }
 
 + (NSURL *)googleTokenURL {
-  NSString *str = @"https://accounts.google.com/o/oauth2/token";
+  NSString *str = @"https://www.googleapis.com/oauth2/v4/token";
   return [NSURL URLWithString:str];
 }
 
@@ -625,6 +627,8 @@ finishedWithFetcher:(GTMOAuth2Fetcher *)fetcher
         if ([part2 length] > 0) {
           NSData *data = [[self class] decodeWebSafeBase64:part2];
           if ([data length] > 0) {
+            // We trust this id_token data because it was obtained via SSL connection
+            // directly to the authoritative server.
             [self updateGoogleUserInfoWithData:data];
             if ([[auth userID] length] > 0 && [[auth userEmail] length] > 0) {
               // We obtained user ID and email from the ID token.
