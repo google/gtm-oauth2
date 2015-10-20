@@ -808,12 +808,23 @@ finishedRefreshWithFetcher:(GTMOAuth2Fetcher *)fetcher
     if ([redirectURI length] > 0) {
       [paramsDict setObject:redirectURI forKey:@"redirect_uri"];
     }
-    
+
     NSString *scope = self.scope;
     if ([scope length] > 0) {
       [paramsDict setObject:scope forKey:@"scope"];
     }
-    
+
+    // This code doesn't set the "state" value for verifying the redirect as
+    // described at
+    //   https://developers.google.com/identity/protocols/OpenIDConnect#state-param
+    // for two reasons:
+    //
+    // 1. Sign-in happens entirely in a WebView controlled by the app
+    //
+    // 2. For sign in to Google services, the completion of sign in is
+    //    determined not by redirect but rather by a change in document.title
+    //    to a string containing a code or error (see the window/view controller).
+
     fetchType = kGTMOAuth2FetchTypeToken;
   } else if (assertion) {
     // We have an assertion string
