@@ -496,8 +496,12 @@ static Class gSignInClass = Nil;
   self.signInCookies = [self swapBrowserCookies:self.systemCookies];
 }
 
+- (NSHTTPCookieStorage *)systemCookieStorage {
+  return [NSHTTPCookieStorage sharedHTTPCookieStorage];
+}
+
 - (NSArray *)swapBrowserCookies:(NSArray *)newCookies {
-  NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+  NSHTTPCookieStorage *cookieStorage = [self systemCookieStorage];
 
   NSHTTPCookieAcceptPolicy savedPolicy = [cookieStorage cookieAcceptPolicy];
   [cookieStorage setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
@@ -724,7 +728,7 @@ static Class gSignInClass = Nil;
     // Work around iOS 7.0 bug described in https://devforums.apple.com/thread/207323 by temporarily
     // setting our cookie storage policy to be permissive enough to keep the sign-in server
     // satisfied, just in case the app inherited from Safari a policy that blocks all cookies.
-    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSHTTPCookieStorage *storage = [self systemCookieStorage];
     NSHTTPCookieAcceptPolicy policy = [storage cookieAcceptPolicy];
     if (policy == NSHTTPCookieAcceptPolicyNever) {
       savedCookiePolicy_ = policy;
@@ -762,7 +766,7 @@ static Class gSignInClass = Nil;
     }
 
     if (savedCookiePolicy_ != (NSHTTPCookieAcceptPolicy)NSUIntegerMax) {
-      NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+      NSHTTPCookieStorage *storage = [self systemCookieStorage];
       [storage setCookieAcceptPolicy:savedCookiePolicy_];
       savedCookiePolicy_ = (NSHTTPCookieAcceptPolicy)NSUIntegerMax;
     }
@@ -843,7 +847,7 @@ static Class gSignInClass = Nil;
     [self.webView loadRequest:self.request];
   } else {
     [initialActivityIndicator_ setHidden:YES];
-    [signIn_ cookiesChanged:[NSHTTPCookieStorage sharedHTTPCookieStorage]];
+    [signIn_ cookiesChanged:[self systemCookieStorage]];
 
     [self updateUI];
   }

@@ -303,6 +303,13 @@ typedef void (^GTMOAuth2ViewControllerCompletionHandler)(GTMOAuth2ViewController
 // management scheme.
 - (void)swapInCookies;
 
+// Returns the cookie storage where the system cookies are stored. The default
+// implementation returns [NSHTTPCookieStorage sharedHTTPCookieStorage].
+//
+// Subclasses may override systemCookieStorage to implement their own cookie
+// management.
+- (NSHTTPCookieStorage *)systemCookieStorage;
+
 // apps may replace the sign-in class with their own subclass of it
 + (Class)signInClass;
 + (void)setSignInClass:(Class)theClass;
