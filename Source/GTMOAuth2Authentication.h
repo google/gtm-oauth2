@@ -155,8 +155,6 @@ extern NSString *const kGTMOAuth2NetworkFound;
 
   id <GTMOAuth2FetcherServiceProtocol> fetcherService_; // WEAK
 
-  Class parserClass_;
-
   BOOL shouldAuthorizeAllRequests_;
 
   // arbitrary data retained for the user
@@ -250,11 +248,6 @@ extern NSString *const kGTMOAuth2NetworkFound;
 // Fetcher service objects retain authorizations, so this is weak to avoid
 // circular retains.
 @property (assign) id <GTMOAuth2FetcherServiceProtocol> fetcherService; // WEAK
-
-// Alternative JSON parsing class; this should implement the
-// GTMOAuth2ParserClass informal protocol. If this property is
-// not set, the class SBJSON must be available in the runtime.
-@property (assign) Class parserClass;
 
 // Key for the response parameter used for the authorization header; by default,
 // "access_token" is used, but some servers may expect alternatives, like
