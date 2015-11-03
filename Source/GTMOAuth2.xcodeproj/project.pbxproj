@@ -54,7 +54,6 @@
 		4F24484A121F2E5C00FEE1DA /* GTMOAuth2SignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMOAuth2SignIn.m; sourceTree = "<group>"; };
 		4F244918121F370000FEE1DA /* GTMHTTPFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMHTTPFetcher.h; path = ../HTTPFetcher/GTMHTTPFetcher.h; sourceTree = SOURCE_ROOT; };
 		4F244919121F370000FEE1DA /* GTMHTTPFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMHTTPFetcher.m; path = ../HTTPFetcher/GTMHTTPFetcher.m; sourceTree = SOURCE_ROOT; };
-		4F3A8DBE125A61910080EB6C /* ReleaseNotes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReleaseNotes.txt; sourceTree = "<group>"; };
 		4F7249FA122485EE001A4AD0 /* GTMOAuth2WindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMOAuth2WindowController.h; path = Mac/GTMOAuth2WindowController.h; sourceTree = "<group>"; };
 		4F7249FB122485EE001A4AD0 /* GTMOAuth2WindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2WindowController.m; path = Mac/GTMOAuth2WindowController.m; sourceTree = "<group>"; };
 		4F724AB512248D6B001A4AD0 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
@@ -124,7 +123,6 @@
 				4F7249C012248423001A4AD0 /* Sources */,
 				034768DFFF38A50411DB9C8B /* Products */,
 				4F724AA112248D35001A4AD0 /* Libraries */,
-				4F3A8DBE125A61910080EB6C /* ReleaseNotes.txt */,
 			);
 			name = OAuthTouchStaticLibrary;
 			sourceTree = "<group>";
