@@ -364,10 +364,11 @@ const char *kKeychainAccountName = "OAuth";
 
   NSWindow *parentWindow = self.sheetModalForWindow;
   if (parentWindow) {
+    NSWindow * _Nonnull ownWindow = (NSWindow * _Nonnull)self.window;
 #if GTM_USE_BEGIN_SHEET
-    [parentWindow endSheet:[self window]];
+    [parentWindow endSheet:ownWindow];
 #else
-    [NSApp endSheet:[self window]];
+    [NSApp endSheet:ownWindow];
 #endif
   } else {
     // defer closing the window, in case we're responding to some window event
@@ -562,7 +563,7 @@ decisionListener:(id<WebPolicyDecisionListener>)listener {
   [mutableRequest setHTTPShouldHandleCookies:NO];
 
   // add our locally-stored cookies for this URL, if any
-  NSArray *cookies = [cookieStorage_ cookiesForURL:[request URL]];
+  NSArray *cookies = [cookieStorage_ cookiesForURL:(NSURL * _Nonnull)request.URL];
   if ([cookies count] > 0) {
     NSDictionary *headers = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];
     NSString *cookieHeader = [headers objectForKey:@"Cookie"];
