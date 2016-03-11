@@ -12,11 +12,11 @@ Pod::Spec.new do |s|
       applications to sign in to services using OAuth 2 for authentication
       and authorization.
       
-      This version can be used with iOS ≥ 6.0 or OS X ≥ 10.8.
+      This version can be used with iOS ≥ 7.0 or OS X ≥ 10.9.
                    DESC
 
-  s.ios.deployment_target = '6.0'
-  s.osx.deployment_target = '10.8'
+  s.ios.deployment_target = '7.0'
+  s.osx.deployment_target = '10.9'
   s.requires_arc = false
 
   s.source_files = 'Source/*.{h,m}'
