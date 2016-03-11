@@ -25,6 +25,8 @@ Pod::Spec.new do |s|
   s.osx.source_files = 'Source/Mac/*.{h,m}'
   s.osx.resources = 'Source/Mac/*.xib'
 
+  s.user_target_xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) GTM_OAUTH2_USE_FRAMEWORK_IMPORTS=1' }
+
   s.frameworks = 'Security', 'SystemConfiguration'
   s.dependency 'GTMSessionFetcher', '~> 1.1'
 end

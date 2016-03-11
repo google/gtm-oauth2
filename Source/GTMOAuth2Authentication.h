@@ -29,10 +29,22 @@
   #define GTMOAUTH2AUTHENTICATION_DEPRECATE_OLD_ENUMS 1
 #endif
 
+#ifndef GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
+#define GTM_OAUTH2_USE_FRAMEWORK_IMPORTS 0
+#endif
+
 #if GTM_USE_SESSION_FETCHER
-  #import "GTMSessionFetcher.h"
+  #if GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
+    #import <GTMSessionFetcher/GTMSessionFetcher.h>
+  #else
+    #import "GTMSessionFetcher.h"
+  #endif  // GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
 #else
-  #import "GTMHTTPFetcher.h"
+  #if GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
+    #import <GTMHTTPFetcher/GTMHTTPFetcher.h>
+  #else
+    #import "GTMHTTPFetcher.h"
+  #endif  // GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
 #endif  // GTM_USE_SESSION_FETCHER
 
 #define GTMOAuth2Fetcher GTMBridgeFetcher
