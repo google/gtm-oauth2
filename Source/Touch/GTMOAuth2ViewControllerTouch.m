@@ -252,7 +252,7 @@ static GTMOAuth2Keychain* gGTMOAuth2DefaultKeychain = nil;
 
 + (NSBundle *)authNibBundle {
   // subclasses may override this to specify a custom nib bundle
-  return nil;
+  return [NSBundle bundleForClass:[self class]];
 }
 
 #if !GTM_OAUTH2_SKIP_GOOGLE_SUPPORT
@@ -352,7 +352,7 @@ static GTMOAuth2Keychain* gGTMOAuth2DefaultKeychain = nil;
   NSString *nibPath = nil;
   NSBundle *nibBundle = [self nibBundle];
   if (nibBundle == nil) {
-    nibBundle = [NSBundle mainBundle];
+    nibBundle = [NSBundle bundleForClass:[self class]];
   }
   NSString *nibName = self.nibName;
   if (nibName != nil) {
