@@ -46,7 +46,7 @@
 - (NSURLRequest *)addCookiesToRequest:(NSURLRequest *)request;
 @end
 
-const char *kKeychainAccountName = "OAuth";
+static const char *kKeychainAccountName = "OAuth";
 
 @implementation GTMOAuth2WindowController
 
@@ -360,7 +360,12 @@ const char *kKeychainAccountName = "OAuth";
 
   // Avoid more callbacks after the close happens, as the window
   // controller may be gone.
-  [self.webView stopLoading:nil];
+  //
+  // We don't want to do this during handling of webView:resource:willSendRequest: as
+  // that causes a crash (during non-Google sign-in) so defer it to a later runloop.
+  [self.webView performSelectorOnMainThread:@selector(stopLoading:)
+                                 withObject:nil
+                              waitUntilDone:NO];
 
   NSWindow *parentWindow = self.sheetModalForWindow;
   if (parentWindow) {

@@ -23,9 +23,9 @@ static const NSTimeInterval kDefaultNetworkLossTimeoutInterval = 30.0;
 
 // URI indicating an installed app is signing in. This is described at
 //
-// http://code.google.com/apis/accounts/docs/OAuth2.html#IA
+// https://developers.google.com/identity/protocols/OAuth2InstalledApp#formingtheurl
 //
-NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
+static NSString *const kOOBString = @"urn:ietf:wg:oauth:2.0:oob";
 
 
 @interface GTMOAuth2SignIn ()
