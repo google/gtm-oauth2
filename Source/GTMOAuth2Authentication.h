@@ -33,15 +33,29 @@
 #define GTM_OAUTH2_USE_FRAMEWORK_IMPORTS 0
 #endif
 
+#ifndef GTM_OAUTH2_USE_PLATFORM_FRAMEWORK
+#define GTM_OAUTH2_USE_PLATFORM_FRAMEWORK 0
+#endif
+
 #if GTM_USE_SESSION_FETCHER
   #if GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
-    #import <GTMSessionFetcher/GTMSessionFetcher.h>
+    #if GTM_OAUTH2_USE_PLATFORM_FRAMEWORK
+      // App project file use.
+      #if TARGET_OS_IPHONE
+        #import <GTMSessionFetcherIOS/GTMSessionFetcher.h>
+      #else
+        #import <GTMSessionFetcherOSX/GTMSessionFetcher.h>
+      #endif  // TARGET_OS_IPHONE
+    #else
+      // Cocoapod use.
+      #import <GTMSessionFetcher/GTMSessionFetcher.h>
+    #endif  // GTM_OAUTH2_USE_PLATFORM_FRAMEWORK
   #else
     #import "GTMSessionFetcher.h"
   #endif  // GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
 #else
   #if GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
-    #import <GTMHTTPFetcher/GTMHTTPFetcher.h>
+    #error GTMHTTPFetcher lacks a framework build
   #else
     #import "GTMHTTPFetcher.h"
   #endif  // GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
@@ -180,17 +194,17 @@ extern NSString *const kGTMOAuth2NetworkFound;
 // the library.
 
 // Request properties
-@property (copy) NSString *clientID;
-@property (copy) NSString *clientSecret;
-@property (copy) NSString *redirectURI;
-@property (retain) NSString *scope;
-@property (retain) NSString *tokenType;
-@property (retain) NSString *assertion;
-@property (retain) NSString *refreshScope;
+@property (atomic, copy) NSString *clientID;
+@property (atomic, copy) NSString *clientSecret;
+@property (atomic, copy) NSString *redirectURI;
+@property (atomic, retain) NSString *scope;
+@property (atomic, retain) NSString *tokenType;
+@property (atomic, retain) NSString *assertion;
+@property (atomic, retain) NSString *refreshScope;
 
 // Apps may optionally add parameters here to be provided to the token
 // endpoint on token requests and refreshes.
-@property (retain) NSDictionary *additionalTokenRequestParameters;
+@property (atomic, retain) NSDictionary *additionalTokenRequestParameters;
 
 // Apps may optionally add parameters here to be provided to the token
 // endpoint on specific token requests and refreshes, keyed by the grant_type.
@@ -201,31 +215,31 @@ extern NSString *const kGTMOAuth2NetworkFound;
 //    @"authorization_code" : @{ @"type" : @"code" },
 //    @"refresh_token" : @{ @"type" : @"refresh" }
 //  };
-@property (retain) NSDictionary *additionalGrantTypeRequestParameters;
+@property (atomic, retain) NSDictionary *additionalGrantTypeRequestParameters;
 
 // Response properties
 
 // Dictionary of response and other properties; not KVO compliant
-@property (readonly) NSDictionary *parameters;
+@property (atomic, readonly) NSDictionary *parameters;
 
-@property (retain) NSString *accessToken;
-@property (retain) NSString *refreshToken;
-@property (retain) NSNumber *expiresIn;
-@property (retain) NSString *code;
-@property (retain) NSString *errorString;
+@property (atomic, retain) NSString *accessToken;
+@property (atomic, retain) NSString *refreshToken;
+@property (atomic, retain) NSNumber *expiresIn;
+@property (atomic, retain) NSString *code;
+@property (atomic, retain) NSString *errorString;
 
 // URL for obtaining access tokens
-@property (copy) NSURL *tokenURL;
+@property (atomic, copy) NSURL *tokenURL;
 
 // Calculated expiration date (expiresIn seconds added to the
 // time the access token was received.)
-@property (copy) NSDate *expirationDate;
+@property (atomic, copy) NSDate *expirationDate;
 
 // Service identifier, like "Google"; not used for authentication
 //
 // The provider name is just for allowing stored authorization to be associated
 // with the authorizing service.
-@property (copy) NSString *serviceProvider;
+@property (atomic, copy) NSString *serviceProvider;
 
 // User ID; not used for authentication
 @property (retain) NSString *userID;
@@ -235,36 +249,36 @@ extern NSString *const kGTMOAuth2NetworkFound;
 // The verified string can be checked with -boolValue. If the result is false,
 // then the email address is listed with the account on the server, but the
 // address has not been confirmed as belonging to the owner of the account.
-@property (retain) NSString *userEmail;
-@property (retain) NSString *userEmailIsVerified;
+@property (atomic, retain) NSString *userEmail;
+@property (atomic, retain) NSString *userEmailIsVerified;
 
 // Property indicating if this auth has a refresh or access token so is suitable
 // for authorizing a request. This does not guarantee that the token is valid.
-@property (readonly) BOOL canAuthorize;
+@property (atomic, readonly) BOOL canAuthorize;
 
 // Property indicating if this object will authorize plain http request
 // (as well as any non-https requests.) Default is NO, only requests with the
 // scheme https are authorized, since security may be compromised if tokens
 // are sent over the wire using an unencrypted protocol like http.
-@property (assign) BOOL shouldAuthorizeAllRequests;
+@property (atomic, assign) BOOL shouldAuthorizeAllRequests;
 
 // userData is retained for the convenience of the caller
-@property (retain) id userData;
+@property (atomic, retain) id userData;
 
 // Stored property values are retained for the convenience of the caller
-@property (retain) NSDictionary *properties;
+@property (atomic, retain) NSDictionary *properties;
 
 // Property for the optional fetcher service instance to be used to create
 // fetchers
 //
 // Fetcher service objects retain authorizations, so this is weak to avoid
 // circular retains.
-@property (assign) id <GTMOAuth2FetcherServiceProtocol> fetcherService; // WEAK
+@property (atomic, assign) id <GTMOAuth2FetcherServiceProtocol> fetcherService; // WEAK
 
 // Key for the response parameter used for the authorization header; by default,
 // "access_token" is used, but some servers may expect alternatives, like
 // "id_token".
-@property (copy) NSString *authorizationTokenKey;
+@property (atomic, copy) NSString *authorizationTokenKey;
 
 // Convenience method for creating an authentication object
 + (id)authenticationWithServiceProvider:(NSString *)serviceProvider
@@ -319,7 +333,7 @@ extern NSString *const kGTMOAuth2NetworkFound;
 //
 
 // Pending fetcher to get a new access token, if any
-@property (retain) GTMOAuth2Fetcher *refreshFetcher;
+@property (atomic, retain) GTMOAuth2Fetcher *refreshFetcher;
 
 // Check if a request is queued up to be authorized
 - (BOOL)isAuthorizingRequest:(NSURLRequest *)request;
