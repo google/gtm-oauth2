@@ -97,12 +97,12 @@ static NSString *const kTokenFetchSelectorKey = @"sel";
   NSError *error_;
 }
 
-@property (retain) NSMutableURLRequest *request;
-@property (retain) id delegate;
-@property (assign) SEL selector;
-@property (copy) id completionHandler;
-@property (retain) NSThread *thread;
-@property (retain) NSError *error;
+@property (atomic, retain) NSMutableURLRequest *request;
+@property (atomic, retain) id delegate;
+@property (atomic, assign) SEL selector;
+@property (atomic, copy) id completionHandler;
+@property (atomic, retain) NSThread *thread;
+@property (atomic, retain) NSError *error;
 
 + (GTMOAuth2AuthorizationArgs *)argsWithRequest:(NSMutableURLRequest *)req
                                        delegate:(id)delegate
@@ -149,7 +149,7 @@ static NSString *const kTokenFetchSelectorKey = @"sel";
 
 @interface GTMOAuth2Authentication ()
 
-@property (retain) NSMutableArray *authorizationQueue;
+@property (atomic, retain) NSMutableArray *authorizationQueue;
 @property (readonly) NSString *authorizationToken;
 
 - (void)setKeysForResponseJSONData:(NSData *)data;
