@@ -33,15 +33,29 @@
 #define GTM_OAUTH2_USE_FRAMEWORK_IMPORTS 0
 #endif
 
+#ifndef GTM_OAUTH2_USE_PLATFORM_FRAMEWORK
+#define GTM_OAUTH2_USE_PLATFORM_FRAMEWORK 0
+#endif
+
 #if GTM_USE_SESSION_FETCHER
   #if GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
-    #import <GTMSessionFetcher/GTMSessionFetcher.h>
+    #if GTM_OAUTH2_USE_PLATFORM_FRAMEWORK
+      // App project file use.
+      #if TARGET_OS_IPHONE
+        #import <GTMSessionFetcherIOS/GTMSessionFetcher.h>
+      #else
+        #import <GTMSessionFetcherOSX/GTMSessionFetcher.h>
+      #endif  // TARGET_OS_IPHONE
+    #else
+      // Cocoapod use.
+      #import <GTMSessionFetcher/GTMSessionFetcher.h>
+    #endif  // GTM_OAUTH2_USE_PLATFORM_FRAMEWORK
   #else
     #import "GTMSessionFetcher.h"
   #endif  // GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
 #else
   #if GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
-    #import <GTMHTTPFetcher/GTMHTTPFetcher.h>
+    #error GTMHTTPFetcher lacks a framework build
   #else
     #import "GTMHTTPFetcher.h"
   #endif  // GTM_OAUTH2_USE_FRAMEWORK_IMPORTS
