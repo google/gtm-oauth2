@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'GTMOAuth2'
-  s.version      = '1.1.1'
+  s.version      = '1.1.2'
   s.author       = 'Google Inc.'
   s.homepage     = 'https://github.com/google/gtm-oauth2'
   s.license      = { :type => 'Apache', :file => 'LICENSE' }
