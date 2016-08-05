@@ -3,6 +3,7 @@
 **Project site** <https://github.com/google/gtm-oauth2><br>
 **Discussion group** <http://groups.google.com/group/gtm-oauth2>
 
+[![Build Status](https://travis-ci.org/google/gtm-oauth2.svg?branch=master)](https://travis-ci.org/google/gtm-oauth2)
 
 The Google Toolbox for Mac OAuth 2 Controllers make it easy for Cocoa
 applications to sign in to services using OAuth 2 for authentication and
@@ -22,7 +23,7 @@ please join the
 or submit an [issue](https://github.com/google/gtm-oauth2/issues).
 
 The library incorporates the
-[GTM HTTP Fetcher project](https://github.com/google/gtm-http-fetcher/).
+[GTM Session Fetcher project](https://github.com/google/gtm-session-fetcher/).
 
 There is a separate project for [OAuth 1 controllers](https://github.com/google/gtm-oauth).
 
