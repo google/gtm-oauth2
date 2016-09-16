@@ -943,8 +943,9 @@ static Class gSignInClass = Nil;
 
 // The Keychain API isn't available on the iPhone simulator in SDKs before 3.0,
 // so, on early simulators we use a fake API, that just writes, unencrypted, to
-// NSUserDefaults.
-#if TARGET_IPHONE_SIMULATOR && __IPHONE_OS_VERSION_MAX_ALLOWED < 30000
+// NSUserDefaults.  Additionally, to mitigate a keychain bug in the iOS 10 simulator
+// that causes SecItemAdd to fail with -34018, we enable NSUserDefaults storage for iOS 10.0.x.
+#if TARGET_IPHONE_SIMULATOR && (__IPHONE_OS_VERSION_MAX_ALLOWED < 30000 || __IPHONE_OS_VERSION_MAX_ALLOWED == 100000)
 #pragma mark Simulator
 
 // Simulator - just simulated, not secure.
@@ -956,12 +957,12 @@ static Class gSignInClass = Nil;
     result = [defaults stringForKey:key];
     if (result == nil && error != NULL) {
       *error = [NSError errorWithDomain:kGTMOAuth2KeychainErrorDomain
-                                   code:kGTMOAuth2KeychainErrorNoPassword
+                                   code:GTMOAuth2KeychainErrorNoPassword
                                userInfo:nil];
     }
   } else if (error != NULL) {
     *error = [NSError errorWithDomain:kGTMOAuth2KeychainErrorDomain
-                                 code:kGTMOAuth2KeychainErrorBadArguments
+                                 code:GTMOAuth2KeychainErrorBadArguments
                              userInfo:nil];
   }
   return result;
@@ -979,7 +980,7 @@ static Class gSignInClass = Nil;
     [defaults synchronize];
   } else if (error != NULL) {
     *error = [NSError errorWithDomain:kGTMOAuth2KeychainErrorDomain
-                                 code:kGTMOAuth2KeychainErrorBadArguments
+                                 code:GTMOAuth2KeychainErrorBadArguments
                              userInfo:nil];
   }
   return didSucceed;
@@ -1000,7 +1001,7 @@ static Class gSignInClass = Nil;
     didSucceed = YES;
   } else if (error != NULL) {
     *error = [NSError errorWithDomain:kGTMOAuth2KeychainErrorDomain
-                                 code:kGTMOAuth2KeychainErrorBadArguments
+                                 code:GTMOAuth2KeychainErrorBadArguments
                              userInfo:nil];
   }
   return didSucceed;
