@@ -944,8 +944,10 @@ static Class gSignInClass = Nil;
 // The Keychain API isn't available on the iPhone simulator in SDKs before 3.0,
 // so, on early simulators we use a fake API, that just writes, unencrypted, to
 // NSUserDefaults.  Additionally, to mitigate a keychain bug in the iOS 10 simulator
-// that causes SecItemAdd to fail with -34018, we enable NSUserDefaults storage for iOS 10.0.x.
-#if TARGET_IPHONE_SIMULATOR && (__IPHONE_OS_VERSION_MAX_ALLOWED < 30000 || __IPHONE_OS_VERSION_MAX_ALLOWED == 100000)
+// that causes SecItemAdd to fail with -34018, we enable NSUserDefaults storage for iOS 10.0.x and
+// 10.1.x.
+#if TARGET_IPHONE_SIMULATOR && (__IPHONE_OS_VERSION_MAX_ALLOWED < 30000 || \
+    (__IPHONE_OS_VERSION_MAX_ALLOWED >= 100000 && __IPHONE_OS_VERSION_MAX_ALLOWED <= 100100))
 #pragma mark Simulator
 
 // Simulator - just simulated, not secure.
