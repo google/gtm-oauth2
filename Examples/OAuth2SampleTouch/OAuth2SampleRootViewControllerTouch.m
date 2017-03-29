@@ -49,6 +49,8 @@ static NSString *const kDailyMotionClientIDKey     = @"DailyMotionClientID";
 static NSString *const kDailyMotionClientSecretKey = @"DailyMotionClientSecret";
 
 - (void)awakeFromNib {
+  [super awakeFromNib];
+
   // Listen for network change notifications
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   [nc addObserver:self selector:@selector(incrementNetworkActivity:) name:kGTMOAuth2WebViewStartedLoading object:nil];
