@@ -67,7 +67,7 @@
 
 #if GTM_INCLUDE_OAUTH2 || !GDATA_REQUIRE_SERVICE_INCLUDES
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
 #if !TARGET_OS_IPHONE
 
